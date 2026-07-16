@@ -14,7 +14,7 @@ Lieflat Charts 是一套遵循 Agent Skills 格式的单色数据可视化 skill
 
 ## Preview
 
-下面是仓库里几类模板的实际预览。截图来自模板页面，不是单独绘制的宣传图。
+以下是几类模板的实际预览。
 
 ### Lupi Editorial
 
