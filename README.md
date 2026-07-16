@@ -18,27 +18,46 @@ Lieflat Charts 是一套遵循 Agent Skills 格式的单色数据可视化 skill
 
 ### Lupi Editorial
 
-细读、逐记录、编辑感。完整展示 15 张编辑叙事型模板。
+细读、逐记录、编辑感。精选 15 张编辑叙事型模板中的代表图型。
 
-<img src="docs/assets/lupi-gallery.png" alt="Lupi 编辑型 15 张完整模板预览" width="100%">
+<table>
+  <tr><td><img src="docs/assets/preview-lupi-01.png" alt="Lupi 编辑型预览一" width="100%"></td></tr>
+  <tr><td><img src="docs/assets/preview-lupi-02.png" alt="Lupi 编辑型预览二" width="100%"></td></tr>
+  <tr><td><img src="docs/assets/preview-lupi-03.png" alt="Lupi 编辑型预览三" width="100%"></td></tr>
+</table>
 
 ### Glance
 
-快读、聚合、结论先行。完整展示 18 张快速判断型模板。
+快读、聚合、结论先行。精选 18 张快速判断型模板中的代表图型。
 
-<img src="docs/assets/glance-gallery.png" alt="Glance 快读型 18 张完整模板预览" width="100%">
+<table>
+  <tr><td><img src="docs/assets/preview-glance-01.png" alt="Glance 快读型预览一" width="100%"></td></tr>
+  <tr><td><img src="docs/assets/preview-glance-02.png" alt="Glance 快读型预览二" width="100%"></td></tr>
+  <tr><td><img src="docs/assets/preview-glance-03.png" alt="Glance 快读型预览三" width="100%"></td></tr>
+</table>
+
+动态预览：
+
+<img src="docs/assets/glance-motion.gif" alt="Glance 动态预览" width="100%">
 
 ### Lupi Basics
 
-常见图型与可数单位的结合。完整展示 12 张基础编辑型模板。
+常见图型与可数单位的结合。精选 12 张基础编辑型模板中的代表图型。
 
-<img src="docs/assets/basics-gallery.png" alt="Lupi 基础型 12 张完整模板预览" width="100%">
+<table>
+  <tr><td><img src="docs/assets/preview-basics-01.png" alt="Lupi 基础型预览一" width="100%"></td></tr>
+  <tr><td><img src="docs/assets/preview-basics-02.png" alt="Lupi 基础型预览二" width="100%"></td></tr>
+</table>
 
 ### Interactive
 
 用于网络、路径与高密度关系数据。
 
-<img src="docs/assets/threads.png" alt="Threads 独立交互大图完整预览" width="100%">
+动态预览：
+
+<img src="docs/assets/interactive-motion.gif" alt="Interactive 动态预览" width="100%">
+
+[打开 Force Graph 模板体验拖拽与缩放](https://larashero3-dotcom.github.io/lieflat-charts/templates/big-force.html)
 
 ## 零门槛快速使用
 
@@ -138,7 +157,7 @@ catalog.md 和 mono-tokens.js 是否存在。
 ├── mono-tokens.js           # 共享视觉 token
 ├── templates/               # Lupi、Basics、Glance 与交互大图
 ├── examples/                # 真实公开数据案例
-├── docs/assets/             # README 模板截图
+├── docs/assets/             # README 模板截图与动态预览
 └── scripts/validate.mjs     # 发布前检查
 ```
 
