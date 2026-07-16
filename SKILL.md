@@ -1,11 +1,11 @@
 ---
 name: lieflat-charts
-description: 用 Mono 视觉语法生成杂志级数据图表（单文件 HTML）。当用户要画图、做图表、可视化数据、把数据做成能发的图时使用。不限于库内图型——库外图型按「翻译流程」现场生成。
+description: 一套单色数据可视化 skill，把数据做成有编辑感、可阅读、可组成完整页面的 HTML 图表。支持 Lupi 编辑叙事型、Glance 快速判断型、Basics 基础编辑型和 Interactive 交互大图。
 ---
 
 # Lieflat Charts — 图表品味法典
 
-你不是在套模板，你在说一门视觉语言。这份文件是语法书；`catalog.md` 是 48 张例句的索引；例句代码本体在 `templates/`（三个 gallery 合页 + 三个交互大图）；`examples/` 是拿真实公开数据做的成品案例（一篇文章的数据 → 多张成图），拿不准成品长什么样先看这里；`mono-tokens.js` 是机器可读的词汇表。用户给你数据和场合，你产出一个无需构建、双击可打开的单文件 HTML，改数据只需要动顶部一个数组。纯 SVG 图可离线运行；使用 Chart.js、ECharts 或在线字体的图，在未内联依赖时需要联网。**默认审美偏向 Lupi / editorial：除非用户明确要 dashboard、周报或三秒快读，否则先从 Lupi 语法里选。**
+Lieflat Charts 是一套遵循 Agent Skills 格式的单色数据可视化 skill，专注于把数据图表做成有编辑感、能阅读、能组成完整页面的视觉内容。它由 moxt 与 Codex 协同制作，支持 Lupi 编辑叙事型、Glance 快速判断型、Basics 基础编辑型和 Interactive 交互大图。用户给你数据和场合，你产出一个无需构建、双击可打开的单文件 HTML，改数据只需要动顶部一个数组。纯 SVG 图可离线运行；使用 Chart.js、ECharts 或在线字体的图，在未内联依赖时需要联网。**默认审美偏向 Lupi / editorial：除非用户明确要 dashboard、周报或三秒快读，否则先从 Lupi 语法里选。**
 
 **怎么查一张图的参考代码**：catalog 查到图型 → 打开对应 gallery 文件 → 按卡内标题找到 `<div class="card">` 块看结构 → 在 `<script>` 里搜同名 `// ════` 注释块拿渲染代码。不要整页照抄——gallery 是多卡合页，交付给用户的永远是按第九节骨架组装的单图文件。
 
