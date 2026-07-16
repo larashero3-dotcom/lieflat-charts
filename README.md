@@ -1,7 +1,5 @@
 # Lieflat Charts
 
-> 让数据图表更像一页经过设计的内容，而不是一张被导出的图。
-
 Lieflat Charts 是一套遵循 Agent Skills 格式的单色数据可视化 skill，可供 moxt、Claude Code、Codex 及其他兼容 `SKILL.md` 的 AI agent 使用。本 skill 由 moxt 与 Codex 协同制作，专注于把数据图表做成有编辑感、能阅读、能组成完整页面的视觉内容。
 
 它用统一的单色灰阶、字体、留白、线条和动效建立自己的视觉语法，包括以下几种视觉风格：
