@@ -21,9 +21,11 @@ Lieflat Charts 是一套遵循 Agent Skills 格式的单色数据可视化 skill
 细读、逐记录、编辑感。精选 15 张编辑叙事型模板中的代表图型。
 
 <table>
-  <tr><td><img src="docs/assets/preview-lupi-01.png" alt="Lupi 编辑型预览一" width="100%"></td></tr>
-  <tr><td><img src="docs/assets/preview-lupi-02.png" alt="Lupi 编辑型预览二" width="100%"></td></tr>
-  <tr><td><img src="docs/assets/preview-lupi-03.png" alt="Lupi 编辑型预览三" width="100%"></td></tr>
+  <tr>
+    <td width="50%"><img src="docs/assets/preview-lupi-01.png" alt="Lupi 编辑型预览一" width="100%"></td>
+    <td width="50%"><img src="docs/assets/preview-lupi-02.png" alt="Lupi 编辑型预览二" width="100%"></td>
+  </tr>
+  <tr><td colspan="2"><img src="docs/assets/preview-lupi-03.png" alt="Lupi 编辑型预览三" width="100%"></td></tr>
 </table>
 
 ### Glance
@@ -31,22 +33,26 @@ Lieflat Charts 是一套遵循 Agent Skills 格式的单色数据可视化 skill
 快读、聚合、结论先行。精选 18 张快速判断型模板中的代表图型。
 
 <table>
-  <tr><td><img src="docs/assets/preview-glance-01.png" alt="Glance 快读型预览一" width="100%"></td></tr>
-  <tr><td><img src="docs/assets/preview-glance-02.png" alt="Glance 快读型预览二" width="100%"></td></tr>
-  <tr><td><img src="docs/assets/preview-glance-03.png" alt="Glance 快读型预览三" width="100%"></td></tr>
+  <tr>
+    <td width="50%"><img src="docs/assets/preview-glance-01.png" alt="Glance 快读型预览一" width="100%"></td>
+    <td width="50%"><img src="docs/assets/preview-glance-02.png" alt="Glance 快读型预览二" width="100%"></td>
+  </tr>
+  <tr><td colspan="2"><img src="docs/assets/preview-glance-03.png" alt="Glance 快读型预览三" width="100%"></td></tr>
 </table>
 
 动态预览：
 
-<img src="docs/assets/glance-motion.gif" alt="Glance 动态预览" width="100%">
+<p align="center"><img src="docs/assets/glance-motion.gif" alt="Glance 动态预览" width="82%"></p>
 
 ### Lupi Basics
 
 常见图型与可数单位的结合。精选 12 张基础编辑型模板中的代表图型。
 
 <table>
-  <tr><td><img src="docs/assets/preview-basics-01.png" alt="Lupi 基础型预览一" width="100%"></td></tr>
-  <tr><td><img src="docs/assets/preview-basics-02.png" alt="Lupi 基础型预览二" width="100%"></td></tr>
+  <tr>
+    <td width="50%"><img src="docs/assets/preview-basics-01.png" alt="Lupi 基础型预览一" width="100%"></td>
+    <td width="50%"><img src="docs/assets/preview-basics-02.png" alt="Lupi 基础型预览二" width="100%"></td>
+  </tr>
 </table>
 
 ### Interactive
@@ -55,7 +61,7 @@ Lieflat Charts 是一套遵循 Agent Skills 格式的单色数据可视化 skill
 
 动态预览：
 
-<img src="docs/assets/interactive-motion.gif" alt="Interactive 动态预览" width="100%">
+<p align="center"><img src="docs/assets/interactive-motion.gif" alt="Interactive 动态预览" width="82%"></p>
 
 [打开 Force Graph 模板体验拖拽与缩放](https://larashero3-dotcom.github.io/lieflat-charts/templates/big-force.html)
 
