@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Mono — Circular Graph, Dense</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@6/dist/echarts.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#F0EFEB;--dark:#1C1C1A}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);font-family:'Inter',sans-serif;padding:40px;-webkit-font-smoothing:antialiased;
+    display:flex;justify-content:center}
+  .card{background:var(--dark);color:#F0EFEB;border-radius:24px;padding:34px 34px 24px;
+    width:min(1100px,100%)}
+  h2{font-weight:700;font-size:19px;letter-spacing:-.02em;margin-bottom:4px}
+  .sub{font-size:12px;color:#8F8E88;margin-bottom:10px}
+  .src{font-size:9.5px;color:#55554F;margin-top:12px;letter-spacing:.08em;font-weight:500}
+  #ch{height:78vh;min-height:620px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="card">
+  <h2>Six hundred collaborations, one ring</h2>
+  <div class="sub">60 repos · line = shared contributors · hover a repo to light up its world · click to replay</div>
+  <div id="ch"></div>
+  <div class="src">CIRCULAR GRAPH · DENSE · SOURCE · GIT LOG</div>
+</div>
+<script>
+const INK='#1C1C1A',PAPER='#F0EFEB';
+const rnd=(i,k)=>((i*73856093)^(k*19349663))%1000/1000; // deterministic
+
+// ── 60 repos in 5 org clusters; cluster = shade family ──
+const ORGS=[
+  ['platform',16,'#F0EFEB'],   // paper — the core
+  ['product',14,'#C9C7BD'],
+  ['data',12,'#A5A39A'],
+  ['infra',10,'#8F8E88'],
+  ['labs',8,'#6A6963'],
+];
+const nodes=[];
+ORGS.forEach(([org,count],oi)=>{
+  for(let i=0;i<count;i++){
+    // activity: a few giants per cluster, long tail of small repos
+    const heavy=i<2?30+rnd(oi+1,i+2)*45:4+rnd(oi+3,i+7)*16;
+    nodes.push({
+      name:org+'/'+org.slice(0,2)+'-'+String(i+1).padStart(2,'0'),
+      org:oi,value:Math.round(heavy),
+    });
+  }
+});
+// links: dense inside a cluster, sparser across; weight = shared contributors
+const links=[];
+const idx={};nodes.forEach((n,i)=>idx[n.name]=i);
+nodes.forEach((a,i)=>{
+  nodes.forEach((b,j)=>{
+    if(j<=i)return;
+    const same=a.org===b.org;
+    const p=same?.16:.045;
+    if(rnd(i+1,j+2)<p){
+      links.push({source:i,target:j,
+        w:1+Math.round(rnd(i+2,j+3)*6),same});
+    }
+  });
+});
+
+const g=echarts.init(document.getElementById('ch'));
+const opt={
+  animationDuration:1800,animationEasing:'quarticOut',
+  tooltip:{backgroundColor:PAPER,borderWidth:0,
+    textStyle:{color:INK,fontFamily:'Inter',fontSize:12},padding:[10,14],
+    formatter:p=>p.dataType==='node'
+      ?p.name+' — '+p.value+' contributors'
+      :p.data.rawS+' ↔ '+p.data.rawT+' — '+p.data.w+' shared'},
+  series:[{
+    type:'graph',layout:'circular',
+    circular:{rotateLabel:true},
+    left:24,right:24,top:24,bottom:24,
+    data:nodes.map((n,i)=>({
+      name:n.name,value:n.value,
+      symbolSize:3.5+Math.sqrt(n.value)*1.7,
+      itemStyle:{color:ORGS[n.org][2],borderWidth:0},
+      // only the giants get a label — 60 names would be soup
+      label:{show:n.value>=26,position:'right',distance:4,
+        color:'#B3B0A4',fontFamily:'Inter',fontSize:8.5,fontWeight:600},
+    })),
+    links:links.map(l=>({
+      source:l.source,target:l.target,
+      rawS:nodes[l.source].name,rawT:nodes[l.target].name,w:l.w,
+      lineStyle:{
+        width:.4+l.w*.28,
+        color:l.same?'#55534B':'#3A3934',
+        opacity:l.same?.5:.32,
+        curveness:.3,
+      },
+    })),
+    emphasis:{
+      focus:'adjacency',
+      lineStyle:{color:PAPER,opacity:.9,width:1.6},
+      label:{show:true,color:PAPER},
+    },
+    blur:{itemStyle:{opacity:.12},lineStyle:{opacity:.03}},
+  }],
+};
+const play=()=>{g.clear();g.setOption(opt)};
+play();
+document.getElementById('ch').addEventListener('click',play);
+addEventListener('resize',()=>g.resize());
+</script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Lieflat Charts"
+  short_description: "Magazine-style Mono charts with Lupi-first selection"
+  default_prompt: "Use $lieflat-charts to turn this dataset into a polished Mono chart."

@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Mono — Thread Triptych, Interactive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#F0EFEB;--dark:#1C1C1A;--paper:#F0EFEB}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);font-family:'Inter',sans-serif;padding:40px;-webkit-font-smoothing:antialiased;
+    display:flex;justify-content:center}
+  .card{background:var(--dark);color:var(--paper);border-radius:24px;padding:34px 34px 24px;
+    width:min(1200px,100%)}
+  h2{font-weight:700;font-size:19px;letter-spacing:-.02em;margin-bottom:4px}
+  .sub{font-size:12px;color:#8F8E88;margin-bottom:6px}
+  .src{font-size:9.5px;color:#55554F;margin-top:12px;letter-spacing:.08em;font-weight:500}
+  #ch{width:100%;height:74vh;min-height:560px;display:block}
+  #status{height:34px;display:flex;align-items:center;gap:10px;
+    font-size:12px;color:#8F8E88;border-top:1px solid #2E2D29;margin-top:6px;padding-top:8px}
+  #status b{color:var(--paper);font-weight:700}
+  #status .pin{font-size:9px;letter-spacing:.1em;color:#55554F;font-weight:700}
+  svg text{font-family:'Inter',sans-serif;user-select:none}
+
+  /* thread states */
+  .thread{transition:opacity .18s ease,stroke-width .18s ease}
+  .thread.hot{opacity:.95 !important}
+  svg.focused .thread:not(.hot){opacity:.035 !important}
+  .nodelab{cursor:pointer;transition:opacity .18s ease}
+  svg.focused .nodelab:not(.hot){opacity:.25}
+  .hit{cursor:pointer}
+</style>
+</head>
+<body>
+<div class="card">
+  <h2>Where the data actually goes — now answerable</h2>
+  <div class="sub">source → processor → destination · one thread per data path · hover to trace a route · hover any label to pull its whole bundle · click to pin, click dark space to release</div>
+  <svg id="ch" viewBox="0 0 1140 640" preserveAspectRatio="xMidYMid meet"></svg>
+  <div id="status"><span id="stext">hover a thread or a label</span><span class="pin" id="spin"></span></div>
+  <div class="src">THREAD TRIPTYCH · INTERACTIVE · DATA MAP</div>
+</div>
+<script>
+const PAPER='#F0EFEB',NS='http://www.w3.org/2000/svg';
+const el=(p,t,a)=>{const n=document.createElementNS(NS,t);for(const k in a)n.setAttribute(k,a[k]);p.appendChild(n);return n};
+const txt=(p,a,s)=>{const n=el(p,'text',a);n.textContent=s;return n};
+const rnd=(i,k)=>Math.abs(((i*73856093)^(k*19349663))%1000)/1000;
+
+// ── the pipeline ──
+const SRC=['web-app','ios-app','android','desktop','cli','public-api','webhooks','forms','email-in','chat-widget',
+  'billing-ev','auth-ev','search-log','audit-ev','crash-rep','perf-beacon','cdn-log','edge-log','job-ev','sync-ev',
+  'import','export-req','admin-ui','partner-api','iot-ping','backfill'];
+const MIDV=['parse','validate','dedupe','enrich','geoip','sessionize','pii-mask','score','sample','route',
+  'batch','window','join','flatten','filter','hash','encrypt','compact','index','tag'];
+const MID=MIDV.flatMap(v=>[v+'-a',v+'-b']);          // 40 processors
+const DST=['WAREHOUSE','ANALYTICS','CRM','ADS','BILLING','SEARCH','ML PIPE','ARCHIVE','AUDIT','EXPORTS'];
+
+// routes: each source emits 2-3 full paths; volume is long-tailed
+const routes=[];
+SRC.forEach((s,i)=>{
+  const n=2+Math.floor(rnd(i+1,5)*2);
+  for(let k=0;k<n;k++){
+    const mi=Math.floor(rnd(i*3+k+2,13)*MID.length);
+    const di=Math.min(9,Math.floor(rnd(i*5+k+4,19)**2*11));   // skew: low dsts hoard
+    const v=Math.round(1+rnd(i*7+k+6,29)**2*30);              // 1..31, long tail
+    routes.push({s:i,m:mi,d:di,v});
+  }
+});
+
+// ── geometry ──
+const X1=180,X2=560,X3=930;
+const sy=i=>36+i*22.6, my=i=>30+i*14.6, dy=i=>60+i*57;
+const path=r=>`M${X1+6} ${sy(r.s)} C${(X1+X2)/2} ${sy(r.s)} ${(X1+X2)/2} ${my(r.m)} ${X2} ${my(r.m)}`
+  +` C${(X2+X3)/2} ${my(r.m)} ${(X2+X3)/2} ${dy(r.d)} ${X3-6} ${dy(r.d)}`;
+
+const svg=document.getElementById('ch');
+const stext=document.getElementById('stext'),spin=document.getElementById('spin');
+const fmt=v=>v+'k ev/day';
+let pinned=null;
+
+// column headers
+[[X1,'① SOURCE'],[X2,'② PROCESSOR'],[X3,'③ DESTINATION']].forEach(([x,t])=>
+  txt(svg,{x,y:14,'font-size':9,'font-weight':800,fill:PAPER,'letter-spacing':'.14em','text-anchor':'middle'},t));
+
+// threads (drawn first, under labels)
+const gThreads=el(svg,'g',{});
+routes.forEach((r,ri)=>{
+  r.el=el(gThreads,'path',{d:path(r),fill:'none',stroke:PAPER,
+    'stroke-width':Math.max(.6,r.v*.14),class:'thread',
+    opacity:.06+Math.min(.2,r.v*.012),'stroke-linecap':'round'});
+  // invisible fat twin: the hover/click target
+  r.hit=el(gThreads,'path',{d:path(r),fill:'none',stroke:'#000','stroke-opacity':0,
+    'stroke-width':9,class:'hit'});
+  r.hit.dataset.route=ri;
+});
+
+// node labels + ticks; each carries hit metadata
+const mkNode=(x,y,label,anchor,cls,meta,size,fill)=>{
+  const g=el(svg,'g',{class:'nodelab'});
+  g.dataset.kind=meta.kind;g.dataset.idx=meta.idx;
+  el(g,'rect',{x:x-3,y:y-1.6,width:6,height:3.2,fill:PAPER,opacity:.85});
+  txt(g,{x:anchor==='end'?x-9:x+9,y:y+2.6,'font-size':size,'font-weight':600,
+    fill,'text-anchor':anchor},label);
+  // generous invisible hit zone
+  el(g,'rect',{x:anchor==='end'?x-92:x-6,y:y-6.5,width:98,height:13,fill:'#000','fill-opacity':0,class:'hit'});
+  return g;
+};
+SRC.forEach((s,i)=>mkNode(X1,sy(i),s,'end','',{kind:'s',idx:i},7.5,'#B3B0A4'));
+MID.forEach((m,i)=>mkNode(X2,my(i),m,'start','',{kind:'m',idx:i},5.4,'#6A6963'));
+DST.forEach((d,i)=>{
+  const g=el(svg,'g',{class:'nodelab'});
+  g.dataset.kind='d';g.dataset.idx=i;
+  el(g,'circle',{cx:X3,cy:dy(i),r:3.4,fill:PAPER});
+  txt(g,{x:X3+12,y:dy(i)+3,'font-size':8.5,'font-weight':700,fill:'#B3B0A4','letter-spacing':'.08em'},d);
+  el(g,'rect',{x:X3-8,y:dy(i)-10,width:120,height:20,fill:'#000','fill-opacity':0,class:'hit'});
+});
+
+// ── highlight machinery ──
+const nodeLabs=[...svg.querySelectorAll('.nodelab')];
+const clear=()=>{
+  svg.classList.remove('focused');
+  routes.forEach(r=>r.el.classList.remove('hot'));
+  nodeLabs.forEach(n=>n.classList.remove('hot'));
+  stext.textContent='hover a thread or a label';spin.textContent='';
+};
+const focusRoutes=(rs,label)=>{
+  svg.classList.add('focused');
+  routes.forEach(r=>r.el.classList.toggle('hot',rs.includes(r)));
+  nodeLabs.forEach(n=>{
+    const k=n.dataset.kind,ix=+n.dataset.idx;
+    n.classList.toggle('hot',rs.some(r=>(k==='s'&&r.s===ix)||(k==='m'&&r.m===ix)||(k==='d'&&r.d===ix)));
+  });
+  stext.innerHTML=label;
+};
+const routeLabel=r=>`<b>${SRC[r.s]}</b> → ${MID[r.m]} → <b>${DST[r.d]}</b> · ${fmt(r.v)}`;
+const nodeSel=(kind,idx)=>{
+  const rs=routes.filter(r=>(kind==='s'&&r.s===idx)||(kind==='m'&&r.m===idx)||(kind==='d'&&r.d===idx));
+  const total=rs.reduce((a,r)=>a+r.v,0);
+  const name=kind==='s'?SRC[idx]:kind==='m'?MID[idx]:DST[idx];
+  return [rs,`<b>${name}</b> · ${rs.length} path${rs.length>1?'s':''} · ${fmt(total)} total`];
+};
+
+const apply=t=>{
+  const hit=t.closest?.('.hit');
+  if(!hit)return null;
+  const rg=hit.dataset.route,ng=hit.closest('.nodelab');
+  if(rg!=null){const r=routes[+rg];return()=>focusRoutes([r],routeLabel(r))}
+  if(ng){const [rs,lab]=nodeSel(ng.dataset.kind,+ng.dataset.idx);return()=>focusRoutes(rs,lab)}
+  return null;
+};
+svg.addEventListener('mousemove',e=>{
+  if(pinned)return;
+  const f=apply(e.target);
+  f?f():clear();
+});
+svg.addEventListener('mouseleave',()=>{if(!pinned)clear()});
+svg.addEventListener('click',e=>{
+  const f=apply(e.target);
+  if(f){pinned=f;f();spin.textContent='PINNED · CLICK DARK SPACE TO RELEASE'}
+  else{pinned=null;clear()}
+});
+</script>
+</body>
+</html>

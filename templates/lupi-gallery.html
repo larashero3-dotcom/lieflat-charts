@@ -1,0 +1,892 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Lieflat Charts — Lupi Gallery · 15 张参考实现</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#F0EFEB;--dark:#1C1C1A;--ink:#1C1C1A;--muted:#8F8E88;--faint:#C6C5BF;--grid:#DEDDD6}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--ink);padding:40px;-webkit-font-smoothing:antialiased}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:1400px;margin:0 auto}
+  .card{background:var(--bg);border-radius:24px;padding:28px 28px 20px}
+  .card.dark{background:var(--dark);color:#F0EFEB}
+  .card.dark .sub{color:#8F8E88}
+  .card.dark .src{color:#55554F}
+  .card.wide{grid-column:1/-1}
+  .split{display:grid;grid-template-columns:250px 1fr;gap:30px;align-items:start}
+  h2{font-weight:700;font-size:16.5px;letter-spacing:-.02em;margin-bottom:3px}
+  .sub{font-size:11.5px;color:var(--muted);margin-bottom:14px}
+  .src{font-size:9.5px;color:var(--faint);margin-top:10px;letter-spacing:.08em;font-weight:500}
+  .note{font-size:11px;color:#6A6963;line-height:1.65;margin-bottom:16px}
+  .legend{font-size:9px;letter-spacing:.1em;font-weight:600;color:var(--muted);line-height:2}
+  svg{width:100%;max-height:330px;display:block;margin:0 auto}
+  svg text{font-family:'Inter',sans-serif}
+  .pop{transform-box:fill-box;transform-origin:center;animation:pop .5s cubic-bezier(.2,.7,.3,1.3) both}
+  @keyframes pop{from{transform:scale(0)}to{transform:none}}
+  .fade{animation:fade .9s ease both}
+  @keyframes fade{from{opacity:0}}
+  .draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1s cubic-bezier(.4,0,.2,1) both}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  @media (prefers-reduced-motion:reduce){
+    .pop,.fade{animation:none}
+    .draw{animation:none;stroke-dasharray:none;stroke-dashoffset:0}
+  }
+
+  .pagehead{max-width:1400px;margin:0 auto 26px;padding:0 4px}
+  .pagehead h1{font-size:22px;letter-spacing:-.02em;font-weight:800}
+  .pagehead p{font-size:12px;color:#8F8E88;margin-top:5px;line-height:1.7}
+  .pagehead .badge{margin:0 2px}
+  .badge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.08em;
+    padding:3px 10px;border-radius:99px;margin-bottom:10px}
+  .badge.del{background:#1C1C1A;color:#F0EFEB}
+  .badge.pick{border:1.5px solid #1C1C1A;color:#1C1C1A}
+  .badge.pair{border:1px dashed #B0AFA9;color:#8F8E88}
+  .card.dark .badge.del{background:#F0EFEB;color:#1C1C1A}
+  .card.dark .badge.pick{border-color:#F0EFEB;color:#F0EFEB}
+  .card.dark .badge.pair{border-color:#55554F;color:#8F8E88}
+</style>
+</head>
+<body>
+<div class="pagehead">
+
+  <h1>Lupi 系（细读）· 15 张参考实现</h1>
+  <p>发丝线 · 逐记录 · 30 秒阅读。每张卡是一个图型的参考实现；代码在页内 <code>// ════ 图型名 ════</code> 注释块里，按 catalog.md 的卡内标题检索。末尾两张（L14–L15）是小数据组：数据只有几个百分比时，靠单位分解（1 点 = 1 人 / 1 百分点）拿回 Lupi 密度。</p>
+</div>
+<div class="grid2">
+
+  <!-- 1 · launch fan -->
+  <div class="card">
+    <h2>Twelve features, fanned out</h2>
+    <div class="sub">one spoke per feature · big dot = launch week, sized by MAU today · small dots = every week since</div>
+    <svg id="fan" viewBox="0 0 400 320" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="src">LAUNCH FAN · MONO-EDITORIAL · PRODUCT ANALYTICS</div>
+  </div>
+
+  <!-- 4 · dot cascade on dark -->
+  <div class="card dark">
+    <h2>What breaks, stacked and ranked</h2>
+    <div class="sub">incidents by root cause · 2019 → 2026 · one dot = 2 incidents · sorted ascending</div>
+    <svg id="cascade" viewBox="0 0 400 320" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="src">DOT CASCADE · MONO-EDITORIAL · INCIDENT LOG</div>
+  </div>
+
+  <!-- 2 · barcode lollipop, wide + editorial text column -->
+  <div class="card wide">
+    <div class="split">
+      <div>
+        <h2>Ninety days as a barcode</h2>
+        <div class="sub">peak concurrent users, daily · Apr – Jun 2026</div>
+        <div class="note">Every hairline is a day, whether or not anything
+        happened in it. The dot marks the day's peak; the stem below it is
+        just gravity. Read the field, not the numbers — the season has a
+        texture before it has a value.</div>
+        <div class="legend">
+          ● &nbsp;WEEKDAY PEAK<br>
+          ○ &nbsp;WEEKEND PEAK<br>
+          │ &nbsp;ONE CALENDAR DAY<br>
+          ◉ &nbsp;TOP-3, LABELED
+        </div>
+      </div>
+      <div>
+        <svg id="barcode" viewBox="0 0 800 300" preserveAspectRatio="xMidYMid meet" style="max-height:340px"></svg>
+        <div class="src">BARCODE LOLLIPOP · MONO-EDITORIAL · LIVE OPS</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 · arc bubble matrix -->
+  <div class="card">
+    <h2>Eight products land in twelve cities</h2>
+    <div class="sub">bubble = paying accounts · each row bows like a horizon</div>
+    <svg id="arcmatrix" viewBox="0 0 430 320" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="src">ARC MATRIX · MONO-EDITORIAL · SALES GEO</div>
+  </div>
+
+  <!-- 5 · radial convergence -->
+  <div class="card">
+    <h2>48 requests pull toward five themes</h2>
+    <div class="sub">every rim node = a feature request · lines bundle into the theme that claimed it</div>
+    <svg id="converge" viewBox="0 0 400 320" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="src">RADIAL CONVERGENCE · MONO-EDITORIAL · FEEDBACK BOARD</div>
+  </div>
+
+  <!-- 6 · cluster field, wide -->
+  <div class="card wide">
+    <h2>The contributor field</h2>
+    <div class="sub">80 core contributors orbit the main repo · satellite islands keep their own gravity · dotted paths = cross-contribution</div>
+    <svg id="clusters" viewBox="0 0 840 320" preserveAspectRatio="xMidYMid meet" style="max-height:360px"></svg>
+    <div class="src">CLUSTER FIELD · MONO-EDITORIAL · CONTRIBUTOR GRAPH</div>
+  </div>
+
+
+
+  <!-- 1 · brand spectrum -->
+  <div class="card">
+    <h2>Where the brand sits</h2>
+    <div class="sub">panel of 120 customers placed us between opposing traits · big dot = us · small dots = competitors</div>
+    <svg id="spectrum" viewBox="0 0 460 300" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="src">BRAND SPECTRUM · MONO-EDITORIAL2 · BRAND SURVEY</div>
+  </div>
+
+  <!-- 2 · dotty matrix -->
+  <div class="card">
+    <h2>Four squads, stacked in space</h2>
+    <div class="sub">each plane = one squad · 6 × 6 weeks of activity · dot area = tasks closed</div>
+    <svg id="dotty" viewBox="0 0 400 372" preserveAspectRatio="xMidYMid meet" style="max-height:340px"></svg>
+    <div class="src">DOTTY MATRIX · MONO-EDITORIAL2 · SPRINT BOARD</div>
+  </div>
+
+  <!-- 3 · ticket almanac, wide -->
+  <div class="card wide">
+    <h2>Eight years of tickets, one almanac</h2>
+    <div class="sub">bubble area = support tickets per product area, per year · bubbles overlap where years pile up · dark core = escalations · dashed ring = still in beta</div>
+    <svg id="almanac" viewBox="0 0 840 400" preserveAspectRatio="xMidYMid meet" style="max-height:420px"></svg>
+    <div class="src">BUBBLE ALMANAC · MONO-EDITORIAL2 · SUPPORT DESK</div>
+  </div>
+
+  <!-- 4 · deploy patchwork -->
+  <div class="card">
+    <h2>A quarter of deploys, overlaid</h2>
+    <div class="sub">each wedge = one deploy · angle = time of day · reach = files touched · ink builds where deploys pile up</div>
+    <svg id="patchwork" viewBox="0 0 400 320" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="src">RADIAL PATCHWORK · MONO-EDITORIAL2 · DEPLOY LOG</div>
+  </div>
+
+  <!-- 6 · trend lineage -->
+  <div class="card">
+    <h2>Features rise, fall, come back</h2>
+    <div class="sub">● shipped · ○ reworked · dashed = dormant years · line runs on if it's still alive today</div>
+    <svg id="lineage" viewBox="0 0 400 340" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="src">TREND LINEAGE · MONO-EDITORIAL2 · PRODUCT HISTORY</div>
+  </div>
+
+  <!-- 8 · type colonnade -->
+  <div class="card">
+    <h2>Forty-four repos, ten owners</h2>
+    <div class="sub">every hairline hands a repo to the team that owns it · the pile-ups are the org chart nobody drew</div>
+    <svg id="colonnade" viewBox="0 0 400 320" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="src">TYPE COLONNADE · MONO-EDITORIAL2 · CODE OWNERSHIP</div>
+  </div>
+
+  <!-- 9 · funnel hourglass -->
+  <div class="card">
+    <h2>The funnel, poured</h2>
+    <div class="sub">each strip's width = people at that stage · threads trickle down · Q2 2026 cohort</div>
+    <svg id="hourglass" viewBox="0 0 400 330" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="src">HOURGLASS STREAM · MONO-EDITORIAL2 · GROWTH</div>
+  </div>
+
+  <!-- 14 · hundred field -->
+  <div class="card">
+    <span class="badge pair">小数据 · 单位分解</span>
+    <h2>A hundred of us, four minds</h2>
+    <div class="sub">one dot = one person in a hundred · four attitude clusters, sized by share · 2026 survey</div>
+    <svg id="hundredfield" viewBox="0 0 400 320" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="src">HUNDRED FIELD · MONO-SMALL · ATTITUDE SURVEY</div>
+  </div>
+
+  <!-- 15 · ballot tally -->
+  <div class="card">
+    <span class="badge pair">小数据 · 单位分解</span>
+    <h2>What they fear, tick by tick</h2>
+    <div class="sub">one tick = one respondent in a hundred · inked = picked it · they could pick several</div>
+    <svg id="ballottally" viewBox="0 0 400 320" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="src">BALLOT TALLY · MONO-SMALL · WORKPLACE SURVEY</div>
+  </div>
+
+</div>
+<script>
+// ── shared Mono tokens ──
+const INK='#1C1C1A',PAPER='#F0EFEB',MUTED='#8F8E88',GRID='#DEDDD6';
+const NS='http://www.w3.org/2000/svg';
+const el=(p,t,a)=>{const n=document.createElementNS(NS,t);for(const k in a)n.setAttribute(k,a[k]);p.appendChild(n);return n};
+const txt=(p,a,s)=>{const n=el(p,'text',a);n.textContent=s;return n};
+const tip=(n,s)=>{const t=document.createElementNS(NS,'title');t.textContent=s;n.appendChild(t)};
+const rnd=(i,k)=>Math.abs(((i*73856093)^(k*19349663))%1000)/1000; // deterministic
+const D2R=Math.PI/180;
+const pol=(cx,cy,r,deg)=>[cx+r*Math.cos(deg*D2R),cy+r*Math.sin(deg*D2R)];
+const sect=(cx,cy,r0,r1,a0,a1)=>{
+  const big=a1-a0>180?1:0;
+  const [xa,ya]=pol(cx,cy,r1,a0),[xb,yb]=pol(cx,cy,r1,a1);
+  const [xc,yc]=pol(cx,cy,r0,a1),[xd,yd]=pol(cx,cy,r0,a0);
+  return `M${xa} ${ya} A${r1} ${r1} 0 ${big} 1 ${xb} ${yb} L${xc} ${yc} A${r0} ${r0} 0 ${big} 0 ${xd} ${yd} Z`;
+};
+// unified reveal: draw when scrolled into view; click replays
+const obsReveal=(id,fn)=>{
+  const n=document.getElementById(id);
+  const go=()=>{n.innerHTML='';fn(n)};
+  const io=new IntersectionObserver(es=>{if(es[0].isIntersecting){go();io.disconnect()}},{threshold:.3});
+  io.observe(n);
+  n.style.cursor='pointer';
+  n.addEventListener('click',go);
+};
+
+// ════ 1 · launch fan ════
+// spokes sorted by launch week → the big dots cascade along a diagonal arc
+(()=>{
+const FEAT=['Editor','Boards','Docs','Chat','Flows','Vault','Pages','Sync','Grid','Views','Hub','Forms'];
+const LAUNCH=[1,3,4,6,8,9,11,12,14,16,17,19];     // week of launch
+const CX=40,CY=304,rOf=w=>56+w*9.7;
+obsReveal('fan',s=>{
+  const ang=i=>-84+i*(76/11);
+  // dotted week guides
+  [5,10,15,20].forEach((w,gi)=>{
+    const r=rOf(w),[x1,y1]=pol(CX,CY,r,-84),[x2,y2]=pol(CX,CY,r,-8);
+    el(s,'path',{d:`M${x1} ${y1} A${r} ${r} 0 0 1 ${x2} ${y2}`,fill:'none',
+      stroke:'#D8D6CE','stroke-width':1,'stroke-dasharray':'2 5',
+      class:'fade',style:`animation-delay:${gi*.1}s`});
+    const [lx,ly]=pol(CX,CY,r,-87.5);
+    txt(s,{x:lx,y:ly,'font-size':6.5,fill:'#B0AFA9','text-anchor':'middle',
+      class:'fade',style:`animation-delay:${gi*.1}s`},'W'+w);
+  });
+  FEAT.forEach((name,i)=>{
+    const a=ang(i),L=LAUNCH[i];
+    const mau=Math.round(48-i*3+rnd(i+1,3)*10);
+    // hairline spoke from launch to rim
+    const [sx,sy]=pol(CX,CY,rOf(L),a),[ex,ey]=pol(CX,CY,rOf(20),a);
+    el(s,'line',{x1:sx,y1:sy,x2:ex,y2:ey,stroke:'#E3E2DB','stroke-width':.7,
+      class:'fade',style:`animation-delay:${.15+i*.05}s`});
+    // weekly texture dots
+    for(let w=L+1;w<=20;w++){
+      const [x,y]=pol(CX,CY,rOf(w),a);
+      el(s,'circle',{cx:x,cy:y,r:1.1+rnd(i+1,w)*1.2,fill:'#B0AFA9',opacity:.8,
+        class:'pop',style:`animation-delay:${.2+i*.06+(w-L)*.015}s`});
+    }
+    // launch dot, sized by MAU
+    const [bx,by]=pol(CX,CY,rOf(L),a);
+    const big=el(s,'circle',{cx:bx,cy:by,r:Math.sqrt(mau)*1.15,fill:INK,
+      class:'pop',style:`animation-delay:${.15+i*.07}s`});
+    tip(big,`${name} — launched W${L} · ${mau}k MAU`);
+    // rim label along the spoke
+    const [tx,ty]=pol(CX,CY,rOf(20)+9,a);
+    txt(s,{x:tx,y:ty,'font-size':7,'font-weight':600,fill:'#6A6963',
+      transform:`rotate(${a} ${tx} ${ty})`,'dominant-baseline':'middle',
+      class:'fade',style:`animation-delay:${.3+i*.05}s`},name);
+  });
+});
+})();
+
+// ════ 4 · dot cascade on dark ════
+(()=>{
+const CAUSE=['DNS','CDN','QUOTA','DISK','CERT','CACHE','QUEUE','LOCK','OOM','NET','3P API','CONFIG','DB','DEPLOY','CODE','HUMAN'];
+const COUNT=[1,1,2,3,3,4,5,6,7,9,11,13,15,18,22,27];
+obsReveal('cascade',s=>{
+  const x=i=>34+i*22.2, base=i=>272-i*7.5;
+  // dotted diagonal baseline
+  el(s,'line',{x1:x(0)-8,y1:base(0)+4,x2:x(15)+8,y2:base(15)+4,
+    stroke:'#4A4944','stroke-width':1,'stroke-dasharray':'2 4',class:'fade'});
+  CAUSE.forEach((name,i)=>{
+    const n=Math.ceil(COUNT[i]/2),bx=x(i),by=base(i);
+    for(let k=0;k<n-1;k++)
+      el(s,'circle',{cx:bx,cy:by-12-k*8.8,r:2.2,fill:'#B3B0A4',opacity:.9,
+        class:'pop',style:`animation-delay:${i*.05+k*.03}s`});
+    const topY=by-12-(n-1)*8.8;
+    const top=el(s,'circle',{cx:bx,cy:topY,r:4.6,fill:PAPER,
+      class:'pop',style:`animation-delay:${i*.05+n*.03}s`});
+    tip(top,`${name} — ${COUNT[i]} incidents`);
+    txt(s,{x:bx,y:topY-10,'font-size':9,'font-weight':700,fill:PAPER,'text-anchor':'middle',
+      class:'fade',style:`animation-delay:${.2+i*.05}s`},COUNT[i]);
+    txt(s,{x:bx,y:by+12,'font-size':6.5,'font-weight':600,fill:'#6A6963','text-anchor':'end',
+      transform:`rotate(-90 ${bx} ${by+12})`,
+      class:'fade',style:`animation-delay:${.1+i*.05}s`},name);
+  });
+});
+})();
+
+// ════ 2 · barcode lollipop ════
+(()=>{
+const N=90;
+const val=d=>95+55*Math.sin(d/9.5)+30*Math.sin(d/3.7)+rnd(d+1,5)*40;
+obsReveal('barcode',s=>{
+  // the barcode: one hairline per day, full height
+  for(let d=0;d<N;d++){
+    const x=18+d*8.53;
+    el(s,'line',{x1:x,y1:8,x2:x,y2:258,stroke:GRID,'stroke-width':.7,
+      class:'fade',style:`animation-delay:${d*.004}s`});
+  }
+  const vs=Array.from({length:N},(_,d)=>val(d));
+  // top-3 peaks, kept at least 6 days apart so labels never collide
+  const top3=[];
+  for(const d of [...vs.keys()].sort((a,b)=>vs[b]-vs[a])){
+    if(top3.every(t=>Math.abs(t-d)>=6))top3.push(d);
+    if(top3.length===3)break;
+  }
+  for(let d=0;d<N;d++){
+    const x=18+d*8.53,v=vs[d],y=252-v*.75;
+    const weekend=d%7===5||d%7===6;
+    const stemEnd=Math.min(256,y+14+rnd(d+1,9)*26);
+    el(s,'line',{x1:x,y1:y,x2:x,y2:stemEnd,stroke:INK,'stroke-width':1.1,
+      class:'fade',style:`animation-delay:${.3+d*.008}s`});
+    const big=top3.includes(d);
+    const dot=el(s,'circle',{cx:x,cy:y,r:big?4.6:2.7,
+      fill:weekend?PAPER:INK,stroke:INK,'stroke-width':weekend?1.2:0,
+      class:'pop',style:`animation-delay:${.3+d*.008}s`});
+    tip(dot,`Day ${d+1} — ${Math.round(v)}k peak`);
+    if(big)txt(s,{x,y:y-10,'font-size':9,'font-weight':800,fill:INK,'text-anchor':'middle',
+      class:'fade',style:`animation-delay:${.9+d*.004}s`},Math.round(v)+'k');
+  }
+  [[0,'APR'],[30,'MAY'],[61,'JUN']].forEach(([d,m])=>
+    txt(s,{x:18+d*8.53,y:276,'font-size':8,'font-weight':600,fill:MUTED,
+      'letter-spacing':'.12em',class:'fade'},m));
+});
+})();
+
+// ════ 3 · arc bubble matrix ════
+(()=>{
+const PROD=['Editor','Boards','Docs','Flows','Chat','Vault','Pages','Sync'];
+const CITY=['SF','NYC','LON','BER','TOK','SYD','SIN','PAR','AMS','TOR','SEO','SAO'];
+const W=[9,8,7,7,6,5,5,4,4,3,3,2];             // market weight
+obsReveal('arcmatrix',s=>{
+  const rowY=i=>74+i*29, colX=j=>92+j*27, dy=j=>-16*Math.sin(Math.PI*j/11);
+  const v=(i,j)=>{
+    if(rnd(i*13+1,j*7+3)<.09)return 0;                 // a few true absences
+    const age=1-i*.085;                                // older rows reach further
+    return Math.min(40,Math.round(W[j]*3.4*age*(.45+rnd(i+1,j+1)*.85)));
+  };
+  // find top-4 cells for labels
+  const all=[];
+  PROD.forEach((_,i)=>CITY.forEach((_,j)=>all.push([v(i,j),i,j])));
+  const top=all.sort((a,b)=>b[0]-a[0]).slice(0,4).map(d=>d[1]*100+d[2]);
+  PROD.forEach((p,i)=>{
+    // the horizon arc
+    const d='M'+CITY.map((_,j)=>`${colX(j)} ${rowY(i)+dy(j)}`).join(' L ');
+    el(s,'path',{d,fill:'none',stroke:'#E3E2DB','stroke-width':1,pathLength:1,
+      class:'draw',style:`animation-delay:${i*.08}s`});
+    txt(s,{x:84,y:rowY(i)+3,'font-size':8,'font-weight':600,fill:'#6A6963','text-anchor':'end',
+      class:'fade',style:`animation-delay:${i*.08}s`},p);
+    CITY.forEach((c,j)=>{
+      const x=colX(j),y=rowY(i)+dy(j),vv=v(i,j);
+      if(!vv){el(s,'circle',{cx:x,cy:y,r:.9,fill:'#D8D6CE',
+        class:'pop',style:`animation-delay:${.2+i*.08+j*.02}s`});return}
+      const fill=vv>=25?INK:vv>=12?'#6A6963':'#B0AFA9';
+      const dot=el(s,'circle',{cx:x,cy:y,r:Math.sqrt(vv)*1.3,fill,
+        class:'pop',style:`animation-delay:${.2+i*.08+j*.02}s`});
+      tip(dot,`${p} · ${c} — ${vv} accounts`);
+      if(top.includes(i*100+j))
+        txt(s,{x,y:y-Math.sqrt(vv)*1.3-4,'font-size':7,'font-weight':800,fill:INK,
+          'text-anchor':'middle',class:'fade',style:`animation-delay:${.6}s`},vv);
+    });
+  });
+  CITY.forEach((c,j)=>{
+    const x=colX(j),y=74+dy(j)-24;
+    txt(s,{x,y,'font-size':7,'font-weight':700,fill:MUTED,'letter-spacing':'.08em',
+      transform:`rotate(-55 ${x} ${y})`,class:'fade',style:`animation-delay:${j*.03}s`},c);
+  });
+});
+})();
+
+// ════ 5 · radial convergence ════
+(()=>{
+const N=48,CX=200,CY=162,R=116;
+const THEME=[['PERF',15,-75],['INTEGRATIONS',10,-3],['PRICING',9,69],['MOBILE',8,141],['UX',6,213]];
+obsReveal('converge',s=>{
+  // hub assignment: contiguous blocks with a little organic leakage
+  const blocks=THEME.flatMap(([,n],h)=>Array(n).fill(h));
+  const hubOf=i=>rnd(i+1,11)>.92?(blocks[i]+2)%5:blocks[i];
+  const hubPt=h=>pol(CX,CY,34,THEME[h][2]);
+  const counts=[0,0,0,0,0];
+  for(let i=0;i<N;i++)counts[hubOf(i)]++;
+  for(let i=0;i<N;i++){
+    const deg=i/N*360-90,[px,py]=pol(CX,CY,R,deg);
+    const h=hubOf(i),[hx,hy]=hubPt(h);
+    const c1x=CX+(px-CX)*.42,c1y=CY+(py-CY)*.42;
+    const c2x=CX+(hx-CX)*.3,c2y=CY+(hy-CY)*.3;
+    el(s,'path',{d:`M${px} ${py} C${c1x} ${c1y} ${c2x} ${c2y} ${hx} ${hy}`,
+      fill:'none',stroke:'#A8A7A0','stroke-width':.7,opacity:.55,pathLength:1,
+      class:'draw',style:`animation-delay:${i*.018}s`});
+    el(s,'circle',{cx:px,cy:py,r:1.6,fill:'#6A6963',
+      class:'pop',style:`animation-delay:${i*.018}s`});
+    // tiny rim code, flipped on the left half so it stays readable
+    const flip=deg>90&&deg<270,[lx,ly]=pol(CX,CY,R+7,deg);
+    txt(s,{x:lx,y:ly,'font-size':5.5,fill:MUTED,
+      'text-anchor':flip?'end':'start','dominant-baseline':'middle',
+      transform:`rotate(${flip?deg+180:deg} ${lx} ${ly})`,
+      class:'fade',style:`animation-delay:${.2+i*.01}s`},'R-'+String(i+1).padStart(2,'0'));
+  }
+  THEME.forEach(([name,,deg],h)=>{
+    const [hx,hy]=hubPt(h);
+    const hub=el(s,'circle',{cx:hx,cy:hy,r:Math.sqrt(counts[h])*1.55,fill:INK,
+      class:'pop',style:`animation-delay:${.5+h*.08}s`});
+    tip(hub,`${name} — ${counts[h]} requests`);
+    // theme label parked outside the rim, past the code ring
+    const [tx,ty]=pol(CX,CY,R+34,deg);
+    txt(s,{x:tx,y:ty,'font-size':8,'font-weight':800,fill:INK,'text-anchor':'middle',
+      'dominant-baseline':'middle','letter-spacing':'.08em',
+      style:`animation-delay:${.6+h*.08}s`,
+      class:'fade'},`${name} · ${counts[h]}`);
+    // hairline tying the label to its hub, skimming past the rim
+    const [gx,gy]=pol(CX,CY,R+22,deg);
+    el(s,'line',{x1:hx,y1:hy,x2:gx,y2:gy,stroke:'#C6C5BF','stroke-width':.7,
+      'stroke-dasharray':'1 3',class:'fade',style:`animation-delay:${.7+h*.08}s`});
+  });
+});
+})();
+
+// ════ 6 · cluster field ════
+(()=>{
+const SAT=[[622,78,'PLUGINS',22],[706,214,'THEMES',16],[540,268,'DOCS',13],[92,72,'FORKS',12],[774,58,'MIRRORS',9]];
+obsReveal('clusters',s=>{
+  const HX=300,HY=172;
+  // dotted cross-contribution paths, hub → each island
+  SAT.forEach(([x,y],ci)=>{
+    const mx=(HX+x)/2,my=(HY+y)/2-30;
+    el(s,'path',{d:`M${HX} ${HY} Q${mx} ${my} ${x} ${y}`,fill:'none',
+      stroke:GRID,'stroke-width':.9,'stroke-dasharray':'2 4',pathLength:1,
+      class:'draw',style:`animation-delay:${.8+ci*.12}s;animation-duration:.7s`});
+  });
+  // main hub: 80 golden-angle spokes
+  for(let i=0;i<80;i++){
+    const a=i*137.508,len=28+rnd(i+1,7)*88;
+    const [x,y]=pol(HX,HY,len,a);
+    el(s,'line',{x1:HX,y1:HY,x2:x,y2:y,stroke:'#C6C5BF','stroke-width':.6,pathLength:1,
+      class:'draw',style:`animation-delay:${i*.012}s;animation-duration:.5s`});
+    const dot=el(s,'circle',{cx:x,cy:y,r:1.6+rnd(i+1,4)*1.8,fill:INK,opacity:.85,
+      class:'pop',style:`animation-delay:${.15+i*.012}s`});
+    tip(dot,`core contributor #${i+1}`);
+  }
+  el(s,'circle',{cx:HX,cy:HY,r:6.5,fill:INK,class:'pop'});
+  txt(s,{x:HX,y:HY+140,'font-size':8,'font-weight':800,fill:INK,'text-anchor':'middle',
+    'letter-spacing':'.1em',style:`paint-order:stroke;stroke:${PAPER};stroke-width:3px`,
+    class:'fade'},'CORE · 80');
+  // satellite islands
+  SAT.forEach(([x,y,name,n],ci)=>{
+    el(s,'circle',{cx:x,cy:y,r:3.5,fill:'#4A4944',
+      class:'pop',style:`animation-delay:${.9+ci*.12}s`});
+    for(let k=0;k<n;k++){
+      const a=k*137.508+ci*40,rr=9+rnd(k+1,ci+2)*26;
+      const [dx,dy]=pol(x,y,rr,a);
+      if(k%2===0)el(s,'line',{x1:x,y1:y,x2:dx,y2:dy,stroke:'#D8D6CE','stroke-width':.5,
+        class:'fade',style:`animation-delay:${1+ci*.12+k*.02}s`});
+      el(s,'circle',{cx:dx,cy:dy,r:1.4+rnd(k+3,ci+5)*1.4,fill:'#6A6963',
+        class:'pop',style:`animation-delay:${1+ci*.12+k*.02}s`});
+    }
+    txt(s,{x,y:y+44,'font-size':7.5,'font-weight':700,fill:MUTED,'text-anchor':'middle',
+      'letter-spacing':'.12em',style:`paint-order:stroke;stroke:${PAPER};stroke-width:3px`,
+      class:'fade'},`${name} · ${n}`);
+  });
+});
+})();
+
+// ════ 1 · brand spectrum ════
+// paired opposites; the pale ribbon threads our position down the page
+(()=>{
+const ROWS=[['FRIEND','AUTHORITY'],['SERIOUS','PLAYFUL'],['RELIABLE','RISK-TAKING'],['CONTEMPORARY','CLASSIC']];
+const US=[.74,.80,.40,.22];                 // 0 = left trait, 1 = right trait
+const COMP=[[.42,.52,.57],[.60,.65,.86],[.30,.34,.50],[.36,.41,.73]];
+const X0=118,X1=342,Y=i=>58+i*60,px=t=>X0+t*(X1-X0);
+obsReveal('spectrum',s=>{
+  // the ribbon first, underneath everything
+  let d=`M${px(US[0])} ${Y(0)}`;
+  for(let i=1;i<4;i++)
+    d+=` C${px(US[i-1])} ${Y(i-1)+30} ${px(US[i])} ${Y(i)-30} ${px(US[i])} ${Y(i)}`;
+  el(s,'path',{d,fill:'none',stroke:'#F0EFEB','stroke-width':30,'stroke-linecap':'round',
+    'stroke-linejoin':'round',opacity:.9,pathLength:1,class:'draw',
+    style:'animation-duration:1.4s'});
+  ROWS.forEach(([a,b],i)=>{
+    const y=Y(i);
+    el(s,'line',{x1:X0,y1:y,x2:X1,y2:y,stroke:'#B0AFA9','stroke-width':1,
+      class:'fade',style:`animation-delay:${i*.08}s`});
+    [X0,X1].forEach(x=>el(s,'line',{x1:x,y1:y-4,x2:x,y2:y+4,stroke:'#B0AFA9','stroke-width':1,
+      class:'fade',style:`animation-delay:${i*.08}s`}));
+    txt(s,{x:X0-14,y:y+3,'font-size':8,'font-weight':600,fill:'#6A6963','text-anchor':'end',
+      'letter-spacing':'.1em',class:'fade',style:`animation-delay:${i*.08}s`},a);
+    txt(s,{x:X1+14,y:y+3,'font-size':8,'font-weight':600,fill:'#6A6963',
+      'letter-spacing':'.1em',class:'fade',style:`animation-delay:${i*.08}s`},b);
+    COMP[i].forEach((t,k)=>{
+      const c=el(s,'circle',{cx:px(t),cy:y,r:3.2,fill:'#8F8E88',
+        class:'pop',style:`animation-delay:${.3+i*.1+k*.05}s`});
+      tip(c,`competitor ${'ABC'[k]} — ${Math.round(t*100)}% toward ${b}`);
+    });
+    const us=el(s,'circle',{cx:px(US[i]),cy:y,r:8,fill:INK,
+      class:'pop',style:`animation-delay:${.5+i*.1}s`});
+    tip(us,`us — ${Math.round(US[i]*100)}% toward ${b}`);
+  });
+  txt(s,{x:X0,y:284,'font-size':7.5,'font-weight':600,fill:'#B0AFA9','letter-spacing':'.12em',
+    class:'fade',style:'animation-delay:.9s'},'● US    ● COMPETITORS A · B · C');
+});
+})();
+
+// ════ 2 · dotty matrix — isometric stacked dot planes ════
+// pitch 20/10, dot radius capped well under half-pitch, decks 64px apart:
+// each plane reads as its own quiet grid instead of a smudge
+(()=>{
+const SQUAD=['PLATFORM','GROWTH','MOBILE','INFRA'];
+const SHADE=['#C6C5BF','#A8A7A0','#6A6963',INK];
+const P=(c,r,k)=>[196+(c-r)*20,236+(c+r)*10-k*64];
+obsReveal('dotty',s=>{
+  for(let k=0;k<4;k++){
+    // plane slab: paper fill so upper decks occlude lower ones
+    const cs=[P(-.8,-.8,k),P(5.8,-.8,k),P(5.8,5.8,k),P(-.8,5.8,k)];
+    el(s,'path',{d:'M'+cs.map(p=>p.join(' ')).join(' L ')+' Z',
+      fill:PAPER,'fill-opacity':.96,stroke:'#DEDDD6','stroke-width':.9,
+      class:'fade',style:`animation-delay:${k*.16}s`});
+    for(let r=0;r<6;r++)for(let c=0;c<6;c++){
+      const load=rnd(k*37+r*6+c+1,k+2);
+      const v=load<.3?0:Math.round(load*12);   // sparser: silence is part of the texture
+      const [x,y]=P(c,r,k);
+      if(!v){el(s,'circle',{cx:x,cy:y,r:.7,fill:'#D8D6CE',
+        class:'pop',style:`animation-delay:${k*.16+(r*6+c)*.008}s`});continue}
+      const dot=el(s,'circle',{cx:x,cy:y,r:1+Math.sqrt(v)*1.15,fill:SHADE[k],
+        class:'pop',style:`animation-delay:${k*.16+(r*6+c)*.008}s`});
+      tip(dot,`${SQUAD[k]} · week ${c+1} × lane ${r+1} — ${v} tasks`);
+    }
+    // label off the plane's right corner, tied by a short hairline
+    const [cxr,cyr]=P(5.8,-.8,k);
+    el(s,'line',{x1:cxr+4,y1:cyr,x2:cxr+22,y2:cyr,stroke:'#C6C5BF','stroke-width':.8,
+      class:'fade',style:`animation-delay:${.2+k*.16}s`});
+    txt(s,{x:cxr+27,y:cyr+2.5,'font-size':7.5,'font-weight':700,fill:k===3?INK:'#8F8E88',
+      'letter-spacing':'.12em',class:'fade',style:`animation-delay:${.2+k*.16}s`},SQUAD[k]);
+  }
+});
+})();
+
+// ════ 3 · bubble almanac ════
+// the vintage-almanac feel lives in three things: ledger-paper hairlines
+// under everything, bubbles big enough to collide, and marginalia. do all three.
+(()=>{
+const AREAS=['EDITOR','BOARDS','DOCS','CHAT','FLOWS','VAULT','PAGES','SYNC','GRID','VIEWS','HUB','FORMS'];
+const BETA={GRID:2023,VIEWS:2024,HUB:2025,FORMS:2025};   // beta until this year
+const BORN={EDITOR:2019,BOARDS:2019,DOCS:2019,CHAT:2020,FLOWS:2020,VAULT:2021,PAGES:2021,SYNC:2022,GRID:2022,VIEWS:2023,HUB:2024,FORMS:2024};
+obsReveal('almanac',s=>{
+  const rowY=i=>62+i*34,colX=j=>132+j*57;
+  // ledger paper: hairlines every 6.8px, edge to edge, under everything
+  for(let y=40;y<=318;y+=6.8)
+    el(s,'line',{x1:56,y1:y,x2:822,y2:y,stroke:'#E4E3DC','stroke-width':.5,
+      class:'fade',style:`animation-delay:${(y-40)*.001}s`});
+  const vals=[];
+  for(let i=0;i<8;i++){
+    const yr=2019+i;
+    el(s,'line',{x1:56,y1:rowY(i),x2:822,y2:rowY(i),stroke:'#D3D2CA','stroke-width':.9,
+      class:'fade',style:`animation-delay:${i*.04}s`});
+    txt(s,{x:48,y:rowY(i)+3,'font-size':9,'font-weight':700,fill:'#8F8E88','text-anchor':'end',
+      class:'fade',style:`animation-delay:${i*.04}s`},yr);
+    AREAS.forEach((a,j)=>{
+      if(yr<BORN[a])return;
+      const age=yr-BORN[a];
+      // steep spread: quiet areas stay pinpricks, busy ones balloon
+      const v=Math.round((2+age*5)*(0.25+rnd(i*12+j+1,j+3)**2*2.2));
+      vals.push([Math.max(1,v),i,j,a,yr]);
+    });
+  }
+  // draw small over large so the giants sit underneath as washes
+  vals.sort((a,b)=>b[0]-a[0]);
+  const top3=vals.slice(0,3);
+  // hand-drawn circle: radius wobbles around the rim on two slow sine waves,
+  // so every bubble is its own slightly-off print — never a compass circle
+  const blob=(x,y,r,seed)=>{
+    const n=Math.max(14,Math.round(r*1.6)),pts=[];
+    for(let t=0;t<n;t++){
+      const a=t/n*Math.PI*2;
+      const w=1+.055*Math.sin(a*2+seed*7)+.04*Math.sin(a*3+seed*13)+(rnd(seed+t,3)-.5)*.03;
+      pts.push([x+Math.cos(a)*r*w,y+Math.sin(a)*r*w]);
+    }
+    let d=`M${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`;
+    for(let t=0;t<n;t++){
+      const p=pts[t],q=pts[(t+1)%n];
+      d+=` Q${p[0].toFixed(1)} ${p[1].toFixed(1)} ${((p[0]+q[0])/2).toFixed(1)} ${((p[1]+q[1])/2).toFixed(1)}`;
+    }
+    return d+' Z';
+  };
+  vals.forEach(([v,i,j,a,yr],k)=>{
+    const x=colX(j)+(rnd(i*7+j+2,j+9)-.5)*10,  // jitter off the gridline
+          y=rowY(i),r=Math.sqrt(v)*3.8;        // big: rows are 34 apart, giants reach ~28 and collide
+    const beta=BETA[a]&&yr<=BETA[a];
+    const g=el(s,'g',{class:'pop',style:`animation-delay:${.15+k*.012}s`});
+    const seed=i*12+j;
+    const dot=el(g,'path',beta
+      ?{d:blob(x,y,r,seed),fill:'none',stroke:'#8F8E88','stroke-width':1,'stroke-dasharray':'3 3'}
+      :{d:blob(x,y,r,seed),fill:INK,'fill-opacity':.09+rnd(i+2,j+4)*.1,
+        stroke:INK,'stroke-opacity':.3+rnd(i+5,j+7)*.35,'stroke-width':.6+rnd(i+3,j+11)*.9});
+    tip(dot,`${a} · ${yr} — ${v*10} tickets${beta?' (beta)':''}`);
+    // escalation core: small wobbly blot, nudged off-center like a press mark
+    if(!beta){
+      const ox=(rnd(seed+1,17)-.5)*r*.3,oy=(rnd(seed+3,19)-.5)*r*.3;
+      el(g,'path',{d:blob(x+ox,y+oy,Math.max(1.4,r*.17),seed+29),fill:INK});
+    }
+    if(top3.includes(vals[k]))
+      txt(s,{x,y:y-r-5,'font-size':8.5,'font-weight':800,fill:INK,'text-anchor':'middle',
+        class:'fade',style:'animation-delay:1s'},v*10);
+  });
+  AREAS.forEach((a,j)=>{
+    const x=colX(j);
+    txt(s,{x,y:34,'font-size':7.5,'font-weight':700,fill:MUTED,'letter-spacing':'.1em',
+      transform:`rotate(-32 ${x} 34)`,class:'fade',style:`animation-delay:${j*.03}s`},a);
+  });
+  // marginalia: two annotations with pointer hairlines, like the original's notes
+  el(s,'path',{d:`M${colX(3)+30} ${rowY(5)-14} C${colX(3)+70} ${rowY(5)-34} ${colX(3)+96} ${rowY(5)-38} ${colX(3)+118} ${rowY(5)-38}`,
+    fill:'none',stroke:'#B0AFA9','stroke-width':.7,class:'fade',style:'animation-delay:1.1s'});
+  txt(s,{x:colX(3)+124,y:rowY(5)-35,'font-size':7,fill:'#6A6963','font-style':'italic',
+    class:'fade',style:'animation-delay:1.1s'},'chat tickets triple after mobile GA');
+  el(s,'path',{d:`M${colX(9)+16} ${rowY(2)+8} C${colX(9)+40} ${rowY(2)+26} ${colX(9)+60} ${rowY(2)+30} ${colX(9)+80} ${rowY(2)+30}`,
+    fill:'none',stroke:'#B0AFA9','stroke-width':.7,class:'fade',style:'animation-delay:1.2s'});
+  txt(s,{x:colX(9)+86,y:rowY(2)+33,'font-size':7,fill:'#6A6963','font-style':'italic',
+    class:'fade',style:'animation-delay:1.2s'},'betas barely ticket — nobody files bugs on toys');
+  // footer strip: important events, the almanac's timeline shelf
+  const evY=356;
+  el(s,'line',{x1:56,y1:evY-16,x2:822,y2:evY-16,stroke:'#C6C5BF','stroke-width':.8,
+    class:'fade',style:'animation-delay:1.2s'});
+  txt(s,{x:56,y:evY-24,'font-size':7,'font-weight':800,fill:'#8F8E88','letter-spacing':'.16em',
+    class:'fade',style:'animation-delay:1.2s'},'IMPORTANT EVENTS');
+  [['2020','SLA introduced'],['2022','self-serve help center'],['2023','the GA wave'],['2025','AI deflection live']]
+  .forEach(([yr,note],k)=>{
+    const x=90+k*196;
+    el(s,'line',{x1:x,y1:evY-16,x2:x,y2:evY-6,stroke:'#8F8E88','stroke-width':1,
+      class:'fade',style:`animation-delay:${1.3+k*.08}s`});
+    txt(s,{x,y:evY+4,'font-size':8,'font-weight':800,fill:INK,
+      class:'fade',style:`animation-delay:${1.3+k*.08}s`},yr);
+    txt(s,{x,y:evY+15,'font-size':7,fill:'#8F8E88',
+      class:'fade',style:`animation-delay:${1.3+k*.08}s`},note);
+  });
+});
+})();
+
+// ════ 4 · radial patchwork ════
+(()=>{
+const CX=200,CY=168,N=46;
+obsReveal('patchwork',s=>{
+  // 24h rim ticks
+  for(let h=0;h<96;h++){
+    const a=-90+h*3.75,[x1,y1]=pol(CX,CY,140,a),[x2,y2]=pol(CX,CY,h%4===0?146:143,a);
+    el(s,'line',{x1,y1,x2,y2,stroke:'#C6C5BF','stroke-width':h%4===0?1:.5,
+      class:'fade',style:`animation-delay:${h*.006}s`});
+  }
+  [0,6,12,18].forEach(h=>{
+    const [x,y]=pol(CX,CY,157,-90+h*15);
+    txt(s,{x,y:y+3,'font-size':8,'font-weight':700,fill:MUTED,'text-anchor':'middle',
+      class:'fade'},String(h).padStart(2,'0'));
+  });
+  // the patchwork: translucent wedges pile into ink
+  const wedges=[];
+  for(let i=0;i<N;i++){
+    // deploys cluster around 11h and 16h, thin overnight
+    const peak=rnd(i+1,2)>.5?11:16;
+    const hour=(peak+(rnd(i+1,3)-.5)*7+24)%24;
+    const a0=-90+hour*15,sw=10+rnd(i+1,4)*34;
+    const r1=34+rnd(i+1,5)*100;
+    wedges.push([a0,sw,r1,hour,i]);
+  }
+  wedges.forEach(([a0,sw,r1,hour,i])=>{
+    const w=el(s,'path',{d:sect(CX,CY,16,r1,a0,a0+sw),fill:INK,
+      'fill-opacity':.07+rnd(i+1,6)*.09,class:'fade',
+      style:`animation-delay:${.2+i*.022}s`});
+    tip(w,`deploy #${i+1} — ${String(Math.floor(hour)).padStart(2,'0')}:${String(Math.floor(hour%1*60)).padStart(2,'0')} · ${Math.round(r1*6)} files`);
+  });
+  // three outlined wedges: the ones that paged somebody
+  [4,17,31].forEach((i,k)=>{
+    const [a0,sw,r1]=wedges[i];
+    const w=el(s,'path',{d:sect(CX,CY,16,r1,a0,a0+sw),fill:'none',
+      stroke:INK,'stroke-width':1.1,class:'fade',style:`animation-delay:${1.2+k*.15}s`});
+    tip(w,`deploy #${i+1} — triggered an incident`);
+  });
+  el(s,'circle',{cx:CX,cy:CY,r:3,fill:INK,class:'pop',style:'animation-delay:1.3s'});
+  txt(s,{x:CX,y:308,'font-size':7.5,'font-weight':600,fill:'#B0AFA9','text-anchor':'middle',
+    'letter-spacing':'.12em',class:'fade',style:'animation-delay:1.4s'},'OUTLINED = TRIGGERED AN INCIDENT');
+});
+})();
+
+// ════ 6 · trend lineage ════
+(()=>{
+// [name, events [year, type f|o], aliveToday]
+const TR=[
+  ['Dark mode',[[2017,'f'],[2022,'o']],true],
+  ['Kanban',[[2016,'f']],true],
+  ['Wikis',[[2016,'f'],[2019,'o']],false],
+  ['Slash cmds',[[2018,'f']],true],
+  ['Templates',[[2019,'f'],[2024,'o']],true],
+  ['Inbox',[[2020,'f']],false],
+  ['Live cursors',[[2020,'f'],[2023,'o']],true],
+  ['AI drafts',[[2023,'f'],[2025,'o']],true],
+  ['Voice notes',[[2021,'f']],false],
+  ['Offline',[[2018,'f'],[2026,'o']],true],
+];
+const Y0=2016,yY=yr=>34+(yr-Y0)*24,colX=c=>76+c*31;
+obsReveal('lineage',s=>{
+  for(let yr=Y0;yr<=2026;yr++){
+    el(s,'line',{x1:60,y1:yY(yr),x2:372,y2:yY(yr),stroke:'#E3E2DB','stroke-width':.8,
+      class:'fade',style:`animation-delay:${(yr-Y0)*.03}s`});
+    if(yr%2===0)txt(s,{x:52,y:yY(yr)+3,'font-size':8,'font-weight':600,fill:MUTED,'text-anchor':'end',
+      class:'fade',style:`animation-delay:${(yr-Y0)*.03}s`},yr);
+  }
+  TR.forEach(([name,ev,alive],c)=>{
+    const x=colX(c);
+    // segments between events: solid while fresh, dashed once dormant
+    for(let k=0;k<ev.length-1;k++){
+      const gap=ev[k+1][0]-ev[k][0];
+      el(s,'line',{x1:x,y1:yY(ev[k][0])+7,x2:x,y2:yY(ev[k+1][0])-7,
+        stroke:'#B0AFA9','stroke-width':1,
+        'stroke-dasharray':gap>2?'2 4':'none',pathLength:1,
+        class:'draw',style:`animation-delay:${.3+c*.07}s;animation-duration:.6s`});
+    }
+    const last=ev[ev.length-1][0];
+    if(alive)
+      el(s,'line',{x1:x,y1:yY(last)+7,x2:x,y2:yY(2026)+16,stroke:'#B0AFA9','stroke-width':1,
+        pathLength:1,class:'draw',style:`animation-delay:${.45+c*.07}s;animation-duration:.6s`});
+    ev.forEach(([yr,t])=>{
+      const node=el(s,'circle',t==='f'
+        ?{cx:x,cy:yY(yr),r:5.5,fill:INK}
+        :{cx:x,cy:yY(yr),r:5.5,fill:PAPER,stroke:INK,'stroke-width':1.4});
+      node.setAttribute('class','pop');
+      node.style.animationDelay=(.35+c*.07)+'s';
+      tip(node,`${name} — ${t==='f'?'shipped':'reworked'} ${yr}`);
+    });
+    // terminal dot: alive lands on today's baseline, dead stops where it stopped
+    el(s,'circle',{cx:x,cy:alive?yY(2026)+16:yY(last)+12,r:alive?3:1.6,
+      fill:alive?INK:'#C6C5BF',class:'pop',style:`animation-delay:${.6+c*.07}s`});
+    const ly=yY(2026)+26;
+    txt(s,{x,y:ly,'font-size':6.8,'font-weight':600,fill:alive?'#4A4944':'#B0AFA9',
+      transform:`rotate(-38 ${x} ${ly})`,'text-anchor':'end',
+      class:'fade',style:`animation-delay:${.7+c*.05}s`},name);
+  });
+});
+})();
+
+// ════ 8 · type colonnade ════
+(()=>{
+const PRE=['core','ui','api','data','auth','sync','mail','flag','edge','doc','bot'];
+const SUF=['-kit','-svc','-web','-cli','-db','-gw','-sdk','-jobs'];
+const TEAM=['PLATFORM','FRONTEND','BACKEND','DATA','INFRA','MOBILE','SECURITY','GROWTH','ML','DESIGN'];
+obsReveal('colonnade',s=>{
+  const N=44;
+  const teamY=j=>36+j*28,repoY=i=>16+i*6.7;
+  const counts=Array(10).fill(0);
+  const owner=i=>{const w=rnd(i+1,17);return Math.min(9,Math.floor(w*w*10))}; // skewed: low teams hoard
+  for(let i=0;i<N;i++)counts[owner(i)]++;
+  for(let i=0;i<N;i++){
+    const name=PRE[i%11]+SUF[Math.floor(rnd(i+1,8)*8)%8]+(i>21?'-v2':'');
+    const yi=repoY(i),j=owner(i),yj=teamY(j);
+    txt(s,{x:112,y:yi+2,'font-size':5,fill:'#8F8E88','text-anchor':'end',
+      class:'fade',style:`animation-delay:${i*.012}s`},name);
+    el(s,'rect',{x:117,y:yi-1.2,width:4,height:2.4,fill:'#B0AFA9',
+      class:'fade',style:`animation-delay:${i*.012}s`});
+    el(s,'path',{d:`M123 ${yi} C 200 ${yi} 220 ${yj} 288 ${yj}`,fill:'none',
+      stroke:'#A8A7A0','stroke-width':.6,opacity:.6,pathLength:1,
+      class:'draw',style:`animation-delay:${.2+i*.015}s;animation-duration:.7s`});
+  }
+  TEAM.forEach((t,j)=>{
+    const y=teamY(j);
+    el(s,'circle',{cx:293,cy:y,r:2.6+counts[j]*.55,fill:counts[j]>=7?INK:counts[j]>=4?'#6A6963':'#B0AFA9',
+      class:'pop',style:`animation-delay:${.6+j*.05}s`});
+    const lab=txt(s,{x:302+counts[j]*.55,y:y+2.5,'font-size':7,'font-weight':700,fill:'#4A4944',
+      class:'fade',style:`animation-delay:${.65+j*.05}s`},`${t} · ${counts[j]}`);
+    tip(lab,`${t} owns ${counts[j]} repos`);
+  });
+});
+})();
+
+// ════ 9 · hourglass stream ════
+(()=>{
+const STAGE=[['VISITORS',4200],['SIGN-UPS',1900],['ACTIVATED',960],['RETAINED',540],['PAYING',310]];
+obsReveal('hourglass',s=>{
+  const CXm=185,sy=k=>34+k*64,w=c=>c/4200*290;
+  STAGE.forEach(([name,c],k)=>{
+    const y=sy(k),hw=w(c)/2;
+    // barcode strip: one tick ≈ 40 people
+    const n=Math.round(c/40);
+    for(let t=0;t<n;t++){
+      const x=CXm-hw+(t+.5)/n*hw*2+(rnd(t+1,k+3)-.5)*3;
+      el(s,'line',{x1:x,y1:y-6,x2:x,y2:y+6,stroke:INK,'stroke-width':.8,
+        opacity:.45+rnd(t+2,k+5)*.5,class:'fade',style:`animation-delay:${k*.12+t*.004}s`});
+    }
+    // threads trickling to the next strip
+    if(k<4){
+      const hw1=w(STAGE[k+1][1])/2;
+      for(let t=0;t<34;t++){
+        const xt=CXm+(rnd(t+1,k*7+1)-.5)*2*hw*.94;
+        const xb=CXm+(rnd(t+3,k*7+5)-.5)*2*hw1*.94;
+        el(s,'path',{d:`M${xt} ${y+8} C${xt} ${y+34} ${xb} ${sy(k+1)-34} ${xb} ${sy(k+1)-8}`,
+          fill:'none',stroke:'#B0AFA9','stroke-width':.5,opacity:.32,pathLength:1,
+          class:'draw',style:`animation-delay:${.2+k*.15+t*.008}s;animation-duration:.8s`});
+      }
+      // conversion between stages, parked in the left margin
+      const pct=Math.round(STAGE[k+1][1]/c*100);
+      txt(s,{x:26,y:(y+sy(k+1))/2+3,'font-size':8.5,'font-weight':800,fill:'#8F8E88',
+        class:'fade',style:`animation-delay:${.5+k*.15}s`},pct+'%');
+      txt(s,{x:26,y:(y+sy(k+1))/2+13,'font-size':6,'font-weight':600,fill:'#C6C5BF',
+        'letter-spacing':'.08em',class:'fade',style:`animation-delay:${.5+k*.15}s`},'GET THROUGH');
+    }
+    // stage label, tied to the strip edge
+    el(s,'line',{x1:CXm+hw+6,y1:y,x2:340,y2:y,stroke:'#DEDDD6','stroke-width':.8,
+      class:'fade',style:`animation-delay:${.3+k*.12}s`});
+    txt(s,{x:344,y:y-1,'font-size':7.5,'font-weight':700,fill:'#4A4944',
+      'letter-spacing':'.08em',class:'fade',style:`animation-delay:${.35+k*.12}s`},name);
+    txt(s,{x:344,y:y+10,'font-size':9.5,'font-weight':800,fill:INK,
+      class:'fade',style:`animation-delay:${.4+k*.12}s`},c.toLocaleString());
+  });
+});
+})();
+
+// ════ 14 · hundred field ════
+// small data, unit-decomposed: four shares of 100% become 100 people.
+// phyllotaxis discs (golden angle) so每簇自带肌理; share is countable, not just readable.
+(()=>{
+const SEG=[['CHARGED',41,INK],['TORN',35,'#55554F'],['ADRIFT',12,'#8F8E88'],['AVERSE',12,'#B0AFA9']];
+const POS=[[132,140],[276,116],[186,252],[322,238]];
+obsReveal('hundredfield',s=>{
+  // dashed constellation hairlines tying the cluster cores
+  [[0,1],[0,2],[1,3],[2,3]].forEach(([a,b],k)=>{
+    el(s,'line',{x1:POS[a][0],y1:POS[a][1],x2:POS[b][0],y2:POS[b][1],
+      stroke:GRID,'stroke-width':.7,'stroke-dasharray':'2 5',
+      class:'fade',style:`animation-delay:${.9+k*.1}s`});
+  });
+  SEG.forEach(([name,v,shade],ci)=>{
+    const [cx,cy]=POS[ci];
+    let edge=0;
+    for(let k=0;k<v;k++){
+      const a=k*137.508+ci*55;
+      const rr=4+Math.sqrt(k)*5.9+rnd(k+1,ci+2)*3;
+      edge=Math.max(edge,rr);
+      const [x,y]=pol(cx,cy,rr,a);
+      // hairline spoke for every 5th person, core to dot
+      if(k%5===0)el(s,'line',{x1:cx,y1:cy,x2:x,y2:y,stroke:'#CDCCC5','stroke-width':.6,
+        class:'fade',style:`animation-delay:${ci*.14+k*.012}s`});
+      const dot=el(s,'circle',{cx:x,cy:y,r:1.5+rnd(k+2,ci+3)*1.7,fill:shade,opacity:.9,
+        class:'pop',style:`animation-delay:${ci*.14+k*.012}s`});
+      tip(dot,`${name} — one of ${v} in 100`);
+    }
+    el(s,'circle',{cx,cy,r:2.4,fill:INK,class:'pop',style:`animation-delay:${ci*.14}s`});
+    txt(s,{x:cx,y:cy+edge+13,'font-size':8,'font-weight':800,fill:INK,'text-anchor':'middle',
+      'letter-spacing':'.1em',style:`paint-order:stroke;stroke:${PAPER};stroke-width:3px;animation-delay:${.5+ci*.12}s`,
+      class:'fade'},`${name} · ${v}`);
+  });
+  txt(s,{x:200,y:314,'font-size':7,'font-weight':600,fill:'#B0AFA9','text-anchor':'middle',
+    'letter-spacing':'.12em',class:'fade',style:'animation-delay:1.3s'},'ONE DOT = ONE PERSON · 41 + 35 + 12 + 12 = 100');
+});
+})();
+
+// ════ 15 · ballot tally ════
+// multi-select survey (each option independent, 0–100): every option is a row of
+// 100 hairline ticks — a hundred people standing in line, the ones who picked it inked.
+(()=>{
+const ASK=[['DO MORE WITH THE SAME PAY',51],['AN UNSUSTAINABLE PACE',46],['QUALITY OF WORK SLIPPING',41],['BEING REPLACED OUTRIGHT',22]];
+obsReveal('ballottally',s=>{
+  ASK.forEach(([name,v],i)=>{
+    const base=78+i*62;
+    txt(s,{x:28,y:base-26,'font-size':7.5,'font-weight':700,fill:'#6A6963',
+      'letter-spacing':'.08em',class:'fade',style:`animation-delay:${i*.1}s`},name);
+    el(s,'line',{x1:28,y1:base,x2:372,y2:base,stroke:GRID,'stroke-width':.6,
+      class:'fade',style:`animation-delay:${i*.1}s`});
+    for(let k=0;k<100;k++){
+      const x=28+k*3.44,picked=k<v;
+      const h=picked?12+rnd(k+1,i+2)*5:4.5+rnd(k+1,i+5)*2;
+      el(s,'line',{x1:x,y1:base,x2:x,y2:base-h,
+        stroke:picked?INK:'#CFCEC7','stroke-width':picked?.9:.55,
+        class:'fade',style:`animation-delay:${i*.1+k*.006}s`});
+      if(k%10===0)el(s,'circle',{cx:x,cy:base+4.5,r:.8,fill:'#C6C5BF',
+        class:'fade',style:`animation-delay:${i*.1+k*.006}s`});
+    }
+    const lab=txt(s,{x:28+(v-1)*3.44+9,y:base-11,'font-size':11,'font-weight':800,fill:INK,
+      style:`paint-order:stroke;stroke:${PAPER};stroke-width:3px;animation-delay:${.5+i*.1}s`,
+      class:'fade'},v);
+    tip(lab,`${v} of 100 picked this — they could pick several`);
+  });
+  txt(s,{x:200,y:314,'font-size':7,'font-weight':600,fill:'#B0AFA9','text-anchor':'middle',
+    'letter-spacing':'.12em',class:'fade',style:'animation-delay:1.1s'},'ONE TICK = ONE RESPONDENT · DOT MARKS EVERY TENTH');
+});
+})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,899 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Lieflat Charts — Glance Gallery · 18 张参考实现</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script src="https://cdn.jsdelivr.net/npm/echarts@6/dist/echarts.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#F0EFEB;--dark:#1C1C1A;--ink:#1C1C1A;--muted:#8F8E88;--faint:#C6C5BF;--grid:#DEDDD6}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--ink);padding:40px;-webkit-font-smoothing:antialiased}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:1400px;margin:0 auto}
+  .card{background:var(--bg);border-radius:24px;padding:28px 28px 20px}
+  .card.dark{background:var(--dark);color:#F0EFEB}
+  .card.dark .sub{color:#8F8E88}
+  .card.dark .src{color:#55554F}
+  h2{font-weight:700;font-size:16.5px;letter-spacing:-.02em;margin-bottom:3px}
+  .sub{font-size:11.5px;color:var(--muted);margin-bottom:14px}
+  .src{font-size:9.5px;color:var(--faint);margin-top:10px;letter-spacing:.08em;font-weight:500}
+  .ch{height:320px}
+  .wrap{position:relative;height:320px}
+  svg text{font-family:'Inter',sans-serif}
+  .pop{transform-box:fill-box;transform-origin:center;animation:pop .5s cubic-bezier(.2,.7,.3,1.3) both}
+  @keyframes pop{from{transform:scale(0)}to{transform:none}}
+
+  .pagehead{max-width:1400px;margin:0 auto 26px;padding:0 4px}
+  .pagehead h1{font-size:22px;letter-spacing:-.02em;font-weight:800}
+  .pagehead p{font-size:12px;color:#8F8E88;margin-top:5px;line-height:1.7}
+  .pagehead .badge{margin:0 2px}
+  .badge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.08em;
+    padding:3px 10px;border-radius:99px;margin-bottom:10px}
+  .badge.del{background:#1C1C1A;color:#F0EFEB}
+  .badge.pick{border:1.5px solid #1C1C1A;color:#1C1C1A}
+  .badge.pair{border:1px dashed #B0AFA9;color:#8F8E88}
+  .card.dark .badge.del{background:#F0EFEB;color:#1C1C1A}
+  .card.dark .badge.pick{border-color:#F0EFEB;color:#F0EFEB}
+  .card.dark .badge.pair{border-color:#55554F;color:#8F8E88}
+</style>
+</head>
+<body>
+<div class="pagehead">
+
+  <h1>Glance 系（快读）· 18 张参考实现</h1>
+  <p>粗笔画 · 提前聚合 · 3 秒读完。每张卡是一个图型的参考实现；代码在页内 <code>// ════ 图型名 ════</code> 注释块里，按 catalog.md 的卡内标题检索。</p>
+</div>
+<div class="grid2">
+
+  <!-- ══ mono-demo ══ -->
+  <div class="card">
+    <h2>Daily active range</h2>
+    <div class="sub">min – max concurrent users · 1–14 Feb</div>
+    <div class="wrap"><canvas id="c1"></canvas></div>
+    <div class="src">RANGE CAPSULES · MONO-DEMO · LIVE OPS</div>
+  </div>
+
+  <div class="card dark">
+    <h2>How releases made us feel</h2>
+    <div class="sub">reactions tagged in retro · H1 2026</div>
+    <div class="ch" id="rose"></div>
+    <div class="src">PETAL ROSE · MONO-DEMO · TEAM RETRO BOARD</div>
+  </div>
+
+  <div class="card">
+    <h2>Revenue by plan</h2>
+    <div class="sub">Q2 2026 · MRR, $K</div>
+    <div class="wrap"><canvas id="c3"></canvas></div>
+    <div class="src">CHUNKY BARS · MONO-DEMO · BILLING</div>
+  </div>
+
+  <!-- ══ mono-redesign · dot waffle ══ -->
+  <div class="card">
+    <h2>Where sign-ups come from</h2>
+    <div class="sub">Q2 2026 · every dot = 1% of new accounts</div>
+    <svg id="waffle" viewBox="0 0 380 300" width="100%" style="max-height:320px"></svg>
+    <div class="src">DONUT, REDESIGNED · MONO-REDESIGN · ATTRIBUTION</div>
+  </div>
+
+  <!-- ══ mono-fancy ══ -->
+  <div class="card">
+    <h2>Trees planted, year by year</h2>
+    <div class="sub">reforestation program · thousands of trees</div>
+    <div class="ch" id="forest"></div>
+    <div class="src">PICTORIAL BAR · MONO-FANCY · GREEN OPS</div>
+  </div>
+
+  <div class="card dark">
+    <h2>Who works with whom</h2>
+    <div class="sub">cross-team collaborations · Q2 2026 · line = shared project</div>
+    <div class="ch" id="circular"></div>
+    <div class="src">CIRCULAR GRAPH · MONO-FANCY · PROJECT DB</div>
+  </div>
+
+  <div class="card">
+    <h2>Everything the platform ships</h2>
+    <div class="sub">product areas and capabilities · Jun 2026</div>
+    <div class="ch" id="tree"></div>
+    <div class="src">TREE · MONO-FANCY · PRODUCT CATALOG</div>
+  </div>
+
+  <div class="card">
+    <h2>Campaigns rain down, sign-ups flow</h2>
+    <div class="sub">daily ad spend (from top, $K) vs sign-ups (flow, hundreds) · 30 days</div>
+    <div class="ch" id="rainfall"></div>
+    <div class="src">DUAL AREA · MONO-FANCY · GROWTH + ADS</div>
+  </div>
+
+  <div class="card">
+    <h2>One dataset, three views</h2>
+    <div class="sub">watch the same 12 products fly between views · every 3s</div>
+    <div class="ch" id="morph"></div>
+    <div class="src">SCATTER MORPH · MONO-FANCY · COHORTS</div>
+  </div>
+
+  <!-- ══ mono-fancy2 ══ -->
+  <div class="card">
+    <h2>Where we gained, where we bled</h2>
+    <div class="sub">net accounts per segment · Q2 2026 · churn left, growth right</div>
+    <div class="ch" id="negbar"></div>
+    <div class="src">DIVERGING BAR · MONO-FANCY2 · CRM</div>
+  </div>
+
+  <div class="card dark">
+    <h2>Integrations, pulled into orbit</h2>
+    <div class="sub">force layout · node = monthly syncs · drag a node, the web fights back</div>
+    <div class="ch" id="force"></div>
+    <div class="src">FORCE GRAPH · NEW · INTEGRATION HUB</div>
+  </div>
+
+  <div class="card">
+    <h2>Fifty markets, one wave</h2>
+    <div class="sub">sign-ups per market · bars cascade in · click to replay</div>
+    <div class="ch" id="wave"></div>
+    <div class="src">STAGGER DELAY · MONO-FANCY2 · GROWTH</div>
+  </div>
+
+  <!-- ══ mono-fancy3 ══ -->
+  <div class="card">
+    <h2>Big slice, deep engagement</h2>
+    <div class="sub">angle = share of users · radius = minutes per day · dotted rings at 15 / 30 / 45 min</div>
+    <div class="ch" id="custompie"></div>
+    <div class="src">CUSTOM PIE · MONO-FANCY3 · PRODUCT ANALYTICS</div>
+  </div>
+
+  <div class="card">
+    <h2>Support load, day by day</h2>
+    <div class="sub">tickets per hour · each row is its own axis · dot = volume</div>
+    <div class="ch" id="singleaxis"></div>
+    <div class="src">SINGLE AXIS · MONO-FANCY3 · SUPPORT DESK</div>
+  </div>
+
+  <div class="card">
+    <h2>Response times, spread out</h2>
+    <div class="sub">every dot = one ticket · jitter reveals the pile-up · by priority</div>
+    <div class="ch" id="jitter"></div>
+    <div class="src">JITTER STRIP · MONO-FANCY3 · SUPPORT DESK</div>
+  </div>
+
+  <!-- ══ mono-fancy4 ══ -->
+  <div class="card">
+    <h2>Eight products race for revenue</h2>
+    <div class="sub">MRR by product, $K · 2019 → 2026 · leader wears black · click to replay</div>
+    <div class="ch" id="race"></div>
+    <div class="src">BAR RACE · MONO-FANCY4 · BILLING</div>
+  </div>
+
+  <div class="card">
+    <h2>Concurrent users, streaming</h2>
+    <div class="sub">one new reading every 300ms · window of 50 · click to restart</div>
+    <div class="ch" id="stream"></div>
+    <div class="src">DYNAMIC DATA · MONO-FANCY4 · LIVE OPS</div>
+  </div>
+
+  <div class="card">
+    <h2>H1 revenue, drawn in one stroke</h2>
+    <div class="sub">cumulative ARR · the line draws, the number counts · click to replay</div>
+    <div class="ch" id="stroke"></div>
+    <div class="src">DRAW-IN + COUNTER · MONO-FANCY4 · FINANCE</div>
+  </div>
+
+</div>
+<script>
+// ── shared Mono tokens ──
+const INK='#1C1C1A',PAPER='#F0EFEB',MUTED='#8F8E88',GRID='#DEDDD6';
+const L=['#1C1C1A','#4A4944','#6A6963','#8F8E88','#B0AFA9','#C6C5BF'];
+const LAD=['#1C1C1A','#4A4944','#8F8E88','#B0AFA9','#D8D7D1'];
+const tipLight={backgroundColor:INK,borderWidth:0,textStyle:{color:PAPER,fontFamily:'Inter',fontSize:12},padding:[10,14]};
+const tipDark={backgroundColor:PAPER,borderWidth:0,textStyle:{color:INK,fontFamily:'Inter',fontSize:12},padding:[10,14]};
+const rnd=(i,k)=>((i*73856093)^(k*19349663))%1000/1000; // deterministic
+
+// ── unified reveal: every chart waits to be scrolled into view; click replays.
+//    fn charts manage their own timers via keep(); they're cleared on replay.
+const timers={};
+const obsReveal=(id,fn)=>{
+  const el=document.getElementById(id);
+  const go=()=>{(timers[id]||[]).forEach(clearInterval);timers[id]=[];fn(el)};
+  const io=new IntersectionObserver(es=>{
+    if(es[0].isIntersecting){go();io.disconnect()}
+  },{threshold:.35});
+  io.observe(el);
+  el.style.cursor='pointer';
+  el.addEventListener('click',go);
+};
+const keep=(id,t)=>{(timers[id]=timers[id]||[]).push(t)};
+const eReveal=(id,opt)=>obsReveal(id,el=>{
+  const g=echarts.getInstanceByDom(el)||echarts.init(el);
+  g.clear();g.setOption(opt);
+});
+const cjs={};
+const cReveal=(id,mkCfg)=>obsReveal(id,el=>{
+  cjs[id]?.destroy();
+  cjs[id]=new Chart(el,mkCfg());
+});
+
+Chart.defaults.color=MUTED;
+Chart.defaults.font.family='Inter';
+Chart.defaults.font.size=10.5;
+Chart.defaults.borderColor=GRID;
+Chart.defaults.plugins.legend.display=false;
+Chart.defaults.plugins.tooltip.backgroundColor=INK;
+Chart.defaults.plugins.tooltip.titleColor='#F0EFEB';
+Chart.defaults.plugins.tooltip.bodyColor='#A5A49E';
+Chart.defaults.plugins.tooltip.padding=12;
+Chart.defaults.plugins.tooltip.cornerRadius=12;
+Chart.defaults.plugins.tooltip.displayColors=false;
+
+// ════ mono-demo · 1: floating range capsules ════
+(()=>{
+const ranges=[[195,235],[165,192],[150,232],[73,168],[122,202],[182,192],[138,178],[162,227],[195,235],[228,305],[218,232],[165,232],[118,210],[195,232]];
+cReveal('c1',()=>({
+  type:'bar',
+  data:{labels:ranges.map((_,i)=>i+1),
+    datasets:[{data:ranges,backgroundColor:INK,borderRadius:99,borderSkipped:false,barPercentage:.32}]},
+  options:{
+    maintainAspectRatio:false,
+    animation:{duration:800,easing:'easeOutQuart',delay:c=>c.type==='data'?c.dataIndex*40:0},
+    plugins:{tooltip:{callbacks:{label:i=>i.raw[0]+'K – '+i.raw[1]+'K users'}}},
+    scales:{
+      x:{grid:{display:false},border:{display:false},
+         ticks:{padding:6,font:{size:9},callback:v=>[0,6,13].includes(v)?(v+1)+' FEB':''}},
+      y:{min:50,max:320,grid:{display:false},border:{display:false},
+         ticks:{padding:8,maxTicksLimit:6,callback:v=>v+'K',font:{size:9.5}}},
+    },
+  },
+}));
+})();
+
+// ════ mono-demo · 2: petal rose on dark ════
+(()=>{
+const EMO=[
+  ['Happiness',12],['Awe',10],['Admiration',5],['Surprise',12],
+  ['Sadness',6],['Fear',4],['Anger',2],['Anticipation',5],
+];
+const MAXV=12;
+const petal=v=>{const t=v/MAXV;return t>.8?'#F2F1ED':t>.6?'#E4E3DD':t>.35?'#C9C8C1':'#A8A7A0'};
+eReveal('rose',{
+  animationDuration:1100,animationEasing:'quarticOut',
+  tooltip:{...tipDark,formatter:p=>p.name+' — '+EMO[p.dataIndex][1]},
+  series:[
+    {type:'pie',silent:false,radius:['14%','92%'],center:['50%','50%'],
+     itemStyle:{color:'#32312D',borderRadius:16,borderColor:'#1C1C1A',borderWidth:5},
+     label:{show:false},emphasis:{scale:false},
+     data:EMO.map(([n])=>({name:n,value:1})),z:1},
+    {type:'pie',silent:true,radius:['14%','92%'],center:['50%','50%'],
+     itemStyle:{color:'transparent'},label:{position:'inside'},
+     data:EMO.map(([n,v])=>({name:n,value:1,
+       label:{formatter:`{n|${v}}\n{l|${n}}`,rich:{
+         n:{fontSize:17,fontWeight:700,fontFamily:'Inter',lineHeight:20,color:v>=8?'#1C1C1A':'#C8C7C1'},
+         l:{fontSize:9.5,fontFamily:'Inter',color:v>=8?'#55554F':'#8F8E88'},
+       }}})),z:3},
+    {type:'pie',roseType:'area',silent:true,radius:['14%','88%'],center:['50%','50%'],
+     itemStyle:{borderRadius:14,borderColor:'#1C1C1A',borderWidth:5},label:{show:false},
+     data:EMO.map(([n,v])=>({name:n,value:v,itemStyle:{color:petal(v)}})),z:2},
+  ],
+});
+})();
+
+// ════ mono-demo · 3: chunky bars, values on top ════
+(()=>{
+cReveal('c3',()=>({
+  type:'bar',
+  data:{labels:['STARTER','PRO','TEAM','ENT'],
+    datasets:[{data:[182,486,391,274],
+      backgroundColor:['#C6C5BF',INK,'#8F8E88','#B0AFA9'],
+      borderRadius:{topLeft:99,topRight:99},borderSkipped:false,barPercentage:.52}]},
+  options:{
+    maintainAspectRatio:false,
+    animation:{duration:900,easing:'easeOutQuart',delay:c=>c.type==='data'?c.dataIndex*110:0},
+    plugins:{tooltip:{callbacks:{label:i=>'$'+i.raw+'K MRR'}}},
+    scales:{
+      x:{grid:{display:false},border:{display:false},ticks:{padding:8,font:{size:9,weight:600}}},
+      y:{display:false,suggestedMax:540},
+    },
+  },
+  plugins:[{
+    id:'topValues',
+    afterDatasetsDraw(chart){
+      const {ctx}=chart;
+      chart.getDatasetMeta(0).data.forEach((bar,i)=>{
+        ctx.save();ctx.font='700 13px Inter';ctx.fillStyle=INK;ctx.textAlign='center';
+        ctx.fillText('$'+chart.data.datasets[0].data[i]+'K',bar.x,bar.y-10);ctx.restore();
+      });
+    },
+  }],
+}));
+})();
+
+// ════ mono-redesign · donut → waffle of dots ════
+(()=>{
+const NS='http://www.w3.org/2000/svg';
+const mkEl=(svg,t,a)=>{const n=document.createElementNS(NS,t);for(const k in a)n.setAttribute(k,a[k]);svg.appendChild(n);return n};
+const D=[['Search',34],['Referral',27],['Social',18],['Partners',12],['Paid',9]];
+obsReveal('waffle',s=>{
+  s.innerHTML='';
+  const COLS=10,CELL=21,R=7.5,X0=8,Y0=10;
+  let idx=0;
+  D.forEach(([name,v],g)=>{
+    for(let k=0;k<v;k++){
+      const c=idx+k,row=Math.floor(c/COLS),col=c%COLS;
+      mkEl(s,'circle',{cx:X0+col*CELL+R,cy:Y0+row*CELL+R,r:R,fill:LAD[g],
+        class:'pop',style:`animation-delay:${c*.008+g*.05}s`});
+    }
+    idx+=v;
+  });
+  D.forEach(([name,v],g)=>{
+    const y=26+g*40;
+    mkEl(s,'circle',{cx:246,cy:y,r:6,fill:LAD[g]});
+    const n=mkEl(s,'text',{x:260,y:y-1,'font-size':10.5,'font-weight':600,fill:INK});
+    n.textContent=name;
+    const val=mkEl(s,'text',{x:260,y:y+13,'font-size':15,'font-weight':800,fill:g<2?INK:'#8F8E88'});
+    val.textContent=v+'%';
+  });
+});
+})();
+
+// ════ mono-fancy · 1: pictorial bar forest ════
+(()=>{
+const TREE='path://M20,0 L38,28 L29,28 L40,46 L26,46 L26,58 L14,58 L14,46 L0,46 L11,28 L2,28 Z';
+const years=['2022','2023','2024','2025','2026'];
+const vals=[26,41,63,88,117];
+eReveal('forest',{
+  animationDuration:900,animationEasing:'quarticOut',animationDelay:i=>i*120,
+  tooltip:{...tipLight,formatter:p=>p.name+' — '+vals[p.dataIndex]+'k trees'},
+  grid:{left:44,right:56,top:10,bottom:8},
+  yAxis:{type:'category',data:years,inverse:true,
+    axisLine:{show:false},axisTick:{show:false},
+    axisLabel:{color:MUTED,fontFamily:'Inter',fontSize:10.5,fontWeight:700}},
+  xAxis:{show:false,max:13},
+  series:[{
+    type:'pictorialBar',symbol:TREE,
+    symbolRepeat:true,symbolSize:[17,24],symbolMargin:3,symbolClip:true,
+    data:vals.map((v,i)=>({name:years[i],value:v/10,itemStyle:{color:L[Math.max(0,4-i)]}})),
+    label:{show:true,position:'right',offset:[8,0],
+      color:INK,fontFamily:'Inter',fontSize:12,fontWeight:700,
+      formatter:p=>vals[p.dataIndex]+'k'},
+    z:10,
+  },{
+    type:'pictorialBar',symbol:TREE,
+    symbolRepeat:'fixed',symbolSize:[17,24],symbolMargin:3,symbolClip:true,
+    itemStyle:{color:'#DEDDD6'},data:years.map(()=>13),silent:true,z:5,
+  }],
+});
+})();
+
+// ════ mono-fancy · 2: circular graph on dark ════
+(()=>{
+const teams=[
+  ['Product',52],['Design',38],['Frontend',46],['Backend',44],
+  ['Data',30],['Growth',34],['Support',22],['Ops',18],['Legal',9],['Finance',12],
+];
+const links=[
+  [0,1,9],[0,2,8],[0,3,7],[1,2,9],[2,3,6],[3,4,7],[0,5,6],[5,4,5],
+  [5,6,4],[6,2,3],[7,3,4],[7,9,3],[8,9,2],[0,8,2],[4,2,4],[1,5,3],
+];
+eReveal('circular',{
+  animationDuration:1200,animationEasing:'quarticOut',
+  tooltip:tipDark,
+  series:[{
+    type:'graph',layout:'circular',circular:{rotateLabel:false},
+    left:52,right:52,top:34,bottom:34,
+    data:teams.map(([n,v],i)=>({
+      name:n,value:v,symbolSize:v*.62,
+      itemStyle:{color:i<4?PAPER:i<8?'#8F8E88':'#4A4944',borderWidth:0},
+      label:{show:true,position:'right',distance:7,color:'#B3B0A4',fontFamily:'Inter',fontSize:9.5,fontWeight:600},
+    })),
+    links:links.map(([s,t,w])=>({
+      source:s,target:t,
+      lineStyle:{width:w*.7,color:'#4A4840',opacity:.55,curveness:.28},
+    })),
+    emphasis:{focus:'adjacency',lineStyle:{color:PAPER,opacity:.8}},
+  }],
+});
+})();
+
+// ════ mono-fancy · 3: LR tree ════
+(()=>{
+const b=(name,kids,shade)=>({name,itemStyle:{color:shade},lineStyle:{color:shade},
+  children:kids.map(k=>({name:k,itemStyle:{color:shade},lineStyle:{color:shade}}))});
+eReveal('tree',{
+  animationDuration:1100,animationEasing:'quarticOut',
+  tooltip:tipLight,
+  series:[{
+    type:'tree',layout:'orthogonal',orient:'LR',
+    left:64,right:96,top:8,bottom:8,
+    symbol:'circle',symbolSize:7,
+    initialTreeDepth:2,expandAndCollapse:false,roam:false,
+    itemStyle:{borderWidth:0},
+    lineStyle:{width:1.4,curveness:.5},
+    label:{fontFamily:'Inter',fontSize:10,fontWeight:600,color:'#6A6963',position:'left'},
+    leaves:{label:{position:'right',color:MUTED,fontWeight:500}},
+    data:[{
+      name:'Platform',itemStyle:{color:INK},lineStyle:{color:'#C6C5BF'},
+      label:{fontSize:11.5,color:INK},
+      children:[
+        b('Editor',['Blocks','Tables','Comments','History'],L[0]),
+        b('Automate',['Workflows','Triggers','Webhooks'],L[2]),
+        b('Collaborate',['Spaces','Guests','Mentions'],L[3]),
+        b('Integrate',['API','Slack','GitHub'],L[4]),
+      ],
+    }],
+  }],
+});
+})();
+
+// ════ mono-fancy · 4: rainfall dual area ════
+(()=>{
+const days=Array.from({length:30},(_,i)=>i+1);
+const flow=[42,45,44,48,52,55,53,58,64,62,66,71,69,75,82,79,84,80,86,92,88,95,91,97,104,101,108,105,112,118];
+const rain=[2,0,4,8,3,0,6,12,7,3,9,15,6,2,11,5,8,14,4,9,6,13,3,7,10,5,12,8,15,6];
+eReveal('rainfall',{
+  animationDuration:1200,animationEasing:'quarticOut',
+  tooltip:{...tipLight,trigger:'axis',
+    formatter:p=>`Day ${p[0].axisValue} — spend $${rain[p[0].dataIndex]}K · ${p[0].value} sign-ups`},
+  axisPointer:{link:[{xAxisIndex:'all'}],lineStyle:{color:'#B0AFA9'}},
+  grid:[
+    {left:44,right:14,top:8,height:'26%'},
+    {left:44,right:14,top:'42%',bottom:26},
+  ],
+  xAxis:[
+    {gridIndex:0,type:'category',data:days,axisLine:{show:false},axisTick:{show:false},axisLabel:{show:false},position:'bottom'},
+    {gridIndex:1,type:'category',data:days,axisLine:{show:false},axisTick:{show:false},
+     axisLabel:{color:MUTED,fontFamily:'Inter',fontSize:9.5,interval:6,formatter:v=>'D'+v}},
+  ],
+  yAxis:[
+    {gridIndex:0,inverse:true,max:18,splitLine:{show:false},
+     axisLabel:{color:'#B0AFA9',fontFamily:'Inter',fontSize:9,formatter:'${value}K'},
+     axisLine:{show:false},axisTick:{show:false}},
+    {gridIndex:1,splitLine:{lineStyle:{color:'#DEDDD6'}},
+     axisLabel:{color:MUTED,fontFamily:'Inter',fontSize:9.5},
+     axisLine:{show:false},axisTick:{show:false}},
+  ],
+  series:[
+    {name:'spend',type:'bar',xAxisIndex:0,yAxisIndex:0,data:rain,
+     itemStyle:{color:'#B0AFA9',borderRadius:[0,0,4,4]},barWidth:'55%'},
+    {name:'sign-ups',type:'line',xAxisIndex:1,yAxisIndex:1,data:flow,
+     smooth:.4,symbol:'none',lineStyle:{color:INK,width:2.2},
+     areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,
+       colorStops:[{offset:0,color:'rgba(28,28,26,.22)'},{offset:1,color:'rgba(28,28,26,0)'}]}}},
+  ],
+});
+})();
+
+// ════ mono-fancy · 5: universal transition morph ════
+(()=>{
+const P12=[
+  ['Editor',12,9.1,486],['Boards',18,8.4,391],['Forms',9,8.8,274],
+  ['Docs',15,8.0,318],['Chat',7,7.2,182],['Vault',24,7.8,226],
+  ['Flows',21,8.6,352],['Views',11,7.5,198],['Sync',16,6.9,141],
+  ['Pages',8,8.2,243],['Grid',19,7.1,167],['Hub',13,6.6,118],
+];
+const shade=i=>L[Math.min(5,Math.floor(i/2))];
+const axis={splitLine:{lineStyle:{color:'#DEDDD6'}},axisLine:{show:false},axisTick:{show:false},
+  axisLabel:{color:MUTED,fontFamily:'Inter',fontSize:9.5}};
+const VIEWS=[
+  {opt:{
+    grid:{left:38,right:16,top:30,bottom:30},
+    xAxis:{...axis,type:'value',min:5,max:26,name:'PRICE $',nameTextStyle:{color:'#C6C5BF',fontSize:8.5}},
+    yAxis:{...axis,type:'value',min:6,max:9.6,name:'CSAT',nameTextStyle:{color:'#C6C5BF',fontSize:8.5}},
+    series:[{
+      id:'p',type:'scatter',universalTransition:true,
+      symbolSize:d=>Math.sqrt(d[3])*1.35,
+      data:P12.map((d,i)=>({name:d[0],value:[d[1],d[2],d[0],d[3]],
+        groupId:d[0],itemStyle:{color:shade(i)}})),
+      label:{show:true,position:'top',color:MUTED,fontFamily:'Inter',fontSize:8.5,
+        formatter:p=>p.name},
+    }],
+  }},
+  {opt:{
+    grid:{left:38,right:16,top:30,bottom:44},
+    xAxis:{...axis,type:'category',
+      data:[...P12].sort((a,b)=>b[3]-a[3]).map(d=>d[0]),
+      axisLabel:{...axis.axisLabel,rotate:38,fontSize:8.5}},
+    yAxis:{...axis,type:'value',max:520},
+    series:[{
+      id:'p',type:'bar',universalTransition:true,
+      data:[...P12].sort((a,b)=>b[3]-a[3]).map((d,i)=>({name:d[0],value:d[3],
+        groupId:d[0],itemStyle:{color:shade(i),borderRadius:[6,6,0,0]}})),
+      barCategoryGap:'32%',
+    }],
+  }},
+  {opt:{
+    grid:{left:0,right:0,top:0,bottom:0},
+    xAxis:{show:false,type:'value'},yAxis:{show:false,type:'value'},
+    series:[{
+      id:'p',type:'pie',universalTransition:true,
+      radius:['26%','72%'],center:['50%','50%'],
+      itemStyle:{borderColor:'#F0EFEB',borderWidth:2,borderRadius:6},
+      label:{color:'#6A6963',fontFamily:'Inter',fontSize:9,formatter:'{b}'},
+      labelLine:{lineStyle:{color:'#C6C5BF'}},
+      data:[...P12].sort((a,b)=>b[3]-a[3]).map((d,i)=>({name:d[0],value:d[3],
+        groupId:d[0],itemStyle:{color:shade(i)}})),
+    }],
+  }},
+];
+const base={animationDurationUpdate:1100,animationEasingUpdate:'cubicInOut',tooltip:{...tipLight}};
+obsReveal('morph',el=>{
+  const g=echarts.getInstanceByDom(el)||echarts.init(el);
+  g.clear();
+  let vi=0;
+  g.setOption({...base,...VIEWS[0].opt});
+  keep('morph',setInterval(()=>{
+    vi=(vi+1)%VIEWS.length;
+    g.setOption({...base,...VIEWS[vi].opt},{replaceMerge:['xAxis','yAxis','series']});
+  },3000));
+});
+})();
+
+// ════ mono-fancy2 · 2: diverging bar ════
+(()=>{
+const D=[
+  ['Enterprise',86],['Team',54],['Pro',31],['Starter',12],
+  ['Legacy Basic',-18],['Trial expired',-42],['Free dormant',-67],
+];
+eReveal('negbar',{
+  animationDuration:900,animationEasing:'quarticOut',animationDelay:i=>i*80,
+  tooltip:{...tipLight,formatter:p=>p.name+' — '+(p.value>0?'+':'')+p.value+' accounts'},
+  grid:{left:96,right:52,top:8,bottom:8},
+  xAxis:{type:'value',
+    splitLine:{lineStyle:{color:'#DEDDD6'}},
+    axisLine:{show:false},axisTick:{show:false},axisLabel:{show:false}},
+  yAxis:{type:'category',data:D.map(d=>d[0]),inverse:true,
+    axisLine:{show:false},axisTick:{show:false},
+    axisLabel:{color:'#6A6963',fontFamily:'Inter',fontSize:9.5,fontWeight:600}},
+  series:[{
+    type:'bar',barWidth:16,
+    data:D.map(([n,v])=>({name:n,value:v,
+      itemStyle:{color:v>0?INK:'#B0AFA9',
+        borderRadius:v>0?[0,9,9,0]:[9,0,0,9]}})),
+    label:{show:true,fontFamily:'Inter',fontSize:11,fontWeight:700,
+      position:'outside',
+      formatter:p=>(p.value>0?'+':'')+p.value,color:INK},
+    markLine:{symbol:'none',silent:true,label:{show:false},
+      lineStyle:{color:'#8F8E88',width:1.5},
+      data:[{xAxis:0}]},
+  }],
+});
+})();
+
+// ════ force graph on dark: the network shakes itself into place ════
+// (replaced the axis-break bar — bars must never lie about length; house rule)
+(()=>{
+const hubs=[['Core API',52,0]];
+const apps=[
+  ['Slack',34,1],['GitHub',30,1],['Figma',22,1],['Notion',26,1],
+  ['Linear',18,1],['Drive',16,1],['Zoom',10,2],['Jira',14,2],
+  ['Sheets',12,2],['Intercom',8,2],['Stripe',20,1],['Segment',9,2],
+];
+const nodes=[...hubs,...apps];
+const links=[
+  ...apps.map((a,i)=>({source:a[0],target:'Core API',
+    lineStyle:{width:Math.max(.8,a[1]*.09),color:'#4A4840',opacity:.6}})),
+  // a few app-to-app side roads
+  {source:'Slack',target:'GitHub',lineStyle:{width:1.2,color:'#3A3934',opacity:.5}},
+  {source:'GitHub',target:'Linear',lineStyle:{width:1.2,color:'#3A3934',opacity:.5}},
+  {source:'Figma',target:'Notion',lineStyle:{width:1,color:'#3A3934',opacity:.5}},
+  {source:'Stripe',target:'Sheets',lineStyle:{width:1,color:'#3A3934',opacity:.5}},
+];
+eReveal('force',{
+  animationDuration:1200,animationEasing:'quarticOut',
+  tooltip:{...tipDark,formatter:p=>p.dataType==='node'?p.name+' — '+p.value+'k syncs/mo':''},
+  series:[{
+    type:'graph',layout:'force',
+    force:{repulsion:220,edgeLength:[36,110],gravity:.12,friction:.18},
+    roam:false,draggable:true,
+    left:14,right:14,top:14,bottom:14,
+    data:nodes.map(([n,v,tier])=>({
+      name:n,value:v,symbolSize:8+v*.75,
+      itemStyle:{color:tier===0?PAPER:tier===1?'#B3B0A4':'#6A6963'},
+      label:{show:true,position:'right',distance:6,
+        color:tier===0?PAPER:'#8F8E88',fontFamily:'Inter',
+        fontSize:tier===0?10.5:9,fontWeight:tier===0?800:600},
+    })),
+    links,
+    emphasis:{focus:'adjacency',lineStyle:{color:PAPER,opacity:.85}},
+  }],
+});
+})();
+
+// ════ mono-fancy2 · 4: stagger wave ════
+(()=>{
+const n=50;
+const vals=Array.from({length:n},(_,i)=>
+  Math.round(30+55*Math.sin(i/7.5)+18*Math.sin(i/2.6)+(i%5)*3+28));
+eReveal('wave',{
+  tooltip:{...tipLight,formatter:p=>'Market '+(p.dataIndex+1)+' — '+p.value},
+  grid:{left:36,right:10,top:14,bottom:24},
+  xAxis:{type:'category',data:vals.map((_,i)=>i+1),
+    axisLine:{show:false},axisTick:{show:false},
+    axisLabel:{color:MUTED,fontFamily:'Inter',fontSize:9,interval:9}},
+  yAxis:{type:'value',
+    splitLine:{lineStyle:{color:'#DEDDD6'}},
+    axisLine:{show:false},axisTick:{show:false},
+    axisLabel:{color:MUTED,fontFamily:'Inter',fontSize:9.5}},
+  series:[{
+    type:'bar',barCategoryGap:'26%',
+    data:vals.map((v,i)=>({value:v,
+      itemStyle:{color:L[Math.min(5,Math.floor((120-v)/16))],borderRadius:[4,4,0,0]}})),
+    animationDelay:i=>i*36,
+    animationDuration:640,animationEasing:'elasticOut',
+  }],
+  animationDurationUpdate:640,
+  animationDelayUpdate:i=>i*36,
+});
+})();
+
+// ════ mono-fancy3 · 1: custom double-encoded pie ════
+(()=>{
+const D=[
+  ['Editor',34,42],['Boards',22,31],['Docs',18,38],
+  ['Chat',12,11],['Automations',8,24],['Other',6,7],
+];
+const SCALE=45;
+const TAU=Math.PI*2;
+const byShare=[...D].sort((a,b)=>b[1]-a[1]);
+const minsDesc=D.map(d=>d[2]).sort((a,b)=>b-a);
+let acc=0;
+const slices=byShare.map(([n,share,mins])=>{
+  const p0=-Math.PI/2+acc/100*TAU, p1=-Math.PI/2+(acc+share)/100*TAU;
+  acc+=share;
+  return {n,share,mins,p0,p1,color:L[minsDesc.indexOf(mins)]};
+});
+eReveal('custompie',{
+  animationDuration:900,animationEasing:'cubicOut',animationDelay:i=>i*130,
+  tooltip:{...tipLight,formatter:p=>{
+    const s=slices[p.dataIndex];
+    return s.n+' — '+s.share+'% of users · '+s.mins+' min/day';
+  }},
+  xAxis:{show:false,min:-1,max:1},
+  yAxis:{show:false,min:-1,max:1},
+  grid:{left:0,right:0,top:0,bottom:0},
+  series:[{
+    type:'custom',
+    renderItem:(params,api)=>{
+      const s=slices[params.dataIndex];
+      const cx=api.getWidth()/2, cy=api.getHeight()/2+6;
+      const R=Math.min(api.getWidth(),api.getHeight())*.37;
+      const r0=R*.24;
+      const rOf=m=>r0+(R-r0)*m/SCALE;
+      const pm=(s.p0+s.p1)/2, lr=R+14;
+      const cos=Math.cos(pm);
+      const kids=[];
+      if(params.dataIndex===0){
+        [15,30,45].forEach(m=>kids.push({type:'circle',
+          shape:{cx,cy,r:rOf(m)},
+          style:{fill:'none',stroke:'#D8D6CE',lineWidth:1,lineDash:[3,4]}}));
+      }
+      kids.push({type:'sector',
+        shape:{cx,cy,r0,r:rOf(s.mins),startAngle:s.p0,endAngle:s.p1,clockwise:true,cornerRadius:5},
+        style:{fill:s.color,stroke:PAPER,lineWidth:3},
+        enterFrom:{shape:{r:r0}}});
+      kids.push({type:'text',style:{
+        x:cx+cos*lr, y:cy+Math.sin(pm)*lr,
+        text:s.n+'  '+s.share+'% · '+s.mins+'m',
+        font:'600 10px Inter',fill:'#55544E',
+        align:Math.abs(cos)<.25?'center':(cos>0?'left':'right'),
+        verticalAlign:'middle'},
+        enterFrom:{style:{opacity:0}}});
+      return {type:'group',children:kids};
+    },
+    data:slices.map(s=>s.share),
+  }],
+});
+})();
+
+// ════ mono-fancy3 · 3: single-axis small multiples ════
+(()=>{
+const days=['MON','TUE','WED','THU','FRI','SAT','SUN'];
+const hours=Array.from({length:24},(_,i)=>i);
+const mkRow=di=>hours.map(h=>{
+  const workday=di<5, core=h>=9&&h<=17;
+  let v=Math.round((workday&&core?6+5*Math.sin((h-9)/8*Math.PI):0)+((h+di)%5===0?2:0)+(h>=22||h<=5?0:1));
+  return [h,v];
+}).filter(d=>d[1]>0);
+eReveal('singleaxis',{
+  animationDuration:500,animationEasing:'backOut',
+  tooltip:{...tipLight,formatter:p=>days[p.seriesIndex]+' '+String(p.value[0]).padStart(2,'0')+':00 — '+p.value[1]+' tickets'},
+  title:days.map((d,i)=>({
+    text:d,textBaseline:'middle',top:(i+.5)*100/7-1+'%',left:0,
+    textStyle:{fontSize:9,fontWeight:700,fontFamily:'Inter',color:MUTED},
+  })),
+  singleAxis:days.map((d,i)=>({
+    left:52,right:14,type:'category',boundaryGap:false,
+    data:hours.map(h=>String(h).padStart(2,'0')),
+    top:i*100/7+6+'%',height:100/7-8+'%',
+    axisLine:{show:false},axisTick:{show:false},
+    axisLabel:{show:i===6,color:MUTED,fontFamily:'Inter',fontSize:8.5,interval:3},
+    splitLine:{show:false},
+  })),
+  series:days.map((d,i)=>({
+    singleAxisIndex:i,coordinateSystem:'singleAxis',
+    type:'scatter',
+    data:mkRow(i),
+    symbolSize:dd=>dd[1]*2.6,
+    itemStyle:{color:i<5?L[Math.min(4,i)]:'#C6C5BF'},
+    animationDelay:di=>i*160+di*14,
+  })),
+});
+})();
+
+// ════ mono-fancy3 · 4: jitter strip ════
+(()=>{
+const cats=['P0 CRITICAL','P1 HIGH','P2 NORMAL','P3 LOW'];
+const mkPts=(ci,n,median,spread,outliers)=>{
+  const pts=[];
+  for(let i=0;i<n;i++){
+    const u=rnd(i+1,ci+1), v=rnd(i+7,ci+3);
+    let x=median+ (u-.5)*spread*2 + (v>.5?u*spread*.6:0);
+    if(i<outliers) x=median+spread*2.2+u*spread*3;
+    const jy=ci+ (rnd(i+13,ci+5)-.5)*.58;
+    pts.push([Math.max(.2,x),jy]);
+  }
+  return pts;
+};
+const groups=[
+  mkPts(0,38,.8,.5,2),
+  mkPts(1,64,2.4,1.1,3),
+  mkPts(2,110,6.5,2.4,4),
+  mkPts(3,72,14,4.5,3),
+];
+const flat=groups.flat();
+eReveal('jitter',{
+  animationDuration:450,animationEasing:'cubicOut',
+  animationDelay:i=>i<flat.length?Math.round(flat[i][1])*260+(i%37)*9:0,
+  tooltip:{...tipLight,formatter:p=>cats[Math.round(p.value[1])]+' — '+p.value[0].toFixed(1)+'h to resolve'},
+  grid:{left:86,right:16,top:14,bottom:30},
+  xAxis:{type:'value',name:'HOURS TO RESOLVE',nameTextStyle:{color:'#C6C5BF',fontSize:8.5},
+    splitLine:{lineStyle:{color:'#DEDDD6'}},
+    axisLine:{show:false},axisTick:{show:false},
+    axisLabel:{color:MUTED,fontFamily:'Inter',fontSize:9.5,formatter:v=>v+'h'}},
+  yAxis:{type:'value',min:-.6,max:3.6,inverse:true,
+    splitLine:{show:false},axisLine:{show:false},axisTick:{show:false},
+    axisLabel:{show:false}},
+  series:[{
+    type:'scatter',
+    data:flat,
+    symbolSize:7,
+    itemStyle:{color:p=>L[Math.round(p.value[1])],opacity:.62},
+  },{
+    type:'scatter',silent:true,symbolSize:0,
+    data:cats.map((c,i)=>({value:[0,i],label:{show:true,position:'left',offset:[-6,0],
+      color:'#6A6963',fontFamily:'Inter',fontSize:9,fontWeight:700,formatter:c}})),
+  }],
+});
+})();
+
+// ════ mono-fancy4 · 1: bar race ════
+(()=>{
+const P=['Editor','Boards','Docs','Chat','Flows','Vault','Pages','Sync'];
+const YEARS=[2019,2020,2021,2022,2023,2024,2025,2026];
+const vals=[P.map((_,i)=>[42,38,30,26,18,14,10,8][i])];
+for(let y=1;y<YEARS.length;y++)
+  vals.push(vals[y-1].map((v,i)=>v*(1.04+rnd(i+1,y+1)*.5)));
+obsReveal('race',el=>{
+  const g=echarts.getInstanceByDom(el)||echarts.init(el);
+  g.clear();
+  let step=0;
+  const frame=()=>{
+    const row=vals[step];
+    const rank=[...row].map((v,i)=>[v,i]).sort((a,b)=>b[0]-a[0]).map(d=>d[1]);
+    g.setOption({
+      animationDuration:0,animationDurationUpdate:950,animationEasingUpdate:'linear',
+      tooltip:{...tipLight,valueFormatter:v=>'$'+Math.round(v)+'K'},
+      grid:{left:64,right:64,top:8,bottom:8},
+      xAxis:{type:'value',max:'dataMax',
+        splitLine:{show:false},axisLine:{show:false},axisTick:{show:false},axisLabel:{show:false}},
+      yAxis:{type:'category',data:P,inverse:true,max:7,
+        animationDuration:300,animationDurationUpdate:300,
+        axisLine:{show:false},axisTick:{show:false},
+        axisLabel:{color:'#6A6963',fontFamily:'Inter',fontSize:9.5,fontWeight:600}},
+      series:[{
+        type:'bar',realtimeSort:true,barCategoryGap:'32%',
+        data:row.map((v,i)=>({value:v,
+          itemStyle:{color:L[Math.min(5,rank.indexOf(i))],borderRadius:99}})),
+        label:{show:true,position:'right',valueAnimation:true,
+          fontFamily:'Inter',fontSize:12,fontWeight:800,color:INK,
+          formatter:p=>'$'+Math.round(p.value)+'K'},
+      }],
+      graphic:[{id:'yr',type:'text',right:18,bottom:14,
+        style:{text:YEARS[step],font:'800 44px Inter',fill:'#DEDDD6'}}],
+    });
+    step=(step+1)%YEARS.length;
+  };
+  frame();
+  keep('race',setInterval(frame,1150));
+});
+})();
+
+// ════ mono-fancy4 · 2: dynamic data stream ════
+(()=>{
+const WIN=50;
+obsReveal('stream',el=>{
+  const g=echarts.getInstanceByDom(el)||echarts.init(el);
+  g.clear();
+  let t=0,v=64;
+  const data=[];
+  for(;t<WIN;t++){v=Math.max(30,v+(rnd(t+1,7)-.48)*9);data.push(Math.round(v))}
+  const draw=()=>g.setOption({
+    animation:true,animationDuration:0,animationDurationUpdate:260,animationEasingUpdate:'linear',
+    tooltip:{...tipLight,valueFormatter:x=>x+'k users'},
+    grid:{left:14,right:58,top:44,bottom:20},
+    xAxis:{type:'category',data:data.map((_,i)=>t-WIN+i),boundaryGap:false,
+      axisLine:{show:false},axisTick:{show:false},axisLabel:{show:false},splitLine:{show:false}},
+    yAxis:{show:false,min:20,max:130},
+    series:[{
+      type:'line',data:[...data],smooth:.45,symbol:'none',
+      lineStyle:{color:INK,width:2.4},
+      endLabel:{show:true,fontFamily:'Inter',fontSize:14,fontWeight:800,color:INK,
+        formatter:p=>p.value+'k'},
+      areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,
+        colorStops:[{offset:0,color:'rgba(28,28,26,.16)'},{offset:1,color:'rgba(28,28,26,0)'}]}},
+    }],
+    graphic:[{type:'group',left:16,top:10,children:[
+      {type:'circle',shape:{cx:5,cy:5,r:4},style:{fill:'#4A4944'}},
+      {type:'text',style:{text:'LIVE',x:16,y:0,font:'800 11px Inter',fill:INK}},
+    ]}],
+  });
+  draw();
+  keep('stream',setInterval(()=>{
+    v=Math.max(30,Math.min(125,v+(rnd(t+1,7)-.48)*9));
+    data.push(Math.round(v));data.shift();t++;
+    draw();
+  },300));
+});
+})();
+
+// ════ mono-fancy4 · 3: draw-in + counter ════
+(()=>{
+const days=Array.from({length:180},(_,i)=>i);
+const daily=days.map(i=>14+10*Math.sin(i/29)+i*.12+rnd(i+1,3)*6);
+const cum=[];daily.reduce((a,b,i)=>(cum[i]=a+b,cum[i]),0);
+const TOTAL=cum[cum.length-1];
+const DUR=2600;
+let gen=0; // replay guard: only the latest counter loop may write
+obsReveal('stroke',el=>{
+  const g=echarts.getInstanceByDom(el)||echarts.init(el);
+  g.clear();
+  gen++;const my=gen;
+  g.setOption({
+    animationDuration:DUR,animationEasing:'cubicOut',
+    tooltip:{show:false},
+    grid:{left:14,right:20,top:64,bottom:24},
+    xAxis:{type:'category',data:days,boundaryGap:false,
+      axisLine:{show:false},axisTick:{show:false},splitLine:{show:false},
+      axisLabel:{color:'#C6C5BF',fontFamily:'Inter',fontSize:9,fontWeight:600,
+        interval:29,formatter:i=>['JAN','FEB','MAR','APR','MAY','JUN'][Math.floor(i/30)]||''}},
+    yAxis:{show:false,max:TOTAL*1.06},
+    series:[{
+      type:'line',data:cum.map(x=>Math.round(x)),smooth:.2,symbol:'none',
+      lineStyle:{color:INK,width:2.6},
+      areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,
+        colorStops:[{offset:0,color:'rgba(28,28,26,.14)'},{offset:1,color:'rgba(28,28,26,0)'}]}},
+    }],
+  });
+  const t0=performance.now();
+  const tick=()=>{
+    if(my!==gen)return;
+    const p=Math.min(1,(performance.now()-t0)/DUR);
+    const eased=1-Math.pow(1-p,3);
+    const val=(TOTAL*eased/1000).toFixed(2);
+    g.setOption({graphic:[{id:'kpi',type:'group',left:16,top:8,children:[
+      {type:'text',style:{text:'$'+val+'M',font:'800 32px Inter',fill:INK}},
+      {type:'text',style:{text:'ARR · H1 2026',y:38,font:'600 10px Inter',fill:'#8F8E88'}},
+    ]}]});
+    if(p<1)requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+});
+})();
+
+addEventListener('resize',()=>{
+  ['rose','forest','circular','tree','rainfall','morph','negbar','force','wave',
+   'custompie','singleaxis','jitter','race','stream','stroke']
+    .forEach(id=>echarts.getInstanceByDom(document.getElementById(id))?.resize());
+});
+</script>
+</body>
+</html>

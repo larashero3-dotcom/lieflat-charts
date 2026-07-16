@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>How Tech Workers Are Feeling in 2026 · 8 charts, Mono</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#F0EFEB;--dark:#1C1C1A;--ink:#1C1C1A;--muted:#8F8E88;--faint:#C6C5BF;--grid:#DEDDD6}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--ink);padding:40px;-webkit-font-smoothing:antialiased}
+  .pagehead{max-width:1100px;margin:0 auto 26px;padding:0 4px}
+  .pagehead h1{font-size:22px;letter-spacing:-.02em;font-weight:800}
+  .pagehead p{font-size:12px;color:#8F8E88;margin-top:5px;line-height:1.7}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:1100px;margin:0 auto}
+  .card{background:var(--bg);border-radius:24px;padding:28px 28px 20px}
+  .card.dark{background:var(--dark);color:#F0EFEB}
+  .card.dark .sub{color:#8F8E88}
+  .card.dark .src{color:#55554F}
+  .card.wide{grid-column:1/-1}
+  h2{font-weight:700;font-size:16.5px;letter-spacing:-.02em;margin-bottom:3px}
+  .sub{font-size:11.5px;color:var(--muted);margin-bottom:14px}
+  .src{font-size:9.5px;color:var(--faint);margin-top:10px;letter-spacing:.08em;font-weight:500}
+  svg{width:100%;max-height:330px;display:block;margin:0 auto}
+  svg text{font-family:'Inter',sans-serif}
+  .pop{transform-box:fill-box;transform-origin:center;animation:pop .5s cubic-bezier(.2,.7,.3,1.3) both}
+  @keyframes pop{from{transform:scale(0)}to{transform:none}}
+  .fade{animation:fade .9s ease both}
+  @keyframes fade{from{opacity:0}}
+  .draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1s cubic-bezier(.4,0,.2,1) both}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  @media (prefers-reduced-motion:reduce){
+    .pop,.fade{animation:none}
+    .draw{animation:none;stroke-dasharray:none;stroke-dashoffset:0}
+  }
+</style>
+</head>
+<body>
+<div class="pagehead">
+  <h1>How tech workers are feeling in 2026 · eight charts</h1>
+  <p>Data: Lenny's Newsletter annual tech worker sentiment survey (Jul 2026). Every chart is a gallery template with only its DATA swapped — one unit is always one real person or one real answer. Scroll to draw; click any chart to replay.</p>
+</div>
+<div class="grid2">
+
+  <!-- 1 · type colonnade ← AI identity -->
+  <div class="card">
+    <h2>What AI did to a hundred identities</h2>
+    <div class="sub">one hairline = one person in a hundred · each thread joins the identity they chose · rounding ate 2 people</div>
+    <svg id="colonnade" viewBox="0 0 400 330" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="src">TYPE COLONNADE · AI IDENTITY, 5 NUMBERS</div>
+  </div>
+
+  <!-- 2 · ballot tally ← the contradiction -->
+  <div class="card">
+    <h2>Love the work, worn out, losing faith</h2>
+    <div class="sub">one tick = one person in a hundred · same respondents, three different questions</div>
+    <svg id="tally" viewBox="0 0 400 320" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="src">BALLOT TALLY · ENJOYMENT / BURNOUT / OPTIMISM, 3 NUMBERS</div>
+  </div>
+
+  <!-- 3 · hundred faces ← layoff worry, wide -->
+  <div class="card wide">
+    <h2>How worried is the room</h2>
+    <div class="sub">one face = one person in a hundred · the mouth is the data · dark ink piles up where worry does</div>
+    <svg id="faces" viewBox="0 0 720 340" preserveAspectRatio="xMidYMid meet" style="max-height:380px"></svg>
+    <div class="src">HUNDRED FACES · LAYOFF WORRY, 5 NUMBERS</div>
+  </div>
+
+  <!-- 4 · tick rows ← fears -->
+  <div class="card">
+    <h2>What they fear, tick by tick</h2>
+    <div class="sub">one tick = one person in a hundred who picked it · they could pick several · sorted by dread</div>
+    <svg id="fears" viewBox="0 0 400 320" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="src">TICK ROWS · WORKPLACE FEARS, 4 NUMBERS</div>
+  </div>
+
+  <!-- 5 · hourglass stream ← ambivalence narrowing -->
+  <div class="card">
+    <h2>Ambivalence, layer by layer</h2>
+    <div class="sub">one tick = one person in a hundred · everyone, then both-feelings, then the openly conflicted</div>
+    <svg id="hourglass" viewBox="0 0 400 330" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="src">HOURGLASS STREAM · FEELINGS ABOUT AI, 3 NUMBERS</div>
+  </div>
+
+  <!-- 6 · brand spectrum ← NPS by seniority -->
+  <div class="card">
+    <h2>Who would still recommend it</h2>
+    <div class="sub">each rank sits between NEVER and GLADLY · the pale ribbon slides left as you climb down</div>
+    <svg id="spectrum" viewBox="0 0 460 300" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="src">BRAND SPECTRUM · NPS BY SENIORITY, 3 NUMBERS</div>
+  </div>
+
+  <!-- 7 · radial convergence ← industry in one sentence -->
+  <div class="card">
+    <h2>A hundred answers, five ways to say it</h2>
+    <div class="sub">every rim node = one answer · threads bundle into the theme it landed in · chaos pulls hardest</div>
+    <svg id="converge" viewBox="0 0 400 320" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="src">RADIAL CONVERGENCE · "THE INDUSTRY IN A SENTENCE", 5 THEMES</div>
+  </div>
+
+  <!-- 8 · ballot rings ← AI helping at work, wide finale -->
+  <div class="card wide">
+    <h2>Is AI actually making them better?</h2>
+    <div class="sub">one tick = one person in a hundred · inked = better at their job because of AI · the right dial lives inside the left</div>
+    <svg id="rings" viewBox="0 0 720 300" preserveAspectRatio="xMidYMid meet" style="max-height:340px"></svg>
+    <div class="src">BALLOT RINGS · AI PRODUCTIVITY, 2 NUMBERS</div>
+  </div>
+
+</div>
+<script>
+// ── shared Mono tokens ──
+const INK='#1C1C1A',PAPER='#F0EFEB',MUTED='#8F8E88',GRID='#DEDDD6';
+const NS='http://www.w3.org/2000/svg';
+const el=(p,t,a)=>{const n=document.createElementNS(NS,t);for(const k in a)n.setAttribute(k,a[k]);p.appendChild(n);return n};
+const txt=(p,a,s)=>{const n=el(p,'text',a);n.textContent=s;return n};
+const tip=(n,s)=>{const t=document.createElementNS(NS,'title');t.textContent=s;n.appendChild(t)};
+const rnd=(i,k)=>Math.abs(((i*73856093)^(k*19349663))%1000)/1000; // deterministic
+const D2R=Math.PI/180;
+const pol=(cx,cy,r,deg)=>[cx+r*Math.cos(deg*D2R),cy+r*Math.sin(deg*D2R)];
+const obsReveal=(id,fn)=>{
+  const n=document.getElementById(id);
+  const go=()=>{n.innerHTML='';fn(n)};
+  const io=new IntersectionObserver(es=>{if(es[0].isIntersecting){go();io.disconnect()}},{threshold:.3});
+  io.observe(n);
+  n.style.cursor='pointer';
+  n.addEventListener('click',go);
+};
+
+// ════ 1 · type colonnade ════ AI identity: 49/27.4/13.9/5/3.2 → 49+27+14+5+3 = 98,
+// rounding ate 2 people — the footer says so instead of inventing threads.
+(()=>{
+const TEAM=[['AMPLIFIED','I can do more, and better',49],['REDEFINED','changing shape, not clearly good or bad',27],['DESTABILIZED','less sure what is still mine',14],['DIMINISHED','I feel less essential',5],['UNCHANGED','',3]];
+obsReveal('colonnade',s=>{
+  const N=98;
+  const teamY=j=>60+j*56,repoY=i=>14+i*2.9;
+  const blocks=TEAM.flatMap(([name,,n],h)=>Array(n).fill(h));
+  for(let i=0;i<N;i++){
+    const yi=repoY(i),j=blocks[i],yj=teamY(j);
+    el(s,'rect',{x:64,y:yi-1,width:4,height:2,fill:'#B0AFA9',
+      class:'fade',style:`animation-delay:${i*.006}s`});
+    if(i%10===0)txt(s,{x:58,y:yi+2.5,'font-size':5.5,fill:'#C6C5BF','text-anchor':'end',
+      class:'fade',style:`animation-delay:${i*.006}s`},i+1);
+    el(s,'path',{d:`M70 ${yi} C 160 ${yi} 190 ${yj} 262 ${yj}`,fill:'none',
+      stroke:'#A8A7A0','stroke-width':.6,opacity:.6,pathLength:1,
+      class:'draw',style:`animation-delay:${.2+i*.008}s;animation-duration:.7s`});
+  }
+  TEAM.forEach(([name,desc,n],j)=>{
+    const y=teamY(j);
+    const hub=el(s,'circle',{cx:267,cy:y,r:Math.sqrt(n)*1.7,fill:n>=27?INK:n>=14?'#6A6963':'#B0AFA9',
+      class:'pop',style:`animation-delay:${.6+j*.05}s`});
+    tip(hub,`${name} — ${n} in 100`);
+    txt(s,{x:280+Math.sqrt(n)*1.2,y:y+1,'font-size':8,'font-weight':800,fill:'#1C1C1A',
+      'letter-spacing':'.04em',class:'fade',style:`animation-delay:${.65+j*.05}s`},`${name} · ${n}`);
+    if(desc)txt(s,{x:280+Math.sqrt(n)*1.2,y:y+11,'font-size':5.8,'font-weight':500,fill:'#8F8E88',
+      class:'fade',style:`animation-delay:${.7+j*.05}s`},desc);
+  });
+  txt(s,{x:200,y:322,'font-size':7,'font-weight':600,fill:'#B0AFA9','text-anchor':'middle',
+    'letter-spacing':'.1em',class:'fade',style:'animation-delay:1.2s'},
+    'ONE THREAD = ONE PERSON · 49+27+14+5+3 = 98 · ROUNDING ATE THE OTHER TWO');
+});
+})();
+
+// ════ 2 · ballot tally ════ same respondents, three questions:
+// still enjoy the work 79 · significantly burned out 56 · optimistic 49.
+(()=>{
+const ASK=[['STILL ENJOY THE WORK (MODERATELY+)',79],['SIGNIFICANTLY BURNED OUT',56],['OPTIMISTIC ABOUT THEIR CAREER',49]];
+obsReveal('tally',s=>{
+  ASK.forEach(([name,v],i)=>{
+    const base=88+i*78;
+    txt(s,{x:28,y:base-30,'font-size':7.5,'font-weight':700,fill:'#6A6963',
+      'letter-spacing':'.06em',class:'fade',style:`animation-delay:${i*.1}s`},name);
+    el(s,'line',{x1:28,y1:base,x2:372,y2:base,stroke:GRID,'stroke-width':.6,
+      class:'fade',style:`animation-delay:${i*.1}s`});
+    for(let k=0;k<100;k++){
+      const x=28+k*3.44,picked=k<v;
+      const h=picked?14+rnd(k+1,i+2)*6:5+rnd(k+1,i+5)*2.5;
+      el(s,'line',{x1:x,y1:base,x2:x,y2:base-h,
+        stroke:picked?INK:'#CFCEC7','stroke-width':picked?.9:.55,
+        class:'fade',style:`animation-delay:${i*.1+k*.006}s`});
+      if(k%10===0)el(s,'circle',{cx:x,cy:base+4.5,r:.8,fill:'#C6C5BF',
+        class:'fade',style:`animation-delay:${i*.1+k*.006}s`});
+    }
+    const lab=txt(s,{x:28+(v-1)*3.44+9,y:base-13,'font-size':11.5,'font-weight':800,fill:INK,
+      style:`paint-order:stroke;stroke:${PAPER};stroke-width:3px;animation-delay:${.5+i*.1}s`,
+      class:'fade'},v);
+    tip(lab,`${v} in 100`);
+  });
+  txt(s,{x:200,y:314,'font-size':7,'font-weight':600,fill:'#B0AFA9','text-anchor':'middle',
+    'letter-spacing':'.1em',class:'fade',style:'animation-delay:1.1s'},
+    'ONE TICK = ONE PERSON · SAME RESPONDENTS · ALL THREE CAN BE TRUE AT ONCE');
+});
+})();
+
+// ════ 3 · hundred faces ════ layoff worry 28/31/21/12/8 = 100. One face = one person;
+// mouth curve deepens with worry, grey ladder fills in step — ink piles up where worry does.
+(()=>{
+const SEG=[
+  ['NOT AT ALL',28,PAPER,INK,-2.6],      // fill, feature color, mouth curve
+  ['SLIGHTLY',31,'#DEDDD6',INK,-.6],
+  ['MODERATELY',21,'#B0AFA9',INK,1.4],
+  ['VERY',12,'#55554F',PAPER,2.6],
+  ['EXTREMELY',8,INK,PAPER,3.6],
+];
+obsReveal('faces',s=>{
+  const COLS=20,cell=26,R=8.6,X0=98,Y0=52;
+  let idx=0;
+  SEG.forEach(([name,n,fill,fg,curve],si)=>{
+    for(let k=0;k<n;k++,idx++){
+      const col=idx%COLS,row=Math.floor(idx/COLS);
+      const x=X0+col*cell,y=Y0+row*cell;
+      const g=el(s,'g',{class:'pop',style:`animation-delay:${idx*.008}s`});
+      el(g,'circle',{cx:x,cy:y,r:R,fill,stroke:INK,'stroke-width':1});
+      el(g,'circle',{cx:x-3,cy:y-2.4,r:1,fill:fg});
+      el(g,'circle',{cx:x+3,cy:y-2.4,r:1,fill:fg});
+      if(si===4){
+        el(g,'line',{x1:x-4.4,y1:y-5.6,x2:x-1.8,y2:y-4.4,stroke:fg,'stroke-width':.9});
+        el(g,'line',{x1:x+4.4,y1:y-5.6,x2:x+1.8,y2:y-4.4,stroke:fg,'stroke-width':.9});
+      }
+      const my=y+3.2;
+      el(g,'path',{d:`M ${x-3.4} ${my} Q ${x} ${my+curve} ${x+3.4} ${my}`,
+        fill:'none',stroke:fg,'stroke-width':1});
+      tip(g,`${name} — one of ${n} in 100`);
+    }
+  });
+  // top legend: shares with names
+  let lx=98;
+  SEG.forEach(([name,n],si)=>{
+    txt(s,{x:lx,y:24,'font-size':8,'font-weight':800,fill:INK,
+      class:'fade',style:`animation-delay:${.2+si*.06}s`},n+'%');
+    txt(s,{x:lx+26,y:24,'font-size':6.6,'font-weight':600,fill:MUTED,
+      'letter-spacing':'.06em',class:'fade',style:`animation-delay:${.2+si*.06}s`},name);
+    lx+=Math.max(88,name.length*5.4+40);
+  });
+  // bracket: everyone past the first 28 carries some worry
+  const bx=98+20*26-6;
+  el(s,'line',{x1:bx+14,y1:Y0+26-13,x2:bx+14,y2:Y0+4*26+13,stroke:'#8F8E88','stroke-width':1,
+    class:'fade',style:'animation-delay:1s'});
+  [[Y0+26-13],[Y0+4*26+13]].forEach(([yy])=>
+    el(s,'line',{x1:bx+9,y1:yy,x2:bx+14,y2:yy,stroke:'#8F8E88','stroke-width':1,
+      class:'fade',style:'animation-delay:1s'}));
+  txt(s,{x:bx+22,y:Y0+2.5*26-6,'font-size':10.5,'font-weight':800,fill:INK,
+    class:'fade',style:'animation-delay:1.1s'},'72%');
+  txt(s,{x:bx+22,y:Y0+2.5*26+6,'font-size':6.6,'font-weight':600,fill:MUTED,
+    'letter-spacing':'.06em',class:'fade',style:'animation-delay:1.1s'},'CARRY SOME');
+  txt(s,{x:bx+22,y:Y0+2.5*26+15,'font-size':6.6,'font-weight':600,fill:MUTED,
+    'letter-spacing':'.06em',class:'fade',style:'animation-delay:1.1s'},'WORRY');
+  txt(s,{x:360,y:330,'font-size':7,'font-weight':600,fill:'#B0AFA9','text-anchor':'middle',
+    'letter-spacing':'.12em',class:'fade',style:'animation-delay:1.2s'},
+    'ONE FACE = ONE PERSON IN A HUNDRED · THE MOUTH IS THE DATA · 28+31+21+12+8 = 100');
+});
+})();
+
+// ════ 4 · tick rows ════ fears (multi-select): one tick = one person who picked it.
+// Horizontal queues, labels stay level — readable at any size.
+(()=>{
+const D=[['MORE FOR SAME PAY',51],['UNSUSTAINABLE PACE',46],['QUALITY SLIPPING',41],['REPLACED BY AI',22]];
+obsReveal('fears',s=>{
+  const X0=160,PX=3.9,y0=i=>66+i*62;
+  D.forEach(([name,v],i)=>{
+    const y=y0(i);
+    txt(s,{x:150,y:y+3,'font-size':7.5,'font-weight':700,fill:'#6A6963','text-anchor':'end',
+      'letter-spacing':'.05em',class:'fade',style:`animation-delay:${i*.08}s`},name);
+    el(s,'line',{x1:X0,y1:y+9,x2:X0+55*PX,y2:y+9,stroke:GRID,'stroke-width':.6,
+      class:'fade',style:`animation-delay:${i*.08}s`});
+    for(let k=0;k<v;k++){
+      const x=X0+k*PX+PX/2,h=9+rnd(k+1,i+2)*6;
+      el(s,'line',{x1:x,y1:y+9,x2:x,y2:y+9-h,stroke:INK,'stroke-width':.9,
+        opacity:.55+rnd(k+3,i+5)*.45,class:'fade',style:`animation-delay:${i*.08+k*.01}s`});
+      if(k%5===4)el(s,'circle',{cx:x,cy:y+13,r:.8,fill:'#C6C5BF',
+        class:'fade',style:`animation-delay:${i*.08+k*.01}s`});
+    }
+    const lab=txt(s,{x:X0+v*PX+10,y:y+4,'font-size':11,'font-weight':800,fill:INK,
+      class:'fade',style:`animation-delay:${.4+i*.08}s`},v);
+    tip(lab,`${name} — ${v} of 100 · they could pick several`);
+  });
+  txt(s,{x:200,y:306,'font-size':7,'font-weight':600,fill:'#B0AFA9','text-anchor':'middle',
+    'letter-spacing':'.12em',class:'fade',style:'animation-delay:.9s'},
+    'ONE TICK = ONE PERSON IN A HUNDRED · MULTI-SELECT · DOT MARKS EVERY FIFTH');
+});
+})();
+
+// ════ 5 · hourglass stream ════ ambivalence narrowing: 100 → 77 → 51, one tick = one person.
+(()=>{
+const STAGE=[['ALL RESPONDENTS',100],['PICKED POSITIVE AND NEGATIVE',77],['SAID "CONFLICTED" OUTRIGHT',51]];
+obsReveal('hourglass',s=>{
+  const CXm=175,sy=k=>50+k*104,w=c=>c/100*300;
+  STAGE.forEach(([name,c],k)=>{
+    const y=sy(k),hw=w(c)/2;
+    for(let t=0;t<c;t++){
+      const x=CXm-hw+(t+.5)/c*hw*2+(rnd(t+1,k+3)-.5)*2.4;
+      el(s,'line',{x1:x,y1:y-7,x2:x,y2:y+7,stroke:INK,'stroke-width':.8,
+        opacity:.45+rnd(t+2,k+5)*.5,class:'fade',style:`animation-delay:${k*.12+t*.004}s`});
+    }
+    if(k<2){
+      const hw1=w(STAGE[k+1][1])/2;
+      for(let t=0;t<34;t++){
+        const xt=CXm+(rnd(t+1,k*7+1)-.5)*2*hw*.94;
+        const xb=CXm+(rnd(t+3,k*7+5)-.5)*2*hw1*.94;
+        el(s,'path',{d:`M${xt} ${y+9} C${xt} ${y+44} ${xb} ${sy(k+1)-44} ${xb} ${sy(k+1)-9}`,
+          fill:'none',stroke:'#B0AFA9','stroke-width':.5,opacity:.32,pathLength:1,
+          class:'draw',style:`animation-delay:${.2+k*.15+t*.008}s;animation-duration:.8s`});
+      }
+      const pct=Math.round(STAGE[k+1][1]/c*100);
+      txt(s,{x:16,y:(y+sy(k+1))/2+3,'font-size':9,'font-weight':800,fill:'#8F8E88',
+        class:'fade',style:`animation-delay:${.5+k*.15}s`},pct+'%');
+      txt(s,{x:16,y:(y+sy(k+1))/2+14,'font-size':6,'font-weight':600,fill:'#C6C5BF',
+        'letter-spacing':'.06em',class:'fade',style:`animation-delay:${.5+k*.15}s`},'STAY IN');
+    }
+    el(s,'line',{x1:CXm+hw+6,y1:y,x2:332,y2:y,stroke:'#DEDDD6','stroke-width':.8,
+      class:'fade',style:`animation-delay:${.3+k*.12}s`});
+    txt(s,{x:336,y:y-2,'font-size':6.8,'font-weight':700,fill:'#4A4944',
+      'letter-spacing':'.04em',class:'fade',style:`animation-delay:${.35+k*.12}s`},name);
+    txt(s,{x:336,y:y+11,'font-size':11,'font-weight':800,fill:INK,
+      class:'fade',style:`animation-delay:${.4+k*.12}s`},c);
+  });
+  txt(s,{x:200,y:322,'font-size':7,'font-weight':600,fill:'#B0AFA9','text-anchor':'middle',
+    'letter-spacing':'.1em',class:'fade',style:'animation-delay:1.1s'},
+    'ONE TICK = ONE PERSON · THE AVERAGE PERSON PICKED 5+ EMOTIONS · ONE PICKED 13');
+});
+})();
+
+// ════ 6 · brand spectrum ════ NPS by seniority: −49 / −23 / −5.
+// The template's competitor dots are dropped — Lenny has no such data, we don't invent it.
+(()=>{
+const ROWS=[['NEVER AGAIN','GLADLY'],['NEVER AGAIN','GLADLY'],['NEVER AGAIN','GLADLY']];
+const RANK=['SENIOR / STAFF IC','VP','FOUNDER'];
+const NPS=[-49,-23,-5];
+const US=NPS.map(v=>(v+60)/80);            // scale −60 … +20
+const X0=118,X1=342,Y=i=>66+i*72,px=t=>X0+t*(X1-X0);
+obsReveal('spectrum',s=>{
+  let d=`M${px(US[0])} ${Y(0)}`;
+  for(let i=1;i<3;i++)
+    d+=` C${px(US[i-1])} ${Y(i-1)+36} ${px(US[i])} ${Y(i)-36} ${px(US[i])} ${Y(i)}`;
+  el(s,'path',{d,fill:'none',stroke:'#F0EFEB','stroke-width':30,'stroke-linecap':'round',
+    'stroke-linejoin':'round',opacity:.9,pathLength:1,class:'draw',
+    style:'animation-duration:1.4s'});
+  ROWS.forEach(([a,b],i)=>{
+    const y=Y(i);
+    el(s,'line',{x1:X0,y1:y,x2:X1,y2:y,stroke:'#B0AFA9','stroke-width':1,
+      class:'fade',style:`animation-delay:${i*.08}s`});
+    [X0,X1].forEach(x=>el(s,'line',{x1:x,y1:y-4,x2:x,y2:y+4,stroke:'#B0AFA9','stroke-width':1,
+      class:'fade',style:`animation-delay:${i*.08}s`}));
+    txt(s,{x:X0-14,y:y+3,'font-size':8,'font-weight':600,fill:'#6A6963','text-anchor':'end',
+      'letter-spacing':'.1em',class:'fade',style:`animation-delay:${i*.08}s`},a);
+    txt(s,{x:X1+14,y:y+3,'font-size':8,'font-weight':600,fill:'#6A6963',
+      'letter-spacing':'.1em',class:'fade',style:`animation-delay:${i*.08}s`},b);
+    const xz=px((0+60)/80);
+    el(s,'line',{x1:xz,y1:y-5,x2:xz,y2:y+5,stroke:'#C6C5BF','stroke-width':1,
+      'stroke-dasharray':'2 2',class:'fade',style:`animation-delay:${.2+i*.08}s`});
+    const us=el(s,'circle',{cx:px(US[i]),cy:y,r:8,fill:INK,
+      class:'pop',style:`animation-delay:${.5+i*.1}s`});
+    tip(us,`${RANK[i]} — NPS ${NPS[i]}`);
+    txt(s,{x:px(US[i]),y:y-14,'font-size':9.5,'font-weight':800,fill:INK,'text-anchor':'middle',
+      style:`paint-order:stroke;stroke:${PAPER};stroke-width:3px;animation-delay:${.6+i*.1}s`,
+      class:'fade'},NPS[i]);
+    txt(s,{x:px(US[i]),y:y+22,'font-size':7,'font-weight':700,fill:MUTED,'text-anchor':'middle',
+      'letter-spacing':'.08em',class:'fade',style:`animation-delay:${.65+i*.1}s`},RANK[i]);
+  });
+  txt(s,{x:X0,y:284,'font-size':7.5,'font-weight':600,fill:'#B0AFA9','letter-spacing':'.12em',
+    class:'fade',style:'animation-delay:.9s'},'● NPS BY RANK    ┊ ZERO — WHERE YES BALANCES NO');
+});
+})();
+
+// ════ 7 · radial convergence ════ "the industry in a sentence": chaos 30 / too fast 17 /
+// bubble 12 / excitement 11 / everything else 30. Leakage off — shares are exact.
+(()=>{
+const N=100,CX=200,CY=162,R=116;
+const THEME=[['CHAOS · UNCERTAIN',30,-75],['TOO FAST TO KEEP UP',17,-3],['AI BUBBLE TALK',12,69],['EXCITEMENT',11,141],['EVERYTHING ELSE',30,213]];
+obsReveal('converge',s=>{
+  const blocks=THEME.flatMap(([,n],h)=>Array(n).fill(h));
+  const hubOf=i=>blocks[i];
+  const hubPt=h=>pol(CX,CY,34,THEME[h][2]);
+  const counts=[0,0,0,0,0];
+  for(let i=0;i<N;i++)counts[hubOf(i)]++;
+  for(let i=0;i<N;i++){
+    const deg=i/N*360-90,[px,py]=pol(CX,CY,R,deg);
+    const h=hubOf(i),[hx,hy]=hubPt(h);
+    const c1x=CX+(px-CX)*.42,c1y=CY+(py-CY)*.42;
+    const c2x=CX+(hx-CX)*.3,c2y=CY+(hy-CY)*.3;
+    el(s,'path',{d:`M${px} ${py} C${c1x} ${c1y} ${c2x} ${c2y} ${hx} ${hy}`,
+      fill:'none',stroke:'#A8A7A0','stroke-width':.7,opacity:.55,pathLength:1,
+      class:'draw',style:`animation-delay:${i*.01}s`});
+    el(s,'circle',{cx:px,cy:py,r:1.6,fill:'#6A6963',
+      class:'pop',style:`animation-delay:${i*.01}s`});
+  }
+  THEME.forEach(([name,,deg],h)=>{
+    const [hx,hy]=hubPt(h);
+    const grey=name==='EVERYTHING ELSE';
+    const hub=el(s,'circle',{cx:hx,cy:hy,r:Math.sqrt(counts[h])*1.55,
+      fill:grey?'#B0AFA9':INK,
+      class:'pop',style:`animation-delay:${.5+h*.08}s`});
+    tip(hub,`${name} — ${counts[h]} of 100 answers`);
+    const [tx,ty]=pol(CX,CY,R+26,deg);
+    txt(s,{x:tx,y:ty,'font-size':7.5,'font-weight':800,fill:grey?'#8F8E88':INK,'text-anchor':'middle',
+      'dominant-baseline':'middle','letter-spacing':'.06em',
+      style:`paint-order:stroke;stroke:${PAPER};stroke-width:3px;animation-delay:${.6+h*.08}s`,
+      class:'fade'},`${name} · ${counts[h]}`);
+    const [gx,gy]=pol(CX,CY,R+14,deg);
+    el(s,'line',{x1:hx,y1:hy,x2:gx,y2:gy,stroke:'#C6C5BF','stroke-width':.7,
+      'stroke-dasharray':'1 3',class:'fade',style:`animation-delay:${.7+h*.08}s`});
+  });
+  txt(s,{x:200,y:314,'font-size':7,'font-weight':600,fill:'#B0AFA9','text-anchor':'middle',
+    'letter-spacing':'.1em',class:'fade',style:'animation-delay:1.2s'},
+    'ONE RIM NODE = ONE ANSWER · THE CHAOS QUOTES SPLIT 37 POSITIVE / 37 NEGATIVE / 26 NEUTRAL');
+});
+})();
+
+// ════ 8 · ballot rings ════ AI productivity: 82 say at least moderately better,
+// 49 of those say very or extremely. Two dials, one story.
+(()=>{
+const D=[['AT LEAST MODERATELY BETTER',82],['VERY OR EXTREMELY BETTER',49]];
+obsReveal('rings',s=>{
+  D.forEach(([name,v],i)=>{
+    const cx=214+i*292,cy=134,R0=64;
+    for(let k=0;k<100;k++){
+      const a=k*3.6-90,picked=k<v;
+      const len=picked?12+rnd(k+1,i+2)*6:4.5+rnd(k+1,i+5)*2;
+      const [x1,y1]=pol(cx,cy,R0,a),[x2,y2]=pol(cx,cy,R0+len,a);
+      el(s,'line',{x1,y1,x2,y2,stroke:picked?INK:'#CFCEC7','stroke-width':picked?.95:.55,
+        class:'fade',style:`animation-delay:${i*.1+k*.006}s`});
+      if(k%10===0){
+        const [dx,dy]=pol(cx,cy,R0-5,a);
+        el(s,'circle',{cx:dx,cy:dy,r:.8,fill:'#C6C5BF',
+          class:'fade',style:`animation-delay:${i*.1+k*.006}s`});
+      }
+    }
+    const aEnd=v*3.6-90,[ex,ey]=pol(cx,cy,R0+18,aEnd);
+    el(s,'circle',{cx:ex,cy:ey,r:2.2,fill:INK,class:'pop',style:`animation-delay:${.5+i*.1}s`});
+    const num=txt(s,{x:cx,y:cy+2,'font-size':24,'font-weight':800,fill:INK,'text-anchor':'middle',
+      class:'fade',style:`animation-delay:${.4+i*.1}s`},v);
+    tip(num,`${name} — ${v} of 100`);
+    txt(s,{x:cx,y:cy+18,'font-size':7,'font-weight':600,fill:MUTED,'text-anchor':'middle',
+      'letter-spacing':'.1em',class:'fade',style:`animation-delay:${.4+i*.1}s`},'OF 100');
+    txt(s,{x:cx,y:cy+R0+42,'font-size':7.5,'font-weight':700,fill:'#55554F','text-anchor':'middle',
+      'letter-spacing':'.06em',class:'fade',style:`animation-delay:${.5+i*.1}s`},name);
+  });
+  txt(s,{x:360,y:290,'font-size':7,'font-weight':600,fill:'#B0AFA9','text-anchor':'middle',
+    'letter-spacing':'.12em',class:'fade',style:'animation-delay:1s'},
+    'ONE TICK = ONE PERSON · TWELVE O’CLOCK IS ZERO · THE RIGHT DIAL LIVES INSIDE THE LEFT');
+});
+})();
+</script>
+</body>
+</html>
