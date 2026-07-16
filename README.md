@@ -44,6 +44,16 @@ Lieflat Charts 是一套遵循 Agent Skills 格式的单色数据可视化 skill
 
 <p align="center"><img src="docs/assets/glance-motion.gif" alt="Glance 动态预览" width="82%"></p>
 
+更多动态预览：
+
+<table>
+  <tr>
+    <td width="33%"><img src="docs/assets/glance-wave-motion.gif" alt="Fifty markets 动态预览" width="100%"><br><strong>Fifty markets</strong></td>
+    <td width="33%"><img src="docs/assets/glance-race-motion.gif" alt="Eight products race 动态预览" width="100%"><br><strong>Eight products race</strong></td>
+    <td width="33%"><img src="docs/assets/glance-stroke-motion.gif" alt="H1 revenue 动态预览" width="100%"><br><strong>H1 revenue</strong></td>
+  </tr>
+</table>
+
 ### Lupi Basics
 
 常见图型与可数单位的结合。精选 12 张基础编辑型模板中的代表图型。
