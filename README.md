@@ -33,38 +33,39 @@ Lieflat Charts 是一套遵循 Agent Skills 格式的单色数据可视化 skill
   </tr>
 </table>
 
-## Install
+## 零门槛快速使用
 
-将整个仓库复制到所用 agent 的 skills 目录。不同 agent 的目录名称可能不同。
-
-通用 Agent Skills 目录：
+一条命令安装：
 
 ```bash
-cp -R lieflat-charts ~/.agents/skills/lieflat-charts
+npx skills add https://github.com/larashero3-dotcom/lieflat-charts --skill lieflat-charts
 ```
 
-Claude Code：
+也可以直接把这段话发给有 shell 权限的 AI Agent：
 
-```bash
-cp -R lieflat-charts ~/.claude/skills/lieflat-charts
+```text
+帮我安装 lieflat-charts。请把 https://github.com/larashero3-dotcom/lieflat-charts
+克隆到 ~/.claude/skills/lieflat-charts，安装完成后检查 SKILL.md、templates/、
+catalog.md 和 mono-tokens.js 是否存在。
 ```
 
-Codex：
+使用 Codex 时，将安装路径换成 `~/.codex/skills/lieflat-charts`。
 
-```bash
-cp -R lieflat-charts ~/.codex/skills/lieflat-charts
+已经安装过的话，用这段话更新：
+
+```text
+帮我更新 lieflat-charts。请进入 ~/.claude/skills/lieflat-charts 执行 git pull，
+然后告诉我当前最新 commit。
 ```
 
-安装后重新打开 agent，即可用自然语言调用。
-
-## Use
-
-直接说你有什么数据、想讲什么、给谁看：
+安装后直接对 Agent 说：
 
 ```text
 把这份调研数据做成适合公众号长文的 5 张中文版图表。
 先比较 Lupi、Glance 和基础型候选，再决定每张图属于哪个体系。
 ```
+
+也可以试这些请求：
 
 ```text
 读这篇论文，找出最值得讲的几个数据结论，做成一页完整的 HTML 图表。
@@ -72,6 +73,14 @@ cp -R lieflat-charts ~/.codex/skills/lieflat-charts
 
 ```text
 这是一份周报数据，要求 10 秒内看懂排名、变化和异常。
+```
+
+```text
+把这个 CSV 做成一张适合放进汇报里的 Glance 图表。
+```
+
+```text
+用 Lupi 风格重新设计这组数据，保留每条真实记录，并加入必要的旁注。
 ```
 
 图数由独立结论决定：单个问题通常 1 张，两个到三个结论 2–3 张，完整文章或论文 4–6 张，单页默认最多 6 张。用户明确指定数量时会遵守，但不会为了凑数重复表达同一个结论。
