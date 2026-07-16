@@ -16,28 +16,29 @@ Lieflat Charts 是一套遵循 Agent Skills 格式的单色数据可视化 skill
 
 下面是仓库里几类模板的实际预览。截图来自模板页面，不是单独绘制的宣传图。
 
-<table>
-  <tr>
-    <td width="50%">
-      <img src="docs/assets/lupi-gallery.png" alt="Lupi 编辑型图表模板预览">
-      <br><strong>Lupi Editorial</strong>：细读、逐记录、编辑感。
-    </td>
-    <td width="50%">
-      <img src="docs/assets/glance-gallery.png" alt="Glance 快读型图表模板预览">
-      <br><strong>Glance</strong>：快读、聚合、结论先行。
-    </td>
-  </tr>
-  <tr>
-    <td width="50%">
-      <img src="docs/assets/basics-gallery.png" alt="Lupi 基础型图表模板预览">
-      <br><strong>Lupi Basics</strong>：常见图型与可数单位的结合。
-    </td>
-    <td width="50%">
-      <img src="docs/assets/threads.png" alt="Threads 独立交互大图预览">
-      <br><strong>Interactive</strong>：网络、路径与高密度关系数据。
-    </td>
-  </tr>
-</table>
+### Lupi Editorial
+
+细读、逐记录、编辑感。完整展示 15 张编辑叙事型模板。
+
+<img src="docs/assets/lupi-gallery.png" alt="Lupi 编辑型 15 张完整模板预览" width="100%">
+
+### Glance
+
+快读、聚合、结论先行。完整展示 18 张快速判断型模板。
+
+<img src="docs/assets/glance-gallery.png" alt="Glance 快读型 18 张完整模板预览" width="100%">
+
+### Lupi Basics
+
+常见图型与可数单位的结合。完整展示 12 张基础编辑型模板。
+
+<img src="docs/assets/basics-gallery.png" alt="Lupi 基础型 12 张完整模板预览" width="100%">
+
+### Interactive
+
+用于网络、路径与高密度关系数据。
+
+<img src="docs/assets/threads.png" alt="Threads 独立交互大图完整预览" width="100%">
 
 ## 零门槛快速使用
 
