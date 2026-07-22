@@ -102,7 +102,7 @@ catalog.md 和 mono-tokens.js 是否存在。
 
 ```text
 把这份调研数据做成适合公众号长文的 5 张中文版图表。
-先比较 Lupi、Glance 和基础型候选，再决定每张图属于哪个体系。
+默认先比较 Lupi Editorial 和 Lupi Basics 候选；两组都不适配时，再使用 Glance。
 ```
 
 也可以试这些请求：

@@ -1,4 +1,4 @@
 interface:
   display_name: "Lieflat Charts"
-  short_description: "Magazine-style Mono charts with Lupi-first selection"
-  default_prompt: "Use $lieflat-charts to turn this dataset into a polished Mono chart."
+  short_description: "Template-driven Mono charts with strict Lupi-first selection"
+  default_prompt: "Use $lieflat-charts to turn this dataset into a polished Mono chart. Reuse the exact implementation from the matching gallery template, default to Lupi Editorial or Lupi Basics, and use Glance only when neither Lupi group fits or I explicitly request it."

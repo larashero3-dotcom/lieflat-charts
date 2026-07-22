@@ -1,7 +1,8 @@
 # Lieflat Charts 图型目录 · 48 张
 
 > 每张图挂三个标签：**数据形状**（选图的主键）、**场合**、**读者时间**。
-> 「姊妹」列 = 同题异构对子：同一数据形状的另一种画法。生成时遇到有姊妹的图型，两案都渲染给用户挑（候选池机制，见 SKILL.md）。
+> **选型优先级以 `SKILL.md` 的硬约束为准：默认先完整审计 Lupi Editorial，再审计 Lupi Basics；只有两组都不适配，或用户明确要求 Glance / dashboard / 三秒快读时，才进入 Glance。**
+> 「姊妹」列 = 同题异构对子，只用于比较数据契约和召回候选，不代表两案都要生成，也不能改变上述优先级。
 > 参考实现在 `templates/`：Glance 系 `templates/glance-gallery.html`，Lupi 系 `templates/lupi-gallery.html`，基础型组 `templates/basics-gallery.html`，大图 `templates/big-*.html`。gallery 是多卡合页——查某张图的代码，先按下表「卡内标题」找到卡片，再在 `<script>` 里搜同名 `// ════` 注释块。真实数据成品案例在 `examples/`。
 
 ## Glance 系 · 18 张（粗笔画 · 提前聚合 · 3 秒读完）
