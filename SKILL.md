@@ -201,6 +201,8 @@ Lieflat Charts 是一套遵循 Agent Skills 格式的单色数据可视化 skill
 <title>Mono — {图名}</title>
 <!-- 需要 ECharts 时： -->
 <script src="https://cdn.jsdelivr.net/npm/echarts@6/dist/echarts.min.js"></script>
+<!-- 需要 Chart.js 时（G1 / G3）： -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script> -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="{MONO.FONT.link}" rel="stylesheet">
 <style>/* 内联 MONO.CARD_CSS */</style>
@@ -210,7 +212,11 @@ Lieflat Charts 是一套遵循 Agent Skills 格式的单色数据可视化 skill
   <div class="card"><!-- 或 card dark / card wide -->
     <h2>{结论式标题}</h2>
     <div class="sub">{说明} · {图例} · {时间范围}</div>
-    <div class="ch" id="ch"></div><!-- SVG 图型改用 <svg id="ch" viewBox="0 0 400 320"> -->
+    <!-- 图容器按引擎三选一： -->
+    <div class="ch" id="ch"></div><!-- ECharts -->
+    <!-- 手写 SVG： <svg id="ch" viewBox="0 0 400 320"></svg> -->
+    <!-- Chart.js（G1/G3）： <div class="wrap"><canvas id="ch"></canvas></div>，配 .wrap{position:relative;height:320px} -->
+    <!-- ⚠️ Chart.js 必须挂 <canvas>，套 <div class="ch"> 会报 can't acquire context -->
     <div class="src">{图型名} · {系列} · {数据来源}</div>
   </div>
 </div>
