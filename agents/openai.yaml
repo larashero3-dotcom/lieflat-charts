@@ -1,4 +1,4 @@
 interface:
   display_name: "Lieflat Charts"
-  short_description: "Template-driven Mono charts with strict Lupi-first selection"
-  default_prompt: "Use $lieflat-charts to turn this dataset into a polished Mono chart. Reuse the exact implementation from the matching gallery template, default to Lupi Editorial or Lupi Basics, and use Glance only when neither Lupi group fits or I explicitly request it."
+  short_description: "Template-driven charts, Mono by default with constrained color presets"
+  default_prompt: "Use $lieflat-charts to turn this dataset into a polished chart. Reuse the exact implementation from the matching gallery template, default to Lupi Editorial or Lupi Basics, and use Glance only when neither Lupi group fits or I explicitly request it. Keep Mono as the default; when I explicitly request color or color carries a real data dimension, start from one preset in color-presets.js. Honor explicit color refinements after generation while preserving contrast, visual hierarchy, and data meaning."

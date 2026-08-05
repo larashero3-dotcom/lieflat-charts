@@ -1,14 +1,16 @@
 # Lieflat Charts
 
-Lieflat Charts 是一套遵循 Agent Skills 格式的单色数据可视化 skill，可供 moxt、Claude Code、Codex 及其他兼容 `SKILL.md` 的 AI agent 使用。本 skill 由 moxt 与 Codex 协同制作，专注于把数据图表做成有编辑感、能阅读、能组成完整页面的视觉内容。
+Lieflat Charts 是一套遵循 Agent Skills 格式的数据可视化 skill，可供 moxt、Claude Code、Codex 及其他兼容 `SKILL.md` 的 AI agent 使用。本 skill 在 moxt.ai 制作，专注于把数据图表做成有编辑感、能阅读、能组成完整页面的视觉内容。
 
-它用统一的单色灰阶、字体、留白、线条和动效建立自己的视觉语法，包括以下几种视觉风格：
+它以统一的 Mono 灰阶、字体、留白、线条和动效建立自己的视觉语法，包括以下几种视觉风格：
 
 - **Lupi（编辑叙事型）**：用细线、点阵、逐条记录和大量留白展开数据，强调真实单位、细节和旁注，适合论文、长文、年报与需要慢慢阅读的数据故事。
 - **Glance（快速判断型）**：用粗柱、大数字、色块和清晰排序提前聚合信息，让读者几秒内看懂高低、变化和异常，适合周报、汇报与 dashboard。
 - **Basics（基础编辑型）**：保留柱状图、折线图、环形图等熟悉轮廓，再用可数刻度、发丝线和编辑排版增加质感，适合结构简单或数据量较少的内容。
 
 此外还提供网络、路径和多段流向等独立交互大图。每张图都尽量保留数据的真实单位，同时让标题、旁注、来源和页面结构参与表达。
+
+图表的默认色彩是黑白灰单色。当用户明确要求颜色，或颜色承载真实数据维度时，可以从青瓷蓝、椰林绿或编辑部红三套预设起步。预设先保证初稿稳定统一；生成后仍可按需要继续调色，同时保持图型的结构、比例、对比度和数据契约。
 
 ## Preview
 
@@ -73,6 +75,46 @@ Lieflat Charts 是一套遵循 Agent Skills 格式的单色数据可视化 skill
 
 [打开 Force Graph 模板体验拖拽与缩放](https://larashero3-dotcom.github.io/lieflat-charts/templates/big-force.html)
 
+### 彩色模式
+
+图表的默认色彩是黑白灰单色，但也有三种不同色系的预设模板。若用户明确需要颜色，或颜色本身承载真实数据维度，初稿会生成一套预设的彩色模板，保证配色关系稳定。三套预设不是锁死的色板：生成后可以继续调整色值；调整时需重新检查对比度、视觉主次和颜色所表达的数据含义。
+
+#### Porcelain · 青瓷蓝
+
+单色相明度阶，适合有序数据和单序列。
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/assets/preview-color-porcelain-basics.png" alt="青瓷蓝 Basics 彩色图表预览" width="100%"><br><strong>Basics</strong></td>
+    <td width="50%"><img src="docs/assets/preview-color-porcelain-glance.png" alt="青瓷蓝 Glance 彩色图表预览" width="100%"><br><strong>Glance</strong></td>
+  </tr>
+  <tr><td colspan="2"><img src="docs/assets/preview-color-porcelain.png" alt="青瓷蓝 Lupi 彩色图表预览" width="100%"><br><strong>Lupi Editorial</strong></td></tr>
+</table>
+
+#### Palm · 椰林绿
+
+低饱和绿黄色系，用色相区分少量无序类目。
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/assets/preview-color-palm-basics.png" alt="椰林绿 Basics 彩色图表预览" width="100%"><br><strong>Basics</strong></td>
+    <td width="50%"><img src="docs/assets/preview-color-palm-glance.png" alt="椰林绿 Glance 彩色图表预览" width="100%"><br><strong>Glance</strong></td>
+  </tr>
+  <tr><td colspan="2"><img src="docs/assets/preview-color-palm.png" alt="椰林绿 Lupi 彩色图表预览" width="100%"><br><strong>Lupi Editorial</strong></td></tr>
+</table>
+
+#### Wire · 编辑部红
+
+黑灰阶加一个荧光橙视线落点。
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/assets/preview-color-wire-basics.png" alt="编辑部红 Basics 彩色图表预览" width="100%"><br><strong>Basics</strong></td>
+    <td width="50%"><img src="docs/assets/preview-color-wire-glance.png" alt="编辑部红 Glance 彩色图表预览" width="100%"><br><strong>Glance</strong></td>
+  </tr>
+  <tr><td colspan="2"><img src="docs/assets/preview-color-wire.png" alt="编辑部红 Lupi 彩色图表预览" width="100%"><br><strong>Lupi Editorial</strong></td></tr>
+</table>
+
 ## 零门槛快速使用
 
 一条命令安装：
@@ -108,6 +150,10 @@ catalog.md 和 mono-tokens.js 是否存在。
 也可以试这些请求：
 
 ```text
+帮我用 lieflat charts 给这些数据做个彩色风格的图表。
+```
+
+```text
 读这篇论文，找出最值得讲的几个数据结论，做成一页完整的 HTML 图表。
 ```
 
@@ -123,6 +169,10 @@ catalog.md 和 mono-tokens.js 是否存在。
 用 Lupi 风格重新设计这组数据，保留每条真实记录，并加入必要的旁注。
 ```
 
+```text
+用青瓷蓝预设重做这张图，用明度深浅表示数值大小，不改变原图的结构。
+```
+
 图数由独立结论决定：单个问题通常 1 张，两个到三个结论 2–3 张，完整文章或论文 4–6 张，单页默认最多 6 张。用户明确指定数量时会遵守，但不会为了凑数重复表达同一个结论。
 
 ## Templates
@@ -133,6 +183,7 @@ catalog.md 和 mono-tokens.js 是否存在。
 | **Lupi Basics** | 12 | 柱、折线、面积、环形、散点、瀑布、热力、进度等基础数据形状 | 手写 SVG |
 | **Glance** | 18 | 周报、dashboard、监控、汇报；需要快速排序和比较 | Chart.js / ECharts |
 | **Interactive** | 3 | 网络、路径、多段流向和高密度关系数据 | ECharts / SVG |
+| **Color Presets** | 3 套 / 15 个样张 | 需要颜色区分数据维度，或为 Mono 加一个受控视线落点 | 基于原模板换肤 |
 
 ### Lupi Editorial
 
@@ -152,7 +203,7 @@ catalog.md 和 mono-tokens.js 是否存在。
 
 ## Design
 
-所有体系共享一套 Mono 视觉语法：纸灰与炭黑两极，加上中间灰阶；明度承担层级，位置、长度、密度和结构承担数据编码。创新不在于再发明一种孤立图型，而在于把图型选择、编辑排版、浏览器交互和整页叙事放进同一个可复用的 skill。
+所有体系共享一套 Mono 视觉语法：纸灰与炭黑两极，加上中间灰阶；明度承担层级，位置、长度、密度和结构承担数据编码。三套彩色预设提供稳定的配色起点；用户继续调色时，仍需保证对比度、视觉主次和数据含义清楚。创新不在于再发明一种孤立图型，而在于把图型选择、编辑排版、浏览器交互和整页叙事放进同一个可复用的 skill。
 
 因此，Lieflat Charts 和过去直接做 charts 的差别，不只是“换了颜色”：
 
@@ -169,7 +220,9 @@ catalog.md 和 mono-tokens.js 是否存在。
 ├── SKILL.md                 # Agent 使用的工作流与规则
 ├── catalog.md               # 48 个图型的数据契约索引
 ├── mono-tokens.js           # 共享视觉 token
+├── color-presets.js         # 三套内置彩色预设
 ├── templates/               # Lupi、Basics、Glance 与交互大图
+│   └── color/              # 彩色换肤样张
 ├── examples/                # 真实公开数据案例
 ├── docs/assets/             # README 模板截图与动态预览
 └── scripts/validate.mjs     # 发布前检查
