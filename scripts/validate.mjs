@@ -42,6 +42,12 @@ const treemapTemplates = [
   'templates/color/basics-palm.html',
   'templates/color/basics-wire.html',
 ];
+const glanceMotionTemplates = [
+  'templates/glance-gallery.html',
+  'templates/color/glance-porcelain.html',
+  'templates/color/glance-palm.html',
+  'templates/color/glance-wire.html',
+];
 
 function walk(dir) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -88,6 +94,52 @@ function collectPresetChannels(value, channels = new Set()) {
   return channels;
 }
 
+function checkGlanceMotion(file, source) {
+  const fail = message => failures.push(`${file} ${message}`);
+  const script = [...source.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)]
+    .map(match => match[1])
+    .join('\n');
+
+  if (!/@media\s*\(\s*prefers-reduced-motion\s*:\s*reduce\s*\)[\s\S]*?animation\s*:\s*none/.test(source)) {
+    fail('缺少 CSS reduced-motion 降级');
+  }
+  if (!/matchMedia\s*\(\s*['"]\(prefers-reduced-motion\s*:\s*reduce\)['"]\s*\)/.test(script)) {
+    fail('缺少 JS reduced-motion 检测');
+  }
+  if (!/reduceMotion[\s\S]*?animation\s*:\s*false[\s\S]*?new\s+Chart/.test(script)) {
+    fail('Chart.js 未关闭 reduced-motion 动画');
+  }
+  if (!/getInstanceByDom[\s\S]*?reduceMotion[\s\S]*?animation\s*:\s*false/.test(script)) {
+    fail('ECharts 未关闭 reduced-motion 动画');
+  }
+
+  for (const match of script.matchAll(/setInterval\s*\(/g)) {
+    const context = script.slice(Math.max(0, match.index - 180), match.index);
+    if (!/if\s*\(\s*!\s*reduceMotion\s*\)/.test(context)) {
+      fail('存在未受 reduced-motion 保护的 interval');
+    }
+  }
+  for (const match of script.matchAll(/requestAnimationFrame\s*\(/g)) {
+    const context = script.slice(Math.max(0, match.index - 900), match.index);
+    if (!/if\s*\(\s*reduceMotion\s*\)[\s\S]*?return\s*;/.test(context)) {
+      fail('存在未受 reduced-motion 保护的 RAF');
+    }
+  }
+
+  if (!/VIEWS\.length\s*-\s*1/.test(script) || !/VIEWS\[\s*vi\s*\]\.opt/.test(script)) {
+    fail('morph 未在 reduced-motion 下选择稳定最终视图');
+  }
+  if (!/YEARS\.length\s*-\s*1/.test(script) || !/vals\[\s*step\s*\]/.test(script)) {
+    fail('bar race 未在 reduced-motion 下选择稳定最终状态');
+  }
+  if (!/obsReveal\(\s*['"]stream['"][\s\S]*?draw\(\);[\s\S]*?if\s*\(\s*!\s*reduceMotion\s*\)/.test(script)) {
+    fail('stream 未在 reduced-motion 下先绘制稳定快照');
+  }
+  if (!/if\s*\(\s*reduceMotion\s*\)[\s\S]*?TOTAL\s*\/\s*1000/.test(script)) {
+    fail('counter 未在 reduced-motion 下写入最终 KPI');
+  }
+}
+
 for (const file of required) {
   if (!fs.existsSync(path.join(root, file))) failures.push(`缺少发布文件：${file}`);
 }
@@ -99,6 +151,15 @@ for (const file of treemapTemplates) {
   if (!source.includes('id="treemap"')) failures.push(`${file} 缺少 F13 treemap 容器`);
   if (!source.includes("type:'treemap'")) failures.push(`${file} 缺少 F13 treemap 渲染代码`);
   if (!source.includes('F1–F13')) failures.push(`${file} 的 Basics 编号未更新为 F1–F13`);
+}
+
+for (const file of glanceMotionTemplates) {
+  const full = path.join(root, file);
+  if (!fs.existsSync(full)) {
+    failures.push(`缺少 Glance reduced-motion 模板：${file}`);
+    continue;
+  }
+  checkGlanceMotion(file, fs.readFileSync(full, 'utf8'));
 }
 
 const catalogSource = fs.readFileSync(path.join(root, 'catalog.md'), 'utf8');
