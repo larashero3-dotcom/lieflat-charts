@@ -288,6 +288,16 @@ try {
   failures.push(error.message);
 }
 
+// 内联安全：mono-tokens.js / color-presets.js 会被 verbatim 内联进单文件 HTML，
+// 其中出现 "</script" 字面量（即使在注释里）会提前终结 HTML 的 script 块。
+for (const file of ['mono-tokens.js', 'color-presets.js']) {
+  const source = fs.readFileSync(path.join(root, file), 'utf8');
+  const hit = source.search(/<\/script/i);
+  if (hit !== -1) {
+    failures.push(`${file}:${lineNumber(source, hit)} 含有 </script 字面量，verbatim 内联进 HTML 时会提前终结 script 块`);
+  }
+}
+
 if (failures.length) {
   console.error(`检查失败（${failures.length} 项）：`);
   for (const failure of failures) console.error(`- ${failure}`);

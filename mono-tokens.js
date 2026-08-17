@@ -2,8 +2,10 @@
    MONO TOKENS — 风格的唯一正本
    所有 mono 图表（Chart.js / ECharts / 手写 SVG）共享这一份。
    任何文件里出现与本文件冲突的颜色、字体、动画参数，以本文件为准。
-   用法：<script src="mono-tokens.js"></script>，全部挂在 window.MONO 上；
+   用法：以外部 script 标签引入（src 指向本文件），全部挂在 window.MONO 上；
    也可以直接把本文件内容内联进单文件 HTML（开源分发时推荐内联）。
+   注意：本文件（以及注释里）不得出现 script 闭合标签字面量——verbatim
+   内联时会提前终结 HTML 的 script 块（validate.mjs 会检查）。
    ═══════════════════════════════════════════════════════════════ */
 (function (global) {
   'use strict';
@@ -125,8 +127,29 @@
   const el  = (p, t, a) => { const n = document.createElementNS(NS, t);
     for (const k in a) n.setAttribute(k, a[k]); p.appendChild(n); return n; };
   const txt = (p, a, s) => { const n = el(p, 'text', a); n.textContent = s; return n; };
-  const tip = (n, s) => { const t = document.createElementNS(NS, 'title');
-    t.textContent = s; n.appendChild(t); };
+  // styled tooltip：替代浏览器原生 <title>（延迟 ~1s、样式不可控）。
+  // 样式与 tipLight 同源：墨底纸字、圆角 12、Inter 12px、即时淡入。
+  // 首次使用时惰性注入样式和浮层；元素上保留 aria-label 给屏幕阅读器。
+  let tipBox = null;
+  const tip = (n, s) => {
+    n.setAttribute('aria-label', s);
+    if (!tipBox) {
+      const st = document.createElement('style');
+      st.textContent = `#tipbox{position:fixed;z-index:9;pointer-events:none;white-space:nowrap;` +
+        `background:${INK};color:${PAPER};font:500 12px ${FONT.stack};` +
+        `padding:10px 14px;border-radius:${SHAPE.tooltipRadius}px;opacity:0;transition:opacity .15s ease}`;
+      document.head.appendChild(st);
+      tipBox = document.createElement('div');
+      tipBox.id = 'tipbox';
+      document.body.appendChild(tipBox);
+    }
+    n.addEventListener('mouseenter', () => { tipBox.textContent = s; tipBox.style.opacity = 1; });
+    n.addEventListener('mousemove', e => {
+      tipBox.style.left = Math.min(e.clientX + 14, innerWidth - tipBox.offsetWidth - 8) + 'px';
+      tipBox.style.top = Math.min(e.clientY + 16, innerHeight - tipBox.offsetHeight - 8) + 'px';
+    });
+    n.addEventListener('mouseleave', () => { tipBox.style.opacity = 0; });
+  };
 
   /* ── 9 · 统一 reveal：滚入视野才播，点击重播 ──────────────
      带 timer 登记（keep），重播前清干净，防动画叠加。          */
