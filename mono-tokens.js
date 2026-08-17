@@ -35,8 +35,12 @@
   /* ── 2 · 字体 ────────────────────────────────────────────── */
   const FONT = {
     family: 'Inter',
+    // 中文 fallback：Inter 不含中文字形，中文内容落到 Noto Sans SC
+    //（与 templates/reports/*.zh.html 的字体栈保持一致）：
+    cjk: 'Noto Sans SC',
+    stack: "'Inter','Noto Sans SC',sans-serif",
     // Google Fonts 引入行（放 <head>）：
-    link: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap',
+    link: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700;900&display=swap',
     title:    { size: 16.5, weight: 700, spacing: '-.02em' },  // 卡内 h2
     titleBig: { size: 19,   weight: 700, spacing: '-.02em' },  // 独立大图 h2
     sub:      { size: 11.5, weight: 400 },                     // 副标题（图例说明写在这里）
@@ -158,7 +162,7 @@
   const CARD_CSS = `
   :root{--bg:${PAPER};--dark:${DARK.bg};--ink:${INK};--muted:${MUTED};--faint:${FAINT};--grid:${GRID}}
   *{margin:0;padding:0;box-sizing:border-box}
-  body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--ink);padding:40px;-webkit-font-smoothing:antialiased}
+  body{background:var(--bg);font-family:${FONT.stack};color:var(--ink);padding:40px;-webkit-font-smoothing:antialiased}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:1400px;margin:0 auto}
   .card{background:var(--bg);border-radius:${SHAPE.cardRadius}px;padding:${SHAPE.cardPad}}
   .card.dark{background:var(--dark);color:${PAPER}}
@@ -169,7 +173,7 @@
   .sub{font-size:${FONT.sub.size}px;color:var(--muted);margin-bottom:14px}
   .src{font-size:${FONT.src.size}px;color:var(--faint);margin-top:10px;letter-spacing:${FONT.src.spacing};font-weight:${FONT.src.weight}}
   .ch{height:320px}
-  svg text{font-family:'Inter',sans-serif}` + MOTION.css;
+  svg text{font-family:${FONT.stack}}` + MOTION.css;
 
   global.MONO = { INK, PAPER, MUTED, FAINT, GRID, L, LAD, DARK,
     FONT, SHAPE, MOTION, tipLight, tipDark,

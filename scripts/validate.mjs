@@ -112,6 +112,46 @@ for (const file of treemapTemplates) {
 const catalogSource = fs.readFileSync(path.join(root, 'catalog.md'), 'utf8');
 if (!catalogSource.includes('| F13 | Nested Treemap |')) failures.push('catalog.md 缺少 F13 Nested Treemap');
 
+// catalog.md ↔ gallery 一致性：每条目录的卡内标题必须能在对应 gallery 的
+// 卡内 <h2> 里找到（允许一方是另一方的子串，gallery 标题常带补充短语），
+// 卡片数量必须与目录条目数一致，防止编号漂移。
+const gallerySections = [
+  { header: '## Glance 系', idPrefix: 'G', file: 'templates/glance-gallery.html' },
+  { header: '## Lupi 系', idPrefix: 'L', file: 'templates/lupi-gallery.html' },
+  { header: '## 基础型组', idPrefix: 'F', file: 'templates/basics-gallery.html' },
+];
+for (const { header, idPrefix, file } of gallerySections) {
+  const section = catalogSource.split(header)[1]?.split('\n## ')[0] ?? '';
+  const rows = [...section.matchAll(new RegExp(`^\\| (${idPrefix}\\d+) \\| [^|]+ \\| ([^|]+?) \\|`, 'gm'))];
+  if (rows.length === 0) {
+    failures.push(`catalog.md ${header} 一节没有解析到任何条目`);
+    continue;
+  }
+  const galleryPath = path.join(root, file);
+  if (!fs.existsSync(galleryPath)) {
+    failures.push(`缺少 gallery 文件：${file}`);
+    continue;
+  }
+  const gallery = fs.readFileSync(galleryPath, 'utf8');
+  const headings = [...gallery.matchAll(/<h2>([^<]+)<\/h2>/g)].map(m => m[1].trim());
+  const cardCount = (gallery.match(/<div class="card[\s"]/g) || []).length;
+  if (cardCount !== rows.length) {
+    failures.push(`${file} 有 ${cardCount} 张卡片，catalog.md ${header} 一节有 ${rows.length} 条`);
+  }
+  for (const [, id, rawTitle] of rows) {
+    const title = rawTitle.trim();
+    if (!headings.some(h => h.includes(title) || title.includes(h))) {
+      failures.push(`${file} 找不到 ${id} 的卡内标题「${title}」`);
+    }
+  }
+}
+
+// 独立交互大图：catalog 列出的模板文件必须存在
+const bigSection = catalogSource.split('## 独立交互大图')[1]?.split('\n## ')[0] ?? '';
+for (const match of bigSection.matchAll(/^\| B\d+ \| `([^`]+)` \|/gm)) {
+  if (!fs.existsSync(path.join(root, match[1]))) failures.push(`缺少交互大图：${match[1]}`);
+}
+
 const skillSource = fs.readFileSync(path.join(root, 'SKILL.md'), 'utf8');
 for (const role of ['`BG`', '`TXT`', '`MUT`', '`GRID`', '`DATA`']) {
   if (!skillSource.includes(role)) failures.push(`SKILL.md 的 custom 色板规则缺少角色 ${role}`);
