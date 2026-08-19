@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Lieflat Charts · Maps M1–M2 × PALM</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@6/dist/echarts.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F0EFEB;--dark:#43593B;--ink:#58402E;--muted:rgba(88,64,46,.60);--faint:rgba(88,64,46,.32);--grid:rgba(88,64,46,.16)}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--ink);padding:40px;-webkit-font-smoothing:antialiased}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:1400px;margin:0 auto}
+  .card{background:var(--bg);border-radius:24px;padding:28px 28px 20px}
+  .card.wide{grid-column:1/-1}
+  h2{font-weight:700;font-size:16.5px;letter-spacing:-.02em;margin-bottom:3px}
+  .sub{font-size:11.5px;color:var(--muted);margin-bottom:14px}
+  .src{font-size:9.5px;color:var(--faint);margin-top:10px;letter-spacing:.08em;font-weight:500}
+  .badge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.08em;
+    padding:3px 10px;border-radius:99px;margin-bottom:10px;border:1px dashed #ACAD79;color:#929960}
+  svg{width:100%;max-height:330px;display:block;margin:0 auto}
+  svg text{font-family:'Inter',sans-serif}
+  .pop{transform-box:fill-box;transform-origin:center;animation:pop .5s cubic-bezier(.2,.7,.3,1.3) both}
+  @keyframes pop{from{transform:scale(0)}to{transform:none}}
+  .fade{animation:fade .9s ease both}
+  @keyframes fade{from{opacity:0}}
+  .draw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1s cubic-bezier(.4,0,.2,1) both}
+  @keyframes draw{to{stroke-dashoffset:0}}
+  @media (prefers-reduced-motion:reduce){
+    .pop,.fade{animation:none}
+    .draw{animation:none;stroke-dasharray:none;stroke-dashoffset:0}
+  }
+  .pagehead{max-width:1400px;margin:0 auto 26px;padding:0 4px}
+  .pagehead h1{font-size:22px;letter-spacing:-.02em;font-weight:800}
+  .pagehead p{font-size:12px;color:#929960;margin-top:5px;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="pagehead">
+  <h1>Maps M1–M2 × PALM</h1>
+  <p>椰林绿地图换肤样张。明度表示区域数值；仅在用户明确要求地图时使用。</p>
+</div>
+<div class="grid2">
+  <!-- M1 · US Choropleth -->
+  <div class="card">
+    <span class="badge">MAPS · US CHOROPLETH</span>
+    <h2>Sign-ups across the states</h2>
+    <div class="sub">real outlines · Alaska and Hawaii tucked lower-left · shade = sign-ups, five steps · needs the network for map data</div>
+    <div class="ch" id="mapus" style="height:340px"></div>
+    <div class="src">CHOROPLETH · PALM · GROWTH GEO</div>
+  </div>
+
+  <!-- M2 · World Choropleth -->
+  <div class="card wide">
+    <span class="badge">MAPS · WORLD CHOROPLETH</span>
+    <h2>Where the users are</h2>
+    <div class="sub">real outlines · shade = monthly active accounts · gray = markets we haven't opened</div>
+    <div class="ch" id="mapworld" style="height:400px"></div>
+    <div class="src">CHOROPLETH · PALM · GLOBAL OPS</div>
+  </div>
+</div>
+<script>
+const INK='#43593B',PAPER='#F0EFEB',MUTED='rgba(88,64,46,.60)',GRID='rgba(88,64,46,.16)';
+const obsReveal=(id,fn)=>{
+  const n=document.getElementById(id);
+  const go=()=>fn(n);
+  const io=new IntersectionObserver(es=>{if(es[0].isIntersecting){go();io.disconnect()}},{threshold:.3});
+  io.observe(n);
+  n.style.cursor='pointer';
+  n.addEventListener('click',go);
+};
+
+// ════ M1 · US choropleth ════
+// 真轮廓地图：ECharts registerMap + GeoJSON（ECharts 官方示例数据，jsdelivr）。
+// 阿拉斯加/夏威夷/波多黎各用 registerMap 第三参 specialAreas 收进左下角
+// （官方 USA 示例同款，零额外依赖；d3 albersUsa 投影方案在部分环境渲染空白，弃用）。
+// Mono 化三件事：piecewise 五档灰阶 visualMap（明度即数据）、
+// 纸色描边当州界发丝、无数据州留 rgba(88,64,46,.10)（沉默可见）。
+// 面积失真的坦白：州的大小是地理，不是数值（蒙大拿大 ≠ 蒙大拿多）。
+// ⚠️ 如果换成中国地图：数据源必须含台湾省 + 南海诸岛 + 九段线
+// （用 DataV GeoAtlas 100000_full 或其完整镜像），发布前核对当期审图号。
+const MAP_LEGEND={
+  itemWidth:11,itemHeight:11,itemSymbol:'rect',
+  textStyle:{fontFamily:'Inter',fontSize:9,color:'#929960'},
+  inRange:{color:['#F2D17E','#ACAD79','#929960','#77835A','#43593B']},
+};
+(()=>{
+const D={'California':96,'New York':78,'Texas':72,'Washington':68,'Massachusetts':66,
+  'Florida':54,'Illinois':49,'Colorado':44,'Georgia':41,'Virginia':33,'Pennsylvania':31,
+  'North Carolina':30,'New Jersey':28,'Oregon':22,'Ohio':21,'Michigan':19,'Arizona':18,
+  'Minnesota':16,'Utah':15,'Maryland':14,'Tennessee':13,'Wisconsin':12,'Missouri':11,
+  'Indiana':9,'Nevada':8,'Connecticut':7,'South Carolina':6,'Alabama':5,'Kentucky':5,
+  'Oklahoma':4,'Iowa':4,'Kansas':3,'Arkansas':3,'Louisiana':3,'New Hampshire':2,
+  'Idaho':2,'New Mexico':2,'Hawaii':2,'Maine':1,'Nebraska':1,'Alaska':1};
+fetch('https://cdn.jsdelivr.net/gh/apache/echarts-examples@gh-pages/public/data/asset/geo/USA.json')
+  .then(r=>r.json()).then(geo=>{
+    echarts.registerMap('mono-usa',geo,{
+      Alaska:{left:-131,top:25,width:15},
+      Hawaii:{left:-110,top:28,width:5},
+      'Puerto Rico':{left:-76,top:26,width:2},
+    });
+    const opt={
+      animationDuration:900,animationEasing:'quarticOut',
+      tooltip:{backgroundColor:INK,borderWidth:0,padding:[10,14],
+        textStyle:{color:PAPER,fontFamily:'Inter',fontSize:12},
+        formatter:p=>isNaN(p.value)?p.name+' — no data':p.name+' — '+p.value+'k sign-ups'},
+      visualMap:{type:'piecewise',bottom:6,left:'center',orient:'horizontal',
+        pieces:[{max:9,label:'≤9k'},{min:10,max:20,label:'10–20k'},{min:21,max:38,label:'21–38k'},
+          {min:39,max:64,label:'39–64k'},{min:65,label:'65k+'}],
+        ...MAP_LEGEND},
+      series:[{type:'map',map:'mono-usa',top:10,bottom:48,
+        itemStyle:{areaColor:'rgba(88,64,46,.10)',borderColor:PAPER,borderWidth:1.8},
+        emphasis:{label:{show:true,fontFamily:'Inter',fontSize:10,fontWeight:800,color:INK,
+          textBorderColor:PAPER,textBorderWidth:3},
+          itemStyle:{areaColor:null,borderColor:INK,borderWidth:1.2}},
+        select:{disabled:true},
+        data:Object.entries(D).map(([n,v])=>({name:n,value:v,
+          label:n==='California'?{show:true,formatter:'CA 96k',fontFamily:'Inter',fontSize:9,
+            fontWeight:800,color:PAPER,textBorderColor:INK,textBorderWidth:2}:undefined})),
+      }],
+    };
+    obsReveal('mapus',elDom=>{
+      const g=echarts.getInstanceByDom(elDom)||echarts.init(elDom);
+      g.clear();g.setOption(opt);
+    });
+  });
+})();
+
+// ════ M2 · World choropleth ════
+// 世界真轮廓版。同一套 Mono 化规则；用 boundingCoords 裁掉南极，
+// 关键市场（≥39k）直接把数值标在版图上。
+(()=>{
+const D={'United States':95,'India':62,'United Kingdom':48,'Germany':41,'Brazil':39,'Canada':34,
+  'France':30,'Australia':28,'China':26,'Japan':26,'Korea':21,'Spain':19,'Italy':17,'Singapore':16,
+  'Indonesia':15,'Mexico':14,'Netherlands':13,'Poland':13,'Sweden':12,'Ireland':12,'Philippines':11,
+  'Turkey':10,'Vietnam':9,'South Africa':9,'Denmark':9,'Norway':8,'Thailand':8,'Malaysia':8,
+  'United Arab Emirates':8,'Argentina':7,'Finland':7,'Nigeria':7,'Chile':6,'Colombia':6,
+  'Saudi Arabia':6,'Ukraine':6,'New Zealand':6,'Egypt':5,'Pakistan':5,'Russia':5,'Portugal':5,
+  'Greece':4,'Kenya':4,'Peru':4,'Morocco':3,'Iceland':2,'Iran':2,'Kazakhstan':2,'Ethiopia':2,
+  'Ghana':2,'Ecuador':2,'Algeria':2,'Mongolia':1,'Libya':1};
+const BIG={'United States':['US 95k',[0,0]],'India':['IN 62k',[0,4]],
+  'United Kingdom':['UK 48k',[-26,-12]],'Germany':['DE 41k',[26,14]],'Brazil':['BR 39k',[0,0]]};
+fetch('https://cdn.jsdelivr.net/npm/echarts@4.9.0/map/json/world.json')
+  .then(r=>r.json()).then(geo=>{
+    echarts.registerMap('mono-world',geo);
+    const opt={
+      animationDuration:900,animationEasing:'quarticOut',
+      tooltip:{backgroundColor:INK,borderWidth:0,padding:[10,14],
+        textStyle:{color:PAPER,fontFamily:'Inter',fontSize:12},
+        formatter:p=>isNaN(p.value)?p.name+' — not opened yet':p.name+' — '+p.value+'k MAU'},
+      visualMap:{type:'piecewise',bottom:2,left:'center',orient:'horizontal',
+        pieces:[{max:9,label:'≤9k'},{min:10,max:20,label:'10–20k'},{min:21,max:38,label:'21–38k'},
+          {min:39,max:64,label:'39–64k'},{min:65,label:'65k+'}],
+        ...MAP_LEGEND},
+      series:[{type:'map',map:'mono-world',top:4,bottom:36,
+        boundingCoords:[[-170,76],[190,-58]],   // crop antarctica
+        itemStyle:{areaColor:'rgba(88,64,46,.10)',borderColor:PAPER,borderWidth:1.26},
+        emphasis:{label:{show:true,fontFamily:'Inter',fontSize:10,fontWeight:800,color:INK,
+          textBorderColor:PAPER,textBorderWidth:3},
+          itemStyle:{areaColor:null,borderColor:INK,borderWidth:1.98}},
+        select:{disabled:true},
+        data:Object.entries(D).map(([n,v])=>({name:n,value:v,
+          label:BIG[n]?{show:true,formatter:BIG[n][0],offset:BIG[n][1],fontFamily:'Inter',fontSize:8.5,
+            fontWeight:800,color:INK,textBorderColor:PAPER,textBorderWidth:3}:undefined})),
+      }],
+    };
+    obsReveal('mapworld',elDom=>{
+      const g=echarts.getInstanceByDom(elDom)||echarts.init(elDom);
+      g.clear();g.setOption(opt);
+    });
+  });
+})();
+
+addEventListener('resize',()=>{
+  ['mapus','mapworld'].forEach(id=>echarts.getInstanceByDom(document.getElementById(id))?.resize());
+});
+</script>
+</body>
+</html>

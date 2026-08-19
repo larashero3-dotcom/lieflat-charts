@@ -22,7 +22,7 @@ Representative templates from each chart family.
 
 ### Lupi Editorial
 
-Detailed, record-level, and editorial. Selected examples from 15 narrative templates.
+Detailed, record-level, and editorial. Selected examples from 20 narrative templates.
 
 <table>
   <tr>
@@ -34,7 +34,7 @@ Detailed, record-level, and editorial. Selected examples from 15 narrative templ
 
 ### Glance
 
-Fast reading, pre-aggregated information, and conclusion-first composition. Selected examples from 18 Glance templates.
+Fast reading, pre-aggregated information, and conclusion-first composition. Selected examples from 22 Glance templates.
 
 <table>
   <tr>
@@ -60,7 +60,7 @@ More motion examples:
 
 ### Lupi Basics
 
-Familiar chart forms built from countable visual units. Selected examples from 12 foundational templates.
+Familiar chart forms built from countable visual units. Selected examples from 17 foundational templates.
 
 <table>
   <tr>

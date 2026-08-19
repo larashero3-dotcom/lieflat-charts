@@ -1,11 +1,12 @@
-# Lieflat Charts 图型目录 · 49 张
+# Lieflat Charts 图型目录 · 64 张
 
 > 每张图挂三个标签：**数据形状**（选图的主键）、**场合**、**读者时间**。
+> **主力与后备：** 主力是 L1–L15 与 F1–F13，默认从这里出图。L16–L20、F14–F17、G19–G22 是后备，只有主力无法诚实编码这份数据时才用，并要写明理由。例外是 F15、F16、F17、L17、L20 这五张——主力里不存在对应编码，命中相应数据形状时直接用（见 `SKILL.md` 第零节 3.1 / 3.2）。
 > **选型优先级以 `SKILL.md` 的硬约束为准：默认先完整审计 Lupi Editorial，再审计 Lupi Basics；只有两组都不适配，或用户明确要求 Glance / dashboard / 三秒快读时，才进入 Glance。**
 > 「姊妹」列 = 同题异构对子，只用于比较数据契约和召回候选，不代表两案都要生成，也不能改变上述优先级。
-> 参考实现在 `templates/`：Glance 系 `templates/glance-gallery.html`，Lupi 系 `templates/lupi-gallery.html`，基础型组 `templates/basics-gallery.html`，大图 `templates/big-*.html`。gallery 是多卡合页——查某张图的代码，先按下表「卡内标题」找到卡片，再在 `<script>` 里搜同名 `// ════` 注释块。真实数据成品案例在 `examples/`。
+> 参考实现在 `templates/`：Glance 系 `templates/glance-gallery.html`，Lupi 系 `templates/lupi-gallery.html`，基础型组 `templates/basics-gallery.html`，地图 `templates/maps-gallery.html`，大图 `templates/big-*.html`。地图只有在用户明确要求地图或地域分布时才召回。gallery 是多卡合页——查某张图的代码，先按下表「卡内标题」找到卡片，再在 `<script>` 里搜同名 `// ════` 注释块。真实数据成品案例在 `examples/`。
 
-## Glance 系 · 18 张（粗笔画 · 提前聚合 · 3 秒读完）
+## Glance 系 · 22 张（粗笔画 · 提前聚合 · 3 秒读完）
 
 | # | 名字 | 卡内标题 | 数据形状 | 场合 | 读者时间 | 引擎 | 姊妹 |
 |---|------|---------|---------|------|---------|------|------|
@@ -27,10 +28,14 @@
 | G16 | Bar Race | Eight products race | 排名随时间演变 | 短视频 | 动画 | ECharts realtimeSort | — |
 | G17 | Dynamic Stream | Concurrent users, streaming | 实时滚动序列 | 直播/大屏 | 动画 | ECharts | — |
 | G18 | Draw-in + Counter | H1 revenue, drawn in one stroke | 累计增长（一条线+一个大数） | 短视频/汇报开场 | 动画 | ECharts | —（Release Rings 已删） |
+| G19 | Violin | How fast each plan gets an answer | 分组连续分布的密度轮廓 + 中位数 | dashboard/分析汇报 | <10s | SVG | F15 Tick Box；L19 Ridgeline |
+| G20 | Matrix Heat (Glance) | Adoption runs hot on the new versions | 两个离散维度 × 数值，≤60 格，每格直接读数 | dashboard/产品分析 | <10s | SVG | L16 Matrix Heat（细读版） |
+| G21 | Rank Strip | Flows climbs to the top | 多实体排名随离散时间变化，适合静态印刷 | 汇报/账单复盘 | <10s | SVG | G16 Bar Race（动态演示） |
+| G22 | Aggregate Sankey | Channels pour into plans | 两端聚合流量，带宽=数量，不要求逐路径查询 | 归因/转化分析 | ~30s | SVG | B3 Threads（逐路径查询） |
 
 \* G1/G3 仍使用 Chart.js；后续可迁移到 ECharts，以统一渲染栈。
 
-## Lupi 系 · 15 张（发丝线 · 逐记录 · 30 秒阅读）
+## Lupi 系 · 20 张（发丝线 · 逐记录 · 30 秒阅读）
 
 | # | 名字 | 卡内标题 | 数据形状 | 场合 | 读者时间 | 引擎 | 姊妹 |
 |---|------|---------|---------|------|---------|------|------|
@@ -49,10 +54,15 @@
 | L13 | Hourglass Stream | The funnel, poured | 分阶段递减人数（漏斗） | 年报/故事页 | ~30s | SVG | — |
 | L14 | Hundred Field | A hundred of us, four minds | 100% 构成（占比），≤6 类小数据 | 年报/故事页 | ~30s | SVG | G4 Dot Waffle |
 | L15 | Ballot Tally | What they fear, tick by tick | 多选题百分比（各项独立 0–100），≤6 项 | 年报/故事页 | ~30s | SVG | G3 Chunky Bars |
+| L16 | Matrix Heat | Which features get used together | 两个离散维度 × 数值，≤100 格，保留矩阵结构与重点格 | 年报/产品分析 | ~30s | SVG | G20 Matrix Heat（快读版） |
+| L17 | Calendar Heat | A year of deploys, day by day | 一整年日期 × 数量，52 周 × 7 天 | 年报/运营复盘 | ~30s | SVG（通栏） | F10 Dot Heat（星期×小时） |
+| L18 | Beeswarm | A hundred and twenty deals, swarming | 单变量逐条记录的堆积分布，约 40–180 点 | 销售/研究附图 | ~30s | SVG | G15 Jitter Strip；G19 Violin |
+| L19 | Ridgeline | Five pipelines, five tempos | 3–8 组连续分布的密度形状比较 | 年报/研究报告 | >30s | SVG | G19 Violin（少组快读） |
+| L20 | Parallel Coordinates | Twelve products, four dimensions | 同一实体集跨 3–6 个连续维度，一线一实体 | 产品组合/研究报告 | >30s | SVG | G9 Scatter Morph（演示轮播） |
 
 > L14–L15 是**小数据组**：数据只有几个百分比时靠单位分解拿回 Lupi 密度——1 点 = 1 人 / 1 百分点，密度来自单位而不是记录数。单位含义必须写进副标题（如 "one dot = one person in a hundred"），且只摊诚实单位，不编造个体。
 
-## 基础型组 · 13 张（F1–F13 · Lupi 语法 × 基础图型剪影，为稀疏数据而设）
+## 基础型组 · 17 张（F1–F17 · Lupi 语法 × 基础图型剪影，为稀疏数据而设）
 
 远看认得出基础图型（柱/折线/环形…），近看每个单位可数。数据只有几个类目或几十天时的 Lupi 首选——先来这里找，找不到再走库外翻译。参考实现 `templates/basics-gallery.html`。
 
@@ -71,6 +81,19 @@
 | F11 | Tick Gauge | How far to the quarter's goal | 单值进度（0–100%） | 汇报开场 | <10s | SVG | G18 Draw-in + Counter |
 | F12 | Dumbbell Queue | Onboarding, before and after | 类目级前后对比（≤6 类，串珠=真单位） | 年报/复盘 | ~30s | SVG | —（两点趋势的 Lupi 位，替代已删 Slope Beads） |
 | F13 | Nested Treemap | Where the work went | 两层层级 + 正数权重，矩形面积=数值 | 预算/产品组合/空间占用 | ~30s | ECharts（SVG） | G7 Tree LR（只看从属关系、不看份额时） |
+| F14 | Rung Histogram | Most tickets resolve within six hours | 单变量分箱频数，bin 有业务含义且单位可数 | 支持/运营分析 | ~30s | SVG | G19 Violin；F15 Tick Box |
+| F15 | Tick Box | Reply times, boxed by plan | 分组五数概括 + 异常值，原始分布可被汇总 | 支持/实验分析 | ~30s | SVG | G19 Violin；F14 Histogram |
+| F16 | Stream Ribbon | Three products trade the same river | 2–5 个系列的构成随连续时间变化，同时看总量 | 产品/流量复盘 | ~30s | SVG（通栏） | F7 Stacked Rungs（静态类目） |
+| F17 | Candlestick | Six weeks of the token, candle by candle | OHLC 四值时间序列，空心=涨、实心=跌 | 行情/价格复盘 | ~30s | SVG | G1 Range Capsules（只有区间时） |
+
+## 地图 · 2 张（仅在用户明确要求地图时召回）
+
+数据里出现国家、州省或地区字段，**不等于自动使用地图**。只有用户明确提出“地图”“地域分布”“按国家/州着色”等要求时，才从 `templates/maps-gallery.html` 选择。地图通过 ECharts 与在线 GeoJSON 渲染，需要联网。
+
+| # | 名字 | 卡内标题 | 数据形状 | 场合 | 读者时间 | 引擎 | 限制 |
+|---|------|---------|---------|------|---------|------|------|
+| M1 | US Choropleth | Sign-ups across the states | 美国州级区域 + 非负数值，明度=数值 | 美国市场/运营报告 | ~30s | ECharts + GeoJSON | 仅用户明确要求；州面积不表示数值 |
+| M2 | World Choropleth | Where the users are | 世界国家级区域 + 非负数值，明度=数值 | 全球市场/运营报告 | ~30s | ECharts + GeoJSON | 仅用户明确要求；不用于点位或路径 |
 
 ## 独立交互大图 · 3 张（一图一文件，整页幅面）
 

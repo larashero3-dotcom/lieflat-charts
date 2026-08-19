@@ -21,6 +21,9 @@ const requiredColorTemplates = [
   'templates/color/lupi-palm.html',
   'templates/color/lupi-porcelain.html',
   'templates/color/lupi-wire.html',
+  'templates/color/maps-palm.html',
+  'templates/color/maps-porcelain.html',
+  'templates/color/maps-wire.html',
 ];
 const required = [
   'README.md',
@@ -44,12 +47,37 @@ for (let i = 1; i <= 12; i += 1) {
 const failures = [];
 const htmlFiles = [];
 const ignoredDirectories = new Set(['.git', '.playwright-cli', 'node_modules', 'output']);
-const treemapTemplates = [
-  'templates/basics-gallery.html',
-  'templates/color/basics-porcelain.html',
-  'templates/color/basics-palm.html',
-  'templates/color/basics-wire.html',
-];
+const paletteSuffixes = ['gallery', 'porcelain', 'palm', 'wire'];
+
+// 每组 gallery 必须带齐本组图型容器与编号区间；四个色板各一份。
+const galleryGroups = {
+  basics: {
+    label: 'Basics',
+    range: /F1–F17|17 张/,
+    ids: ['treemap', 'histo', 'boxplot', 'stream', 'candle'],
+  },
+  lupi: {
+    label: 'Lupi',
+    // mono gallery 用「20 张」，色板版用「L1–L20」，两种写法都算已更新。
+    range: /L1–L20|20 张/,
+    ids: ['matheat', 'calheat', 'beeswarm', 'ridge', 'parallel'],
+  },
+  glance: {
+    label: 'Glance',
+    range: /22 张|Glance 22/,
+    ids: ['violin', 'gheat', 'rankstrip', 'sankey'],
+  },
+  maps: {
+    label: 'Maps',
+    ids: ['mapus', 'mapworld'],
+  },
+};
+
+function galleryPath(group, suffix) {
+  return suffix === 'gallery'
+    ? `templates/${group}-gallery.html`
+    : `templates/color/${group}-${suffix}.html`;
+}
 
 function walk(dir) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -100,19 +128,56 @@ for (const file of required) {
   if (!fs.existsSync(path.join(root, file))) failures.push(`缺少发布文件：${file}`);
 }
 
-for (const file of treemapTemplates) {
-  const full = path.join(root, file);
-  if (!fs.existsSync(full)) continue;
-  const source = fs.readFileSync(full, 'utf8');
-  if (!source.includes('id="treemap"')) failures.push(`${file} 缺少 F13 treemap 容器`);
-  if (!source.includes("type:'treemap'")) failures.push(`${file} 缺少 F13 treemap 渲染代码`);
-  if (!source.includes('F1–F13')) failures.push(`${file} 的 Basics 编号未更新为 F1–F13`);
+for (const [group, spec] of Object.entries(galleryGroups)) {
+  for (const suffix of paletteSuffixes) {
+    const file = galleryPath(group, suffix);
+    const full = path.join(root, file);
+    if (!fs.existsSync(full)) {
+      failures.push(`缺少 gallery 模板：${file}`);
+      continue;
+    }
+    const source = fs.readFileSync(full, 'utf8');
+    for (const id of spec.ids) {
+      if (!source.includes(`id="${id}"`)) failures.push(`${file} 缺少图型容器 id="${id}"`);
+    }
+    if (spec.range && !spec.range.test(source)) {
+      failures.push(`${file} 的 ${spec.label} 编号未更新（应匹配 ${spec.range}）`);
+    }
+  }
 }
 
 const catalogSource = fs.readFileSync(path.join(root, 'catalog.md'), 'utf8');
-if (!catalogSource.includes('| F13 | Nested Treemap |')) failures.push('catalog.md 缺少 F13 Nested Treemap');
+const catalogRows = [
+  '| F13 | Nested Treemap |',
+  '| F14 | Rung Histogram |',
+  '| F15 | Tick Box |',
+  '| F16 | Stream Ribbon |',
+  '| F17 | Candlestick |',
+  '| L16 | Matrix Heat |',
+  '| L17 | Calendar Heat |',
+  '| L18 | Beeswarm |',
+  '| L19 | Ridgeline |',
+  '| L20 | Parallel Coordinates |',
+  '| G19 | Violin |',
+  '| G20 | Matrix Heat (Glance) |',
+  '| G21 | Rank Strip |',
+  '| G22 | Aggregate Sankey |',
+  '| M1 | US Choropleth |',
+  '| M2 | World Choropleth |',
+];
+for (const row of catalogRows) {
+  if (!catalogSource.includes(row)) failures.push(`catalog.md 缺少条目 ${row.replaceAll('|', '').trim()}`);
+}
 
 const skillSource = fs.readFileSync(path.join(root, 'SKILL.md'), 'utf8');
+// 主力/后备分档是硬约束，别在后续改动里被顺手删掉。
+if (!skillSource.includes('L1–L15 与 F1–F13')) {
+  failures.push('SKILL.md 缺少主力（L1–L15 / F1–F13）优先规则');
+}
+for (const backup of ['F17 Candlestick', 'F15 Tick Box', 'L20 Parallel Coordinates', 'L17 Calendar Heat', 'F16 Stream Ribbon']) {
+  if (!skillSource.includes(backup)) failures.push(`SKILL.md 缺少后备图例外说明：${backup}`);
+}
+if (!catalogSource.includes('主力与后备')) failures.push('catalog.md 缺少主力/后备说明');
 for (const role of ['`BG`', '`TXT`', '`MUT`', '`GRID`', '`DATA`']) {
   if (!skillSource.includes(role)) failures.push(`SKILL.md 的 custom 色板规则缺少角色 ${role}`);
 }
