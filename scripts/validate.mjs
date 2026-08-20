@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
+import { parseCatalogRows, parseGalleryCards, validateGalleryOrder } from './catalog-gallery.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const requiredColorTemplates = [
@@ -112,17 +113,15 @@ for (const file of treemapTemplates) {
 const catalogSource = fs.readFileSync(path.join(root, 'catalog.md'), 'utf8');
 if (!catalogSource.includes('| F13 | Nested Treemap |')) failures.push('catalog.md 缺少 F13 Nested Treemap');
 
-// catalog.md ↔ gallery 一致性：每条目录的卡内标题必须能在对应 gallery 的
-// 卡内 <h2> 里找到（允许一方是另一方的子串，gallery 标题常带补充短语），
-// 卡片数量必须与目录条目数一致，防止编号漂移。
+// catalog.md ↔ gallery 一致性：目录编号和标题必须按顺序对应 gallery 卡片，
+// 同时比较卡片数，防止缺卡、标题漂移或交换编号后仍然通过。
 const gallerySections = [
   { header: '## Glance 系', idPrefix: 'G', file: 'templates/glance-gallery.html' },
   { header: '## Lupi 系', idPrefix: 'L', file: 'templates/lupi-gallery.html' },
   { header: '## 基础型组', idPrefix: 'F', file: 'templates/basics-gallery.html' },
 ];
 for (const { header, idPrefix, file } of gallerySections) {
-  const section = catalogSource.split(header)[1]?.split('\n## ')[0] ?? '';
-  const rows = [...section.matchAll(new RegExp(`^\\| (${idPrefix}\\d+) \\| [^|]+ \\| ([^|]+?) \\|`, 'gm'))];
+  const rows = parseCatalogRows(catalogSource, header, idPrefix);
   if (rows.length === 0) {
     failures.push(`catalog.md ${header} 一节没有解析到任何条目`);
     continue;
@@ -133,17 +132,8 @@ for (const { header, idPrefix, file } of gallerySections) {
     continue;
   }
   const gallery = fs.readFileSync(galleryPath, 'utf8');
-  const headings = [...gallery.matchAll(/<h2>([^<]+)<\/h2>/g)].map(m => m[1].trim());
-  const cardCount = (gallery.match(/<div class="card[\s"]/g) || []).length;
-  if (cardCount !== rows.length) {
-    failures.push(`${file} 有 ${cardCount} 张卡片，catalog.md ${header} 一节有 ${rows.length} 条`);
-  }
-  for (const [, id, rawTitle] of rows) {
-    const title = rawTitle.trim();
-    if (!headings.some(h => h.includes(title) || title.includes(h))) {
-      failures.push(`${file} 找不到 ${id} 的卡内标题「${title}」`);
-    }
-  }
+  const sectionFailures = validateGalleryOrder(rows, parseGalleryCards(gallery), idPrefix, file);
+  failures.push(...sectionFailures.map(message => `${header}：${message}`));
 }
 
 // 独立交互大图：catalog 列出的模板文件必须存在

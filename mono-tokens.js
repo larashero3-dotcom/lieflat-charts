@@ -127,28 +127,67 @@
   const el  = (p, t, a) => { const n = document.createElementNS(NS, t);
     for (const k in a) n.setAttribute(k, a[k]); p.appendChild(n); return n; };
   const txt = (p, a, s) => { const n = el(p, 'text', a); n.textContent = s; return n; };
-  // styled tooltip：替代浏览器原生 <title>（延迟 ~1s、样式不可控）。
-  // 样式与 tipLight 同源：墨底纸字、圆角 12、Inter 12px、即时淡入。
-  // 首次使用时惰性注入样式和浮层；元素上保留 aria-label 给屏幕阅读器。
+  // styled tooltip：鼠标、键盘和触屏共用一个浮层；aria-label 保留给辅助技术。
+  // 长文本允许换行，定位函数会在视口四边翻转并夹紧。
   let tipBox = null;
+  let tipTimer = null;
+  const hideTip = () => {
+    clearTimeout(tipTimer);
+    if (tipBox) {
+      tipBox.style.opacity = 0;
+      tipBox.setAttribute('aria-hidden', 'true');
+    }
+  };
+  const placeTip = (x, y) => {
+    const gap = 14, margin = 8;
+    const { width, height } = tipBox.getBoundingClientRect();
+    let left = x + gap, top = y + gap;
+    if (left + width > innerWidth - margin) left = x - width - gap;
+    if (top + height > innerHeight - margin) top = y - height - gap;
+    tipBox.style.left = Math.max(margin, Math.min(left, innerWidth - width - margin)) + 'px';
+    tipBox.style.top = Math.max(margin, Math.min(top, innerHeight - height - margin)) + 'px';
+  };
+  const showTip = (s, x, y, autoHide = false) => {
+    clearTimeout(tipTimer);
+    tipBox.textContent = s;
+    tipBox.setAttribute('aria-hidden', 'false');
+    tipBox.style.opacity = 1;
+    placeTip(x, y);
+    if (autoHide) tipTimer = setTimeout(hideTip, 3000);
+  };
   const tip = (n, s) => {
     n.setAttribute('aria-label', s);
+    if (!n.hasAttribute('tabindex')) n.setAttribute('tabindex', '0');
     if (!tipBox) {
       const st = document.createElement('style');
-      st.textContent = `#tipbox{position:fixed;z-index:9;pointer-events:none;white-space:nowrap;` +
+      st.textContent = `#tipbox{position:fixed;z-index:9999;pointer-events:none;box-sizing:border-box;max-width:calc(100vw - 16px);` +
+        `white-space:normal;overflow-wrap:anywhere;line-height:1.45;` +
         `background:${INK};color:${PAPER};font:500 12px ${FONT.stack};` +
         `padding:10px 14px;border-radius:${SHAPE.tooltipRadius}px;opacity:0;transition:opacity .15s ease}`;
       document.head.appendChild(st);
       tipBox = document.createElement('div');
       tipBox.id = 'tipbox';
+      tipBox.setAttribute('role', 'tooltip');
+      tipBox.setAttribute('aria-hidden', 'true');
       document.body.appendChild(tipBox);
     }
-    n.addEventListener('mouseenter', () => { tipBox.textContent = s; tipBox.style.opacity = 1; });
-    n.addEventListener('mousemove', e => {
-      tipBox.style.left = Math.min(e.clientX + 14, innerWidth - tipBox.offsetWidth - 8) + 'px';
-      tipBox.style.top = Math.min(e.clientY + 16, innerHeight - tipBox.offsetHeight - 8) + 'px';
+    n.addEventListener('mouseenter', e => showTip(s, e.clientX, e.clientY));
+    n.addEventListener('mousemove', e => placeTip(e.clientX, e.clientY));
+    n.addEventListener('mouseleave', hideTip);
+    n.addEventListener('focus', () => {
+      const box = n.getBoundingClientRect();
+      showTip(s, box.left + box.width / 2, box.top + box.height / 2);
     });
-    n.addEventListener('mouseleave', () => { tipBox.style.opacity = 0; });
+    n.addEventListener('blur', hideTip);
+    n.addEventListener('keydown', e => { if (e.key === 'Escape') hideTip(); });
+    n.addEventListener('pointerdown', e => {
+      if (e.pointerType === 'touch' || e.pointerType === 'pen') {
+        const { clientX, clientY } = e;
+        // 在 pointerdown 引发的 focus 之后执行，确保触屏浮层仍会自动关闭。
+        setTimeout(() => showTip(s, clientX, clientY, true));
+      }
+    });
+    n.addEventListener('pointercancel', hideTip);
   };
 
   /* ── 9 · 统一 reveal：滚入视野才播，点击重播 ──────────────
