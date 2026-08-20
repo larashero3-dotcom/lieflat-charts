@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
+import { parseCatalogRows, parseGalleryCards, validateGalleryOrder } from './catalog-gallery.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const requiredColorTemplates = [
@@ -169,6 +170,35 @@ for (const row of catalogRows) {
   if (!catalogSource.includes(row)) failures.push(`catalog.md 缺少条目 ${row.replaceAll('|', '').trim()}`);
 }
 
+// catalog.md ↔ gallery 一致性：目录编号和标题必须按顺序对应 gallery 卡片，
+// 同时比较卡片数，防止缺卡、标题漂移或交换编号后仍然通过。
+const gallerySections = [
+  { header: '## Glance 系', idPrefix: 'G', file: 'templates/glance-gallery.html' },
+  { header: '## Lupi 系', idPrefix: 'L', file: 'templates/lupi-gallery.html' },
+  { header: '## 基础型组', idPrefix: 'F', file: 'templates/basics-gallery.html' },
+];
+for (const { header, idPrefix, file } of gallerySections) {
+  const rows = parseCatalogRows(catalogSource, header, idPrefix);
+  if (rows.length === 0) {
+    failures.push(`catalog.md ${header} 一节没有解析到任何条目`);
+    continue;
+  }
+  const galleryPath = path.join(root, file);
+  if (!fs.existsSync(galleryPath)) {
+    failures.push(`缺少 gallery 文件：${file}`);
+    continue;
+  }
+  const gallery = fs.readFileSync(galleryPath, 'utf8');
+  const sectionFailures = validateGalleryOrder(rows, parseGalleryCards(gallery), idPrefix, file);
+  failures.push(...sectionFailures.map(message => `${header}：${message}`));
+}
+
+// 独立交互大图：catalog 列出的模板文件必须存在
+const bigSection = catalogSource.split('## 独立交互大图')[1]?.split('\n## ')[0] ?? '';
+for (const match of bigSection.matchAll(/^\| B\d+ \| `([^`]+)` \|/gm)) {
+  if (!fs.existsSync(path.join(root, match[1]))) failures.push(`缺少交互大图：${match[1]}`);
+}
+
 const skillSource = fs.readFileSync(path.join(root, 'SKILL.md'), 'utf8');
 // 主力/后备分档是硬约束，别在后续改动里被顺手删掉。
 if (!skillSource.includes('L1–L15 与 F1–F13')) {
@@ -311,6 +341,16 @@ try {
   });
 } catch (error) {
   failures.push(error.message);
+}
+
+// 内联安全：mono-tokens.js / color-presets.js 会被 verbatim 内联进单文件 HTML，
+// 其中出现 "</script" 字面量（即使在注释里）会提前终结 HTML 的 script 块。
+for (const file of ['mono-tokens.js', 'color-presets.js']) {
+  const source = fs.readFileSync(path.join(root, file), 'utf8');
+  const hit = source.search(/<\/script/i);
+  if (hit !== -1) {
+    failures.push(`${file}:${lineNumber(source, hit)} 含有 </script 字面量，verbatim 内联进 HTML 时会提前终结 script 块`);
+  }
 }
 
 if (failures.length) {

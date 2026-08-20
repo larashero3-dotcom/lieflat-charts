@@ -2,8 +2,10 @@
    MONO TOKENS — 风格的唯一正本
    所有 mono 图表（Chart.js / ECharts / 手写 SVG）共享这一份。
    任何文件里出现与本文件冲突的颜色、字体、动画参数，以本文件为准。
-   用法：<script src="mono-tokens.js"></script>，全部挂在 window.MONO 上；
+   用法：以外部 script 标签引入（src 指向本文件），全部挂在 window.MONO 上；
    也可以直接把本文件内容内联进单文件 HTML（开源分发时推荐内联）。
+   注意：本文件（以及注释里）不得出现 script 闭合标签字面量——verbatim
+   内联时会提前终结 HTML 的 script 块（validate.mjs 会检查）。
    ═══════════════════════════════════════════════════════════════ */
 (function (global) {
   'use strict';
@@ -35,8 +37,12 @@
   /* ── 2 · 字体 ────────────────────────────────────────────── */
   const FONT = {
     family: 'Inter',
+    // 中文 fallback：Inter 不含中文字形，中文内容落到 Noto Sans SC
+    //（与 templates/reports/*.zh.html 的字体栈保持一致）：
+    cjk: 'Noto Sans SC',
+    stack: "'Inter','Noto Sans SC',sans-serif",
     // Google Fonts 引入行（放 <head>）：
-    link: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap',
+    link: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700;900&display=swap',
     title:    { size: 16.5, weight: 700, spacing: '-.02em' },  // 卡内 h2
     titleBig: { size: 19,   weight: 700, spacing: '-.02em' },  // 独立大图 h2
     sub:      { size: 11.5, weight: 400 },                     // 副标题（图例说明写在这里）
@@ -121,8 +127,68 @@
   const el  = (p, t, a) => { const n = document.createElementNS(NS, t);
     for (const k in a) n.setAttribute(k, a[k]); p.appendChild(n); return n; };
   const txt = (p, a, s) => { const n = el(p, 'text', a); n.textContent = s; return n; };
-  const tip = (n, s) => { const t = document.createElementNS(NS, 'title');
-    t.textContent = s; n.appendChild(t); };
+  // styled tooltip：鼠标、键盘和触屏共用一个浮层；aria-label 保留给辅助技术。
+  // 长文本允许换行，定位函数会在视口四边翻转并夹紧。
+  let tipBox = null;
+  let tipTimer = null;
+  const hideTip = () => {
+    clearTimeout(tipTimer);
+    if (tipBox) {
+      tipBox.style.opacity = 0;
+      tipBox.setAttribute('aria-hidden', 'true');
+    }
+  };
+  const placeTip = (x, y) => {
+    const gap = 14, margin = 8;
+    const { width, height } = tipBox.getBoundingClientRect();
+    let left = x + gap, top = y + gap;
+    if (left + width > innerWidth - margin) left = x - width - gap;
+    if (top + height > innerHeight - margin) top = y - height - gap;
+    tipBox.style.left = Math.max(margin, Math.min(left, innerWidth - width - margin)) + 'px';
+    tipBox.style.top = Math.max(margin, Math.min(top, innerHeight - height - margin)) + 'px';
+  };
+  const showTip = (s, x, y, autoHide = false) => {
+    clearTimeout(tipTimer);
+    tipBox.textContent = s;
+    tipBox.setAttribute('aria-hidden', 'false');
+    tipBox.style.opacity = 1;
+    placeTip(x, y);
+    if (autoHide) tipTimer = setTimeout(hideTip, 3000);
+  };
+  const tip = (n, s) => {
+    n.setAttribute('aria-label', s);
+    if (!n.hasAttribute('tabindex')) n.setAttribute('tabindex', '0');
+    if (!tipBox) {
+      const st = document.createElement('style');
+      st.textContent = `#tipbox{position:fixed;z-index:9999;pointer-events:none;box-sizing:border-box;max-width:calc(100vw - 16px);` +
+        `white-space:normal;overflow-wrap:anywhere;line-height:1.45;` +
+        `background:${INK};color:${PAPER};font:500 12px ${FONT.stack};` +
+        `padding:10px 14px;border-radius:${SHAPE.tooltipRadius}px;opacity:0;transition:opacity .15s ease}`;
+      document.head.appendChild(st);
+      tipBox = document.createElement('div');
+      tipBox.id = 'tipbox';
+      tipBox.setAttribute('role', 'tooltip');
+      tipBox.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(tipBox);
+    }
+    n.addEventListener('mouseenter', e => showTip(s, e.clientX, e.clientY));
+    n.addEventListener('mousemove', e => placeTip(e.clientX, e.clientY));
+    n.addEventListener('mouseleave', hideTip);
+    n.addEventListener('focus', () => {
+      const box = n.getBoundingClientRect();
+      showTip(s, box.left + box.width / 2, box.top + box.height / 2);
+    });
+    n.addEventListener('blur', hideTip);
+    n.addEventListener('keydown', e => { if (e.key === 'Escape') hideTip(); });
+    n.addEventListener('pointerdown', e => {
+      if (e.pointerType === 'touch' || e.pointerType === 'pen') {
+        const { clientX, clientY } = e;
+        // 在 pointerdown 引发的 focus 之后执行，确保触屏浮层仍会自动关闭。
+        setTimeout(() => showTip(s, clientX, clientY, true));
+      }
+    });
+    n.addEventListener('pointercancel', hideTip);
+  };
 
   /* ── 9 · 统一 reveal：滚入视野才播，点击重播 ──────────────
      带 timer 登记（keep），重播前清干净，防动画叠加。          */
@@ -158,7 +224,7 @@
   const CARD_CSS = `
   :root{--bg:${PAPER};--dark:${DARK.bg};--ink:${INK};--muted:${MUTED};--faint:${FAINT};--grid:${GRID}}
   *{margin:0;padding:0;box-sizing:border-box}
-  body{background:var(--bg);font-family:'Inter',sans-serif;color:var(--ink);padding:40px;-webkit-font-smoothing:antialiased}
+  body{background:var(--bg);font-family:${FONT.stack};color:var(--ink);padding:40px;-webkit-font-smoothing:antialiased}
   .grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px;max-width:1400px;margin:0 auto}
   .card{background:var(--bg);border-radius:${SHAPE.cardRadius}px;padding:${SHAPE.cardPad}}
   .card.dark{background:var(--dark);color:${PAPER}}
@@ -169,7 +235,7 @@
   .sub{font-size:${FONT.sub.size}px;color:var(--muted);margin-bottom:14px}
   .src{font-size:${FONT.src.size}px;color:var(--faint);margin-top:10px;letter-spacing:${FONT.src.spacing};font-weight:${FONT.src.weight}}
   .ch{height:320px}
-  svg text{font-family:'Inter',sans-serif}` + MOTION.css;
+  svg text{font-family:${FONT.stack}}` + MOTION.css;
 
   global.MONO = { INK, PAPER, MUTED, FAINT, GRID, L, LAD, DARK,
     FONT, SHAPE, MOTION, tipLight, tipDark,
