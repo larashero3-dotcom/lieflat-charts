@@ -64,8 +64,8 @@ const galleryGroups = {
   },
   glance: {
     label: 'Glance',
-    range: /22 张|Glance 22/,
-    ids: ['violin', 'gheat', 'rankstrip', 'sankey'],
+    range: /24 张|Glance 24/,
+    ids: ['violin', 'gheat', 'rankstrip', 'sankey', 'settlepie', 'plansteps'],
   },
   maps: {
     label: 'Maps',
@@ -162,6 +162,8 @@ const catalogRows = [
   '| G20 | Matrix Heat (Glance) |',
   '| G21 | Rank Strip |',
   '| G22 | Aggregate Sankey |',
+  '| G23 | Hollow Wedge |',
+  '| G24 | Ledger Steps |',
   '| M1 | US Choropleth |',
   '| M2 | World Choropleth |',
 ];

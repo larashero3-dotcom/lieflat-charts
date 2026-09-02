@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Lieflat Glance 22 × WIRE</title>
+<title>Lieflat Glance 24 × WIRE</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
 <script src="https://cdn.jsdelivr.net/npm/echarts@6/dist/echarts.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,6 +25,8 @@
   svg text{font-family:'Inter',sans-serif}
   .pop{transform-box:fill-box;transform-origin:center;animation:pop .5s cubic-bezier(.2,.7,.3,1.3) both}
   @keyframes pop{from{transform:scale(0)}to{transform:none}}
+  .fade{animation:fade .9s ease both}
+  @keyframes fade{from{opacity:0}}
 
   .pagehead{max-width:1400px;margin:0 auto 26px;padding:0 4px}
   .pagehead h1{font-size:22px;letter-spacing:-.02em;font-weight:800}
@@ -43,7 +45,7 @@
 </head>
 <body>
 <div class="pagehead">
-    <h1>Glance 系（快读）· 22 张 × WIRE</h1>
+    <h1>Glance 系（快读）· 24 张 × WIRE</h1>
   <p><span class="chip" style="background:#F5572F"></span><span class="chip" style="background:#22211F"></span><span class="chip" style="background:#8F8E86"></span><span class="chip" style="background:#C0BFB7"></span><span class="chip" style="background:#DBDAD3"></span> &nbsp;编辑部红 · 分类位全走黑灰，红只在两处出现：每张图的主角元素，以及序数梯爬完的最后一档（营收榜首 / P0 / 最新年份 / 峰值市场）。红是稀客，这是它的身份。</p>
   <p style="margin-top:7px">颜色在每张图里都编码一个维度，不是全图一个墨色：分类型（5 个来源 / 4 条产品线 / 5 个工作日 / 10 支小队 / 12 个集成）各走一个分类位，序数型（8 年营收排名 / 50 个市场 / 4 档优先级 / 树木年份 / 面板停留时长 / 情绪票数）走 5 档梯，深色卡换纸色梯、末档落在强调色。几何、动画、数据与 glance-gallery 逐节点一致；结构线仍是文字色的透明档，不引入新色相。滚入播动画，点击重播。</p>
 </div>
@@ -216,6 +218,24 @@
     <div class="sub">ribbon width = accounts · channels on the left, the plans they land in on the right</div>
     <svg id="sankey" viewBox="0 0 400 320" preserveAspectRatio="xMidYMid meet"></svg>
     <div class="src">AGGREGATE SANKEY · WIRE · ATTRIBUTION</div>
+  </div>
+
+  <!-- G23 · hollow wedge -->
+  <div class="card">
+    <span class="badge">GLANCE 构成型 · 结清状态</span>
+    <h2>Fifty-four cents in the dollar, already settled</h2>
+    <div class="sub">share of a $1.2M contract · ink = money that has changed hands · hollow = still owed</div>
+    <svg id="settlepie" viewBox="0 0 400 320" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="src">HOLLOW WEDGE · WIRE · CONTRACT LEDGER</div>
+  </div>
+
+  <!-- G24 · ledger steps -->
+  <div class="card">
+    <span class="badge">GLANCE 时序型 · 计划 vs 实际</span>
+    <h2>Eleven months in, the contract is over half paid off</h2>
+    <div class="sub">$1.2M contract, month by month · solid = paid · dashed = still scheduled</div>
+    <div class="ch" id="plansteps"></div>
+    <div class="src">LEDGER STEPS · WIRE · CONTRACT LEDGER</div>
   </div>
 
 </div>
@@ -1168,6 +1188,156 @@ obsReveal('sankey',s=>{
     'letter-spacing':'.12em',class:'fade',style:'animation-delay:1.1s'},
     'RIBBON WIDTH = ACCOUNTS OF 100 · SHADE = CHANNEL · RED = THE WIDEST RIBBON');
 });
+})();
+
+// ════ G23 · hollow wedge ════
+// 固定总额按「结清状态」拆分：实心 = 钱已经易手，空心虚线 = 还欠着。
+// 和 G4 Dot Waffle / F4 Tick Donut 的区别不在图型，在第三段的性质——
+// 它不是又一个类目，而是「尚未发生」。hollow=未实现 这条语法直接
+// 继承 F17 Candlestick 与 F12 Dumbbell Queue，全库同一读法。
+// 参考图是立体饼，厚度被拿掉：角度已经编码份额，厚度不编码任何东西，
+// 只会把面积读歪（第二节禁 3D）。份额直接标在弧外，读数不交给角度。
+(()=>{
+const MID='#8F8E86',PLAN='#F5572F',NOTE='rgba(31,30,28,.32)';
+const TOTAL=1200000;
+const DATA=[
+  {name:'Deposit',v:180000,fill:INK,hollow:false},
+  {name:'Instalments paid',v:467500,fill:MID,hollow:false},
+  {name:'Still owed',v:552500,fill:PLAN,hollow:true},
+];
+const CX=200,CY=118,R=76,LR=96;
+const D2R=Math.PI/180;
+const pt=(a,r)=>[CX+r*Math.cos(a*D2R),CY+r*Math.sin(a*D2R)];
+const money=x=>'$'+(x/1000).toFixed(x%1000?1:0)+'k';
+let ang=-90;
+const W=DATA.map((d,i)=>{
+  const span=d.v/TOTAL*360,a0=ang,a1=ang+span;ang=a1;
+  const[x0,y0]=pt(a0,R),[x1,y1]=pt(a1,R);
+  return{...d,i,mid:(a0+a1)/2,pct:d.v/TOTAL*100,
+    d:`M ${CX} ${CY} L ${x0.toFixed(1)} ${y0.toFixed(1)} A ${R} ${R} 0 ${span>180?1:0} 1 ${x1.toFixed(1)} ${y1.toFixed(1)} Z`};
+});
+obsReveal('settlepie',s=>{
+  const G=[];
+  // 楔形：实心 = 已结清；空心（纸底 + 虚线墨框）= 还欠着
+  W.forEach(w=>{
+    const g=el(s,'g',{style:'transition:transform 180ms cubic-bezier(.4,0,.2,1),opacity 140ms ease'});
+    const p=el(g,'path',{d:w.d,'stroke-linejoin':'round',class:'fade',
+      style:`animation-delay:${w.i*.12}s`,
+      ...(w.hollow
+        ?{fill:PAPER,stroke:w.fill,'stroke-width':1.6,'stroke-dasharray':'6 4'}
+        :{fill:w.fill,stroke:PAPER,'stroke-width':2})});
+    tip(p,`${w.name} — ${money(w.v)} · ${w.pct.toFixed(1)}% of the contract`);
+    G.push(g);
+  });
+  const focus=(k,on)=>G.forEach((g,j)=>{
+    const w=W[j];
+    if(on&&j===k){const[dx,dy]=[6*Math.cos(w.mid*D2R),6*Math.sin(w.mid*D2R)];
+      g.style.transform=`translate(${dx.toFixed(1)}px,${dy.toFixed(1)}px)`}
+    else g.style.transform='none';
+    g.style.opacity=on&&j!==k?.5:1;
+  });
+  G.forEach((g,k)=>{
+    g.addEventListener('mouseenter',()=>focus(k,true));
+    g.addEventListener('mouseleave',()=>focus(k,false));
+  });
+  // 份额直接标在弧外，不让读者去量角度
+  W.forEach(w=>{
+    const[lx,ly]=pt(w.mid,LR);
+    txt(s,{x:lx.toFixed(1),y:(ly+4).toFixed(1),'font-size':12,'font-weight':800,fill:INK,
+      'text-anchor':Math.cos(w.mid*D2R)>=0?'start':'end',class:'fade',
+      style:`animation-delay:${.35+w.i*.12}s`},w.pct.toFixed(1)+'%');
+  });
+  // 图例带金额：颜色和角度都不负责报数
+  el(s,'line',{x1:96,y1:216,x2:304,y2:216,stroke:GRID,'stroke-width':.8,class:'fade',
+    style:'animation-delay:.45s'});
+  [238,260,282].forEach((y,k)=>{
+    const w=W[k],dl=`animation-delay:${.5+k*.08}s`;
+    el(s,'rect',{x:96,y:y-8,width:16,height:9,rx:2,class:'fade',style:dl,
+      ...(w.hollow?{fill:PAPER,stroke:w.fill,'stroke-width':1.2,'stroke-dasharray':'3 2'}:{fill:w.fill})});
+    txt(s,{x:120,y,'font-size':10.5,'font-weight':600,fill:MUTED,class:'fade',style:dl},w.name);
+    txt(s,{x:304,y,'font-size':11.5,'font-weight':800,fill:INK,'text-anchor':'end',
+      class:'fade',style:dl},money(w.v));
+    const hit=el(s,'rect',{x:90,y:y-15,width:220,height:22,fill:INK,opacity:0});
+    hit.addEventListener('mouseenter',()=>focus(k,true));
+    hit.addEventListener('mouseleave',()=>focus(k,false));
+  });
+  txt(s,{x:200,y:306,'font-size':7,'font-weight':600,fill:NOTE,'text-anchor':'middle',
+    'letter-spacing':'.12em',class:'fade',style:'animation-delay:.9s'},
+    'INK = MONEY THAT HAS CHANGED HANDS · HOLLOW = STILL OWED · CONTRACT $1.2M');
+});
+})();
+
+// ════ G24 · ledger steps ════
+// 计划 vs 实际的时间序列：今天之前是记录，今天之后是计划。
+// 实心台阶 + 淡填充 = 已经付掉的月份；虚线台阶、不填充 = 还没发生的。
+// 同一份合同三个视图（余额 / 累计 / 当月），点击卡片换下一个——
+// 沿用 G9 Scatter Morph 的「一组数据三种看法」，也沿用全库
+// 「滚入播、点击重播」的 reveal 机制，不额外发明控件。
+// 当月视图里首付柱比月供高 4 倍：柱不断轴（第二节），让它冲天。
+(()=>{
+const MID='#8F8E86',PLAN='#F5572F',NOTE='rgba(31,30,28,.32)';
+const TOTAL=1200000,DEP=180000,INST=42500,N=24,PAID=11;
+const P=[];
+let cum=0;
+for(let i=0;i<=N;i++){const amt=i?INST:DEP;cum+=amt;P.push({i,amt,cum,bal:TOTAL-cum})}
+const LAB=P.map(p=>'M'+p.i);
+const fmt=x=>x>=1e6?'$'+(x/1e6).toFixed(1)+'M':'$'+Math.round(x/1e3)+'k';
+const VIEWS=[
+  {tab:'BALANCE',val:p=>p.bal,max:TOTAL,note:'WHAT IS STILL OWED AT THE END OF EACH MONTH'},
+  {tab:'CUMULATIVE',val:p=>p.cum,max:TOTAL,note:'WHAT HAS BEEN PAID IN, MONTH BY MONTH'},
+  {tab:'MONTHLY',val:p=>p.amt,max:DEP,note:'WHAT FALLS DUE EACH MONTH · DEPOSIT DWARFS THE INSTALMENTS'},
+];
+const build=k=>{
+  const V=VIEWS[k],bars=k===2;
+  const series=bars?[{
+    type:'bar',barWidth:'56%',
+    data:P.map(p=>({value:p.amt,itemStyle:p.i<=PAID
+      ?{color:INK,borderRadius:[3,3,0,0]}
+      :{color:PAPER,borderColor:PLAN,borderWidth:1.2,borderType:[5,3],borderRadius:[3,3,0,0]}})),
+  }]:[
+    {name:'Paid',type:'line',step:'end',symbol:'circle',symbolSize:5,showSymbol:true,
+     data:P.map(p=>p.i<=PAID?V.val(p):null),
+     itemStyle:{color:INK},lineStyle:{color:INK,width:2},areaStyle:{color:INK,opacity:.12}},
+    {name:'Scheduled',type:'line',step:'end',showSymbol:false,
+     data:P.map(p=>p.i>=PAID?V.val(p):null),
+     lineStyle:{color:PLAN,width:1.8,type:[6,4]}},
+  ];
+  return{
+    animationDuration:700,animationEasing:'quarticOut',
+    textStyle:{fontFamily:'Inter'},
+    tooltip:{trigger:'axis',...tipLight,
+      axisPointer:{type:'line',lineStyle:{color:INK,width:1,type:[3,3]}},
+      formatter:ps=>{const p=P[ps[0].dataIndex];
+        return'Month '+p.i+' — '+(p.i<=PAID?'settled':'scheduled')+'<br/>due '+fmt(p.amt)
+          +' · paid to date '+fmt(p.cum)+' · balance '+fmt(p.bal)}},
+    grid:{left:54,right:22,top:58,bottom:46},
+    xAxis:{type:'category',data:LAB,boundaryGap:bars,
+      axisLine:{lineStyle:{color:GRID}},axisTick:{show:false},
+      axisLabel:{color:MUTED,fontSize:10,fontWeight:600,margin:10,interval:i=>i%4===0}},
+    yAxis:{type:'value',min:0,max:V.max,interval:V.max/2,
+      axisLine:{show:false},axisTick:{show:false},splitLine:{lineStyle:{color:GRID}},
+      axisLabel:{color:MUTED,fontSize:10,fontWeight:600,margin:8,formatter:x=>x?fmt(x):'0'}},
+    graphic:[
+      ...VIEWS.map((v,j)=>({type:'text',left:54+j*96,top:8,silent:true,
+        style:{text:v.tab,fontFamily:'Inter',fontSize:9.5,
+          fontWeight:j===k?800:600,fill:j===k?INK:MID}})),
+      {type:'text',left:54,top:32,silent:true,
+        style:{text:V.note,fontFamily:'Inter',fontSize:8,fontWeight:600,fill:NOTE}},
+      {type:'text',left:'center',bottom:4,silent:true,
+        style:{text:'MONTH 11 IS TODAY · CLICK THE CARD FOR THE NEXT VIEW',
+          fontFamily:'Inter',fontSize:7.5,fontWeight:600,fill:NOTE}},
+    ],
+    series,
+  };
+};
+let view=0,seen=false;
+obsReveal('plansteps',box=>{
+  if(seen)view=(view+1)%VIEWS.length;else seen=true;
+  const g=echarts.getInstanceByDom(box)||echarts.init(box,null,{renderer:'svg'});
+  g.clear();g.setOption(build(view));
+});
+addEventListener('resize',()=>
+  echarts.getInstanceByDom(document.getElementById('plansteps'))?.resize());
 })();
 })();
 

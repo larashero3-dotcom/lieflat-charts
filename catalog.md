@@ -1,12 +1,12 @@
-# Lieflat Charts 图型目录 · 64 张
+# Lieflat Charts 图型目录 · 66 张
 
 > 每张图挂三个标签：**数据形状**（选图的主键）、**场合**、**读者时间**。
-> **主力与后备：** 主力是 L1–L15 与 F1–F13，默认从这里出图。L16–L20、F14–F17、G19–G22 是后备，只有主力无法诚实编码这份数据时才用，并要写明理由。例外是 F15、F16、F17、L17、L20 这五张——主力里不存在对应编码，命中相应数据形状时直接用（见 `SKILL.md` 第零节 3.1 / 3.2）。
+> **主力与后备：** 主力是 L1–L15 与 F1–F13，默认从这里出图。L16–L20、F14–F17、G19–G24 是后备，只有主力无法诚实编码这份数据时才用，并要写明理由。例外是 F15、F16、F17、L17、L20 这五张——主力里不存在对应编码，命中相应数据形状时直接用（见 `SKILL.md` 第零节 3.1 / 3.2）。
 > **选型优先级以 `SKILL.md` 的硬约束为准：默认先完整审计 Lupi Editorial，再审计 Lupi Basics；只有两组都不适配，或用户明确要求 Glance / dashboard / 三秒快读时，才进入 Glance。**
 > 「姊妹」列 = 同题异构对子，只用于比较数据契约和召回候选，不代表两案都要生成，也不能改变上述优先级。
 > 参考实现在 `templates/`：Glance 系 `templates/glance-gallery.html`，Lupi 系 `templates/lupi-gallery.html`，基础型组 `templates/basics-gallery.html`，地图 `templates/maps-gallery.html`，大图 `templates/big-*.html`。地图只有在用户明确要求地图或地域分布时才召回。gallery 是多卡合页——查某张图的代码，先按下表「卡内标题」找到卡片，再在 `<script>` 里搜同名 `// ════` 注释块。真实数据成品案例在 `examples/`。
 
-## Glance 系 · 22 张（粗笔画 · 提前聚合 · 3 秒读完）
+## Glance 系 · 24 张（粗笔画 · 提前聚合 · 3 秒读完）
 
 | # | 名字 | 卡内标题 | 数据形状 | 场合 | 读者时间 | 引擎 | 姊妹 |
 |---|------|---------|---------|------|---------|------|------|
@@ -32,6 +32,8 @@
 | G20 | Matrix Heat (Glance) | Adoption runs hot on the new versions | 两个离散维度 × 数值，≤60 格，每格直接读数 | dashboard/产品分析 | <10s | SVG | L16 Matrix Heat（细读版） |
 | G21 | Rank Strip | Flows climbs to the top | 多实体排名随离散时间变化，适合静态印刷 | 汇报/账单复盘 | <10s | SVG | G16 Bar Race（动态演示） |
 | G22 | Aggregate Sankey | Channels pour into plans | 两端聚合流量，带宽=数量，不要求逐路径查询 | 归因/转化分析 | ~30s | SVG | B3 Threads（逐路径查询） |
+| G23 | Hollow Wedge | Fifty-four cents in the dollar, already settled | 固定总额按结清状态拆分（≤4 段，其中一段尚未发生） | 账单/合同复盘 | <10s | 手写 SVG | G4 Dot Waffle ⇄ F4 Tick Donut（纯类目构成时） |
+| G24 | Ledger Steps | Eleven months in, the contract is over half paid off | 计划 vs 实际的月度序列，今天之后仍是计划 | 账单/合同复盘 | <10s | ECharts | F3 Hairline Area（只画实际）；G18 Draw-in（只看累计） |
 
 \* G1/G3 仍使用 Chart.js；后续可迁移到 ECharts，以统一渲染栈。
 

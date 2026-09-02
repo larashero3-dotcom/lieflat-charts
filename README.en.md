@@ -34,7 +34,7 @@ Detailed, record-level, and editorial. Selected examples from 20 narrative templ
 
 ### Glance
 
-Fast reading, pre-aggregated information, and conclusion-first composition. Selected examples from 22 Glance templates.
+Fast reading, pre-aggregated information, and conclusion-first composition. Selected examples from 24 Glance templates.
 
 <table>
   <tr>

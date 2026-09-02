@@ -14,7 +14,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const groups = {
   basics: ['treemap', 'histo', 'boxplot', 'stream', 'candle'],
   lupi: ['matheat', 'calheat', 'beeswarm', 'ridge', 'parallel'],
-  glance: ['violin', 'gheat', 'rankstrip', 'sankey'],
+  glance: ['violin', 'gheat', 'rankstrip', 'sankey', 'settlepie', 'plansteps'],
 };
 const suffixes = ['gallery', 'porcelain', 'palm', 'wire'];
 
