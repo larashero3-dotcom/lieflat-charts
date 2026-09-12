@@ -89,7 +89,10 @@ function walk(dir) {
 }
 
 function rel(file) {
-  return path.relative(root, file);
+  // 相对路径要与 'templates/color/...'、'templates/reports/' 等字符串比较，
+  // 分隔符必须是 '/'。Windows 上 path.relative 返回反斜杠，不归一化会让
+  // 颜色检查与 Math.random() 检查的豁免条件全部失效。
+  return path.relative(root, file).split(path.sep).join('/');
 }
 
 function lineNumber(source, index) {
