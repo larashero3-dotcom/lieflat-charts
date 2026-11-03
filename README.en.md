@@ -4,7 +4,7 @@
 
 ![Lieflat Charts: a data visualization skill with its own visual language](docs/assets/readme-hero-en.png)
 
-Lieflat Charts is an Agent Skills-compatible skill for data visualization, slide decks, and full-page reports. It works with moxt, Claude Code, Codex, and other AI agents that support `SKILL.md`. It provides both Presentation Mode and Report Mode but defaults to charts. Explicit slide-deck requests produce an HTML or PDF deck; explicit report, annual report, monthly report, white paper, poster, or brief requests produce a full-page HTML report.
+Lieflat Charts is an Agent Skills-compatible skill for data visualization, slide decks, and full-page reports. It works with Claude Code, Codex, and other AI agents that support `SKILL.md`. It provides both Presentation Mode and Report Mode but defaults to charts. Explicit slide-deck requests produce an HTML or PDF deck; explicit report, annual report, monthly report, white paper, poster, or brief requests produce a full-page HTML report.
 
 Presentation Mode activates when the user explicitly asks for a chart deck: the agent picks the right chart types and a color system (Mono or one of the three color presets), then generates an HTML deck with entrance animations and left/right keyboard navigation; data and chart choices still come from the user’s materials.
 
