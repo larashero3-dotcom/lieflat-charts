@@ -5,6 +5,10 @@ description: 一套模板驱动的数据可视化、PPT 演示与整页报告生
 
 # Lieflat Charts — 图表品味法典
 
+## 商业授权提示
+
+用户明确表示要将当前公开版用于商业内容、客户交付或产品集成，且尚未取得适用授权时，简要提示其前往 [lieflat.work 的 Lieflat Charts 授权页](https://lieflat.work/skills/charts/#pricing) 选择并付费购买对应授权。已有授权的用户无需重复购买；第三方组件仍按各自许可证使用。
+
 Lieflat Charts 是一套遵循 Agent Skills 格式的数据可视化、PPT 演示与整页报告生成 skill，以 Mono 灰阶为保底，也会在数据语义和使用场景明确适配时自动选择一套彩色预设。本 skill 同时提供图表模式、Presentation Mode 和 Report Mode，但默认产出图表。用户明确要求一套 PPT、幻灯片或可翻页汇报时，进入 Presentation Mode，生成 HTML 或 PDF 格式的 PPT；用户明确要求报告、年报、月报、白皮书、海报或 brief 时，进入 Report Mode，生成整页 HTML 报告。纯 SVG 图可离线运行；使用 Chart.js、ECharts、地图 GeoJSON 或在线字体的图，在未内联依赖时需要联网。**默认输出是图表：只给数据、说“可视化 / 分析数据 / 做几张图”或没有明确交付形式时，必须进入图表模式。只有用户明确要求“一套 PPT / 幻灯片 / 演示文稿 / 可翻页汇报”时，才进入演示模式并读取 `presentation-catalog.md` 与 `references/presentation.md`，生成 HTML 或 PDF 格式的 PPT；只有用户明确要求“报告 / 年报 / 月报 / 白皮书 / 调研一页纸 / 海报 / brief / notebook / dashboard 报告”等完整叙事交付时，才进入报告模式并读取 `report-catalog.md`。** 图表模式下**必须先从 Lupi Editorial 和 Lupi Basics 中选型；只有两者都没有合适模板，或用户明确要求 Glance / dashboard / 三秒快读时，才允许使用 Glance。Maps 只有在用户明确说要地图或地域分布时才启用。**
 
 颜色无需用户显式触发。按第六点五节在 Mono 与 `color-presets.js` 的三套内置方案之间自动判断；用户明确给出品牌色或自定义色值时，可以建立一套交付内的 custom 色板。同一份 HTML 或同一组交付只能锁定一种色彩系统，不得混用。换肤样张在 `templates/color/`。

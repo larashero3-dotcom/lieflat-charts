@@ -2,6 +2,8 @@
 
 [中文](README.md) | English
 
+**Website & commercial licenses:** [lieflat.work · Lieflat Charts](https://lieflat.work/skills/charts/)
+
 ![Lieflat Charts: a data visualization skill with its own visual language](docs/assets/readme-hero-en.png)
 
 Lieflat Charts is an Agent Skills-compatible skill for data visualization, slide decks, and full-page reports. It works with Claude Code, Codex, and other AI agents that support `SKILL.md`. It provides both Presentation Mode and Report Mode but defaults to charts. Explicit slide-deck requests produce an HTML or PDF deck; explicit report, annual report, monthly report, white paper, poster, or brief requests produce a full-page HTML report.
@@ -288,6 +290,6 @@ Open the HTML files under `templates/` directly to inspect the galleries. Open `
 
 ## License
 
-This project is licensed under the [PolyForm Noncommercial License 1.0.0](LICENSE). Learning, modification, sharing, and noncommercial use are allowed. Commercial use requires separate permission.
+This project is licensed under the [PolyForm Noncommercial License 1.0.0](LICENSE). Learning, modification, sharing, and noncommercial use are allowed. Commercial use requires separate permission. [Choose and purchase a Commercial Use or Product Integration license on lieflat.work](https://lieflat.work/skills/charts/#pricing).
 
 Chart.js, Apache ECharts, and the Inter typeface remain subject to their original licenses. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
