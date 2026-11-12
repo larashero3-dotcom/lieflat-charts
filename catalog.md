@@ -1,7 +1,7 @@
 # Lieflat Charts 图型目录 · 63 张
 
 > 每张图挂三个标签：**数据形状**（选图的主键）、**场合**、**读者时间**。
-> **主力与后备：** 主力是 L1–L15 与 F1–F13，默认从这里出图。L16–L20、F14–F17、G19–G22 是后备，只有主力无法诚实编码这份数据时才用，并要写明理由。例外是 F15、F16、F17、L17、L20 这五张——主力里不存在对应编码，命中相应数据形状时直接用（见 `SKILL.md` 第零节 3.1 / 3.2）。
+> **主力与后备：** 主力是 L1–L4、L13–L15 与 F1–F13，默认从这里出图。L17、L20、F14–F17、G19–G22 是后备，只有主力无法诚实编码这份数据时才用，并要写明理由。例外是 F15、F16、F17、L17、L20 这五张——主力里不存在对应编码，命中相应数据形状时直接用（见 `SKILL.md` 第零节 3.1 / 3.2）。
 > **选型优先级以 `SKILL.md` 的硬约束为准：默认先完整审计 Lupi Editorial，再审计 Lupi Basics；只有两组都不适配，或用户明确要求 Glance / dashboard / 三秒快读时，才进入 Glance。**
 > 「姊妹」列 = 同题异构对子，只用于比较数据契约和召回候选，不代表两案都要生成，也不能改变上述优先级。
 > 参考实现在 `templates/`：Glance 系 `templates/glance-gallery.html`，Lupi 系 `templates/lupi-gallery.html`，基础型组 `templates/basics-gallery.html`，地图 `templates/maps-gallery.html`，大图 `templates/big-*.html`。地图只有在用户明确要求地图或地域分布时才召回。gallery 是多卡合页——查某张图的代码，先按下表「卡内标题」找到卡片，再在 `<script>` 里搜同名 `// ════` 注释块。真实数据成品案例在 `examples/`。
@@ -18,7 +18,7 @@
 | G8 | Rainfall Dual Area | Campaigns rain down | 双序列因果（投入 vs 产出） | 增长复盘 | ~30s | ECharts | — |
 | G9 | Scatter Morph | One dataset, three views | 同一实体集的三个维度轮播 | 短视频/演示 | 动画 | ECharts universalTransition | — |
 | G10 | Diverging Bar | Where we gained, where we bled | 有正负的分类数值 | 周报 dashboard | <10s | ECharts | —（Equalizer、Meridian Dots 已删） |
-| G11 | Force Graph（小） | Integrations, pulled into orbit | 中心+卫星网络，≤15 节点 | 快速示意，可拖 | <10s | ECharts（暗卡） | 大图 B2 的预览版；静态海报版 L6 |
+| G11 | Force Graph（小） | Integrations, pulled into orbit | 中心+卫星网络，≤15 节点 | 快速示意，可拖 | <10s | ECharts（暗卡） | 大图 B2 的预览版 |
 | G12 | Stagger Wave | Fifty markets, one wave | 多类目分布（30–60 根） | 短视频入场 | 动画 | ECharts | — |
 | G13 | Big Slice (Custom Pie) | Big slice, deep engagement | 双编码：占比(角)×强度(径) | 产品分析 | ~30s | ECharts custom | — |
 | G14 | Single Axis | Support load, day by day | 星期×小时×量（punch card 数据） | 支持/运维周报 | ~30s | ECharts | —（Punch Card 已删，此为唯一版本） |
@@ -26,35 +26,25 @@
 | G16 | Bar Race | Eight products race | 排名随时间演变 | 短视频 | 动画 | ECharts realtimeSort | — |
 | G17 | Dynamic Stream | Concurrent users, streaming | 实时滚动序列 | 直播/大屏 | 动画 | ECharts | — |
 | G18 | Draw-in + Counter | H1 revenue, drawn in one stroke | 累计增长（一条线+一个大数） | 短视频/汇报开场 | 动画 | ECharts | —（Release Rings 已删） |
-| G19 | Violin | How fast each plan gets an answer | 分组连续分布的密度轮廓 + 中位数 | dashboard/分析汇报 | <10s | SVG | F15 Tick Box；L19 Ridgeline |
-| G20 | Matrix Heat (Glance) | Adoption runs hot on the new versions | 两个离散维度 × 数值，≤60 格，每格直接读数 | dashboard/产品分析 | <10s | SVG | L16 Matrix Heat（细读版） |
+| G19 | Violin | How fast each plan gets an answer | 分组连续分布的密度轮廓 + 中位数 | dashboard/分析汇报 | <10s | SVG | F15 Tick Box |
+| G20 | Matrix Heat (Glance) | Adoption runs hot on the new versions | 两个离散维度 × 数值，≤60 格，每格直接读数 | dashboard/产品分析 | <10s | SVG | L4 Arc Matrix |
 | G21 | Rank Strip | Flows climbs to the top | 多实体排名随离散时间变化，适合静态印刷 | 汇报/账单复盘 | <10s | SVG | G16 Bar Race（动态演示） |
 | G22 | Aggregate Sankey | Channels pour into plans | 两端聚合流量，带宽=数量，不要求逐路径查询 | 归因/转化分析 | ~30s | SVG | B3 Threads（逐路径查询） |
 
 \* G1/G3 仍使用 Chart.js；后续可迁移到 ECharts，以统一渲染栈。
 
-## Lupi 系 · 19 张（发丝线 · 逐记录 · 30 秒阅读）
+## Lupi 系 · 9 张（发丝线 · 逐记录 · 30 秒阅读）
 
 | # | 名字 | 卡内标题 | 数据形状 | 场合 | 读者时间 | 引擎 | 姊妹 |
 |---|------|---------|---------|------|---------|------|------|
 | L1 | Launch Fan | Twelve features, fanned out | 多实体各带出生时间+当前规模 | 年报/故事页 | ~30s | SVG | — |
 | L2 | Dot Cascade | What breaks, stacked and ranked | 排名比较，可数单位（unit chart） | 年报/故事页 | ~30s | SVG（暗卡） | G3 Chunky Bars |
 | L3 | Barcode Lollipop | Ninety days as a barcode | 每天一个读数的日序列（90 天级） | 年报/故事页（配文字栏） | ~30s | SVG（通栏） |
-| L4 | Arc Matrix | Eight products land in twelve cities | 分类×分类+量，小数据（≤100 格） | 轻量矩阵 | ~30s | SVG | L9 Almanac 的轻量版，数据薄用这张 |
-| L5 | Radial Convergence | 48 requests pull toward five themes | 多对一归属，不丢明细（≤60 条） | 海报/封面 | ~30s | SVG | L12 Colonnade（两案供选） |
-| L6 | Cluster Field | The contributor field | 中心+卫星网络，海报版 | 海报/封面（认形不查数） | ~30s | SVG（通栏） | B2 force-big（要交互/查数用 B2） |
-| L7 | Brand Spectrum | Where the brand sits | 双极量表（两端都是合法位置）+ 竞品对照 | 品牌调研报告 | ~30s | SVG | —（Equalizer 已删，唯一保留的量表图） |
-| L8 | Dotty Matrix | Four squads, stacked in space | 多组×网格×量，等距堆叠 | 封面/海报（装饰强） | ~30s | SVG | G14 摊平版更易读，要读数用 G14 |
-| L9 | Bubble Almanac | Eight years of tickets, one almanac | 分类×年份+量+状态，大跨度（手绘 blob） | 年报（带旁注/大事记） | >30s | SVG（通栏） | L4 Arc Matrix（轻量版） |
-| L10 | Radial Patchwork | A quarter of deploys, overlaid | 逐事件叠加：时刻(角)×规模(径)，透明度=密度 | 年报/故事页 | >30s | SVG | —（Polar Line 已删，此为唯一 24h 分布图） |
-| L11 | Trend Lineage | Features rise, fall, come back | 事件序列生命史（首发/重做/休眠/存活） | 产品复盘 | >30s | SVG | — |
-| L12 | Type Colonnade | Forty-four repos, ten owners | 多对一归属+逐条名单（≤50 条） | 治理/审计报告 | ~30s | SVG | L5 Convergence（两案供选） |
+| L4 | Arc Matrix | Eight products land in twelve cities | 分类×分类+量，小数据（≤100 格） | 轻量矩阵 | ~30s | SVG | G20 Matrix Heat |
 | L13 | Hourglass Stream | The funnel, poured | 分阶段递减人数（漏斗） | 年报/故事页 | ~30s | SVG | — |
 | L14 | Hundred Field | A hundred of us, four minds | 100% 构成（占比），≤6 类小数据 | 年报/故事页 | ~30s | SVG | G4 Dot Waffle |
 | L15 | Ballot Tally | What they fear, tick by tick | 多选题百分比（各项独立 0–100），≤6 项 | 年报/故事页 | ~30s | SVG | G3 Chunky Bars |
-| L16 | Matrix Heat | Which features get used together | 两个离散维度 × 数值，≤100 格，保留矩阵结构与重点格 | 年报/产品分析 | ~30s | SVG | G20 Matrix Heat（快读版） |
 | L17 | Calendar Heat | A year of deploys, day by day | 一整年日期 × 数量，52 周 × 7 天 | 年报/运营复盘 | ~30s | SVG（通栏） | F10 Dot Heat（星期×小时） |
-| L19 | Ridgeline | Five pipelines, five tempos | 3–8 组连续分布的密度形状比较 | 年报/研究报告 | >30s | SVG | G19 Violin（少组快读） |
 | L20 | Parallel Coordinates | Twelve products, four dimensions | 同一实体集跨 3–6 个连续维度，一线一实体 | 产品组合/研究报告 | >30s | SVG | G9 Scatter Morph（演示轮播） |
 
 > L14–L15 是**小数据组**：数据只有几个百分比时靠单位分解拿回 Lupi 密度——1 点 = 1 人 / 1 百分点，密度来自单位而不是记录数。单位含义必须写进副标题（如 "one dot = one person in a hundred"），且只摊诚实单位，不编造个体。
@@ -102,4 +92,4 @@
 
 ## 已移除图型（已有更合适的替代）
 
-Polar Line（24h 分布 → L10）、Punch Card（→ G14）、Release Rings（风格不属于任何一系）、静态 Thread Triptych（→ B3）、Profile Equalizer（→ G10）、Slope Beads（交叉斜线的可读性不足，斜率图仍待重新设计）、Meridian Dots（正负分类改用 G10）。后两张源自未采用的 Lenny 案例草稿，不建议按原样恢复。
+Polar Line（24h 分布）、Punch Card（→ G14）、Release Rings（风格不属于任何一系）、静态 Thread Triptych（→ B3）、Profile Equalizer（→ G10）、Slope Beads（交叉斜线的可读性不足，斜率图仍待重新设计）、Meridian Dots（正负分类改用 G10）。后两张源自未采用的 Lenny 案例草稿，不建议按原样恢复。

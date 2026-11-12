@@ -36,8 +36,8 @@ Lieflat Charts 是一套遵循 Agent Skills 格式的数据可视化、PPT 演�
 
 1. **必须从仓库模板生成。** 每张成品图先在 `catalog.md` 锁定图型编号，再打开对应 gallery 的真实实现：Lupi 使用 `templates/lupi-gallery.html`，基础型使用 `templates/basics-gallery.html`，Glance 使用 `templates/glance-gallery.html`，地图使用 `templates/maps-gallery.html`，交互大图使用 `templates/big-*.html`。彩色图仍以这些原版模板为结构正本，`templates/color/` 只用于查配色。
 2. **必须沿用所选模板的代码骨架。** 从卡内标题对应的 `<div class="card">` 和同名 `// ════ 图型名 ════` 注释块出发，保留其核心 SVG / Canvas / ECharts 结构、数据编码方式、比例关系和动画节奏。允许替换数据、标题、旁注、来源与必要布局；禁止脱离模板另画一张“看起来差不多”的图，禁止拼接多个模板造混合图型，禁止退回图表库默认样式。
-3. **默认选型顺序固定。** 先完整比较 Lupi Editorial（L1–L19），再比较 Lupi Basics（F1–F17）。只要其中存在能诚实承载数据、容纳标签且可读的模板，就必须从这两组中选择。Maps 不进入这条默认链，只有用户明确要求地图时才单独检查。
-3.1 **两组之内还分主力与后备。** 主力是 **L1–L15 与 F1–F13**，默认从这里出图。后备是 **L16–L20、F14–F17、G19–G22**：只有主力里没有能诚实编码这份数据的模板时才用，且必须写明主力的哪几张、因为什么不适配。理由不得只写“新图更好看”或“更专业”。唯一例外见第 3.2 条。
+3. **默认选型顺序固定。** 先完整比较 Lupi Editorial（公开目录内的 9 款），再比较 Lupi Basics（F1–F17）。只要其中存在能诚实承载数据、容纳标签且可读的模板，就必须从这两组中选择。Maps 不进入这条默认链，只有用户明确要求地图时才单独检查。
+3.1 **两组之内还分主力与后备。** 主力是 **L1–L4、L13–L15 与 F1–F13**，默认从这里出图。后备是 **L17、L20、F14–F17、G19–G22**：只有主力里没有能诚实编码这份数据的模板时才用，且必须写明主力的哪几张、因为什么不适配。理由不得只写“新图更好看”或“更专业”。唯一例外见第 3.2 条。
 3.2 **五种数据形状允许直接用后备图，不必先证伪主力。** 因为主力里不存在对应的诚实编码，硬套只会画出错的图：OHLC 四值行情 → F17 Candlestick；五数概括 + 异常值 → F15 Tick Box；同一实体跨 3–6 个连续维度 → L20 Parallel Coordinates；整年 52 周 × 7 天日期热力 → L17 Calendar Heat；多系列构成随连续时间变化且要同时看总量 → F16 Stream Ribbon。除这五种，后备图一律走 3.1 条。
 4. **Glance 是默认降级方案，不是并列首选。** 只有 Lupi Editorial 与 Lupi Basics 都不适配，或用户明确要求 Glance、dashboard、监控、周报、三秒快读时，才使用 Glance。降级前必须写明 Lupi / Basics 不适配的具体原因。
 5. **库外新造是最后手段。** Lupi、Basics、Glance 和交互模板都无法承载时，才能走第六节翻译流程；新图仍必须继承最接近 gallery 模板的视觉语法和代码结构。
@@ -45,7 +45,7 @@ Lieflat Charts 是一套遵循 Agent Skills 格式的数据可视化、PPT 演�
 ## 一、工作流程（每次请求都走这六步）
 
 1. **判数据形状。** 别问用户要什么图，看他的数据长什么样：几个类目的比较？带时间的序列？占比？带正负？多对一归属？网络？逐条记录的分布？形状是选图的主键。
-2. **先审计主力，再考虑后备。** 按数据形状先扫描主力 L1–L15 与 F1–F13 的候选，至少比较 3 个；不足 3 个就列出全部。比较语义契合、单位诚实、标签容纳、阅读速度、叙事张力和本批次是否重复。主力全部不适配时，才扫描后备 L16–L20 / F14–F17，并写明主力哪几张为什么不行（第零节 3.1）。数据形状命中第零节 3.2 那五种时，直接用对应后备图。
+2. **先审计主力，再考虑后备。** 按数据形状先扫描主力 L1–L4、L13–L15 与 F1–F13 的候选，至少比较 3 个；不足 3 个就列出全部。比较语义契合、单位诚实、标签容纳、阅读速度、叙事张力和本批次是否重复。主力全部不适配时，才扫描后备 L17、L20 / F14–F17，并写明主力哪几张为什么不行（第零节 3.1）。数据形状命中第零节 3.2 那五种时，直接用对应后备图。
 3. **必要时才检查 Glance。** 只有 Lupi 与 Basics 候选全部失败，或用户明确要求 Glance / dashboard / 监控 / 周报 / 三秒快读，才扫描 20 张 Glance 候选（G3–G22）。选择 Glance 时记录为什么 Lupi 与 Basics 无法承载，不得只写“Glance 更直观”。用户明确要求地图时跳到 Maps（M1–M2），不把地图混入普通候选。
 4. **锁定真实模板，再组织整页。** 每张图必须记录体系、图型编号、gallery 文件和卡内标题，并以该卡的真实结构与渲染代码为骨架。禁止先想好“这一页要讲六件事”，再临时发明图型；整页叙事只能在模板锁定之后组织。
 5. **按图数规则组成批次。** 一张图只承担一个独立结论；去掉重复结论后，再按第 1.2 节的默认区间决定数量。模板需要全局分配：不重复、不堆同一种轮廓、不为了凑数硬加图。
@@ -66,7 +66,7 @@ Lieflat Charts 是一套遵循 Agent Skills 格式的数据可视化、PPT 演�
 1. 先确认主题、听众、语言、用途和材料范围；明确交付为 HTML 或 PDF 格式的 PPT，若用户要求 `.pptx` 先确认替代格式。
 2. 写逐页提纲：每页一个主要结论，记录来源、数据口径、图型编号、版式编号和待检查项。
 3. 在 `catalog.md` 先审计 Lupi Editorial 与 Lupi Basics，再把已锁定的真实图型放进 `presentation-catalog.md` 的 P04–P08 页面槽位。
-4. 按已锁定的全局色系选模板：Mono 复制 `templates/presentations/presentation.zh.html` 或 `.en.html`；彩色预设复制对应的 `complete-porcelain` / `complete-palm` / `complete-wire`（各 19 页、中英双版、带入场动效），替换所有示例内容；不拼接报告模板。
+4. 按演示语言复制 `templates/presentations/presentation.zh.html` 或 `templates/presentations/presentation.en.html`，使用 Mono 基础版，替换全部示例内容。
 5. 验收导航、字体回退、动画生命周期、无障碍描述、打印分页和 1280×720 显示。
 
 演示模式规则详见 `references/presentation.md`。
@@ -121,7 +121,7 @@ Lieflat Charts 是一套遵循 Agent Skills 格式的数据可视化、PPT 演�
 
 同一份 mono 色板下有两种世界观，选哪个看**场合**和**读者愿意花几秒**：
 
-| | Glance 系（20 张） | Lupi 系（细读，19 张） |
+| | Glance 系（20 张） | Lupi 系（细读，9 张） |
 |---|---|---|
 | 基本单元 | 形状（粗柱、大弧、色块） | 记录（一个点 = 一条数据） |
 | 线条 | 2px+，理直气壮 | 0.5–0.7px 发丝 |
@@ -143,18 +143,18 @@ Lieflat Charts 是一套遵循 Agent Skills 格式的数据可视化、PPT 演�
 **数据少（只有几个百分比）不等于只能 Glance。** Lupi 化的正道是单位分解：把聚合数摊回可数单位（1 点 = 1 人 / 1 百分点），密度来自单位而不是记录数。单位含义写进副标题，只摊诚实单位（占比加总 100 → 100 个点），不编造不存在的个体记录。取整时如果加总不足 100（如 49.0+27.4+13.9+5.0+3.2 → 98），在底注写明「另外 N 人被四舍五入吃掉了」，不凑假单位。
 
 **小数据走 Lupi 的路径优先级（经多轮案例验证）**：
-1. **先全量扫描，再选代码骨架**——基础型组 F1–F13（`templates/basics-gallery.html`）是稀疏数据的 Lupi 词汇：柱/折线/面积/环形/横条/分组/堆叠/散点/瀑布/热力/进度/哑铃/矩形树图；编辑型 L1–L15 则提供逐记录、单位分解、关系与旁注语法。这两组是主力，小数据几乎总能在这里落地。F14–F17 与 L16–L20 是后备，按第零节 3.1 / 3.2 判断。不要因为 `basics-gallery.html` 里有现成代码就直接选 F 图。
-2. **用最接近本体的模板起步**——多选题百分比优先比较 L15、F5、L2；100% 构成优先比较 L14、L5、F4、G4；漏斗优先比较 L13、F1/F5 的降级表达。选择依据是数据编码方式，不是文件顺序。
+1. **先全量扫描，再选代码骨架**——基础型组 F1–F13（`templates/basics-gallery.html`）是稀疏数据的 Lupi 词汇：柱/折线/面积/环形/横条/分组/堆叠/散点/瀑布/热力/进度/哑铃/矩形树图；编辑型 L1–L4、L13–L15 则提供逐记录、单位分解、关系与旁注语法。这两组是主力，小数据几乎总能在这里落地。F14–F17 与 L17、L20 是后备，按第零节 3.1 / 3.2 判断。不要因为 `basics-gallery.html` 里有现成代码就直接选 F 图。
+2. **用最接近本体的模板起步**——多选题百分比优先比较 L15、F5、L2；100% 构成优先比较 L14、F4、G4；漏斗优先比较 L13、F1/F5 的降级表达。选择依据是数据编码方式，不是文件顺序。
 3. **库里真没有对应形状才新造**，且新造必须从 gallery 现有语法延伸（发丝 tick、确定性 rnd 抖动、paint-order 光晕、全大写注记），不引入库外参照——“Lupi 风”指 gallery 那批图的视觉语法，不是 Giorgia Lupi 本人的手绘风。
 4. 新造的小数据图要配满**环境结构层**：gallery 好看有一半靠无数据的家具（账本纸横线、虚线导轨、rim 刻度、每 10 单位的立柱网格、旁注引线）。数据层诚实稀疏，密度预算花在家具上。只画数据 + 一根底线的小数据图必然寒酸。
 
-**同一批产出（一页多图）里模板不重复。** 19 张 Lupi 系够轮换；同一数据能被多个模板承接时，选这一批里还没用过的。
+**同一批产出（一页多图）里模板不重复。** 从 9 张 Lupi 模板中轮换；同一数据能被多个模板承接时，选这一批里还没用过的。
 
 ## 四、图型决策树（数据形状 → 候选）
 
 编号对应 `catalog.md`。这些只是**候选召回表**，箭头和书写顺序不代表优先级。实际选择必须遵守：先检查全部 Lupi Editorial 与 Lupi Basics 候选，确认无合适模板后，才允许采用 Glance 候选。
 
-- **少类目比较（≤8）** → G3 Chunky Bars ⇄ 竖排 F1 Rung Bars / 横排 F5 Tick Rows ⇄ L2 Dot Cascade（⚠️ cascade 类目名竖排，仅当名称 ≤4 字或短缩写时可用；中文长类目换 F5/L5/L12）
+- **少类目比较（≤8）** → G3 Chunky Bars ⇄ 竖排 F1 Rung Bars / 横排 F5 Tick Rows ⇄ L2 Dot Cascade（⚠️ cascade 类目名竖排，仅当名称 ≤4 字或短缩写时可用；中文长类目换 F5）
 - **多选题百分比（各项独立 0–100，加总可超 100）** → G3 Chunky Bars ⇄ L15 Ballot Tally
 - **多类目分布（30–60 根）** → G12 Stagger Wave
 - **带正负的分类数值** → G10 Diverging Bar
@@ -170,25 +170,22 @@ Lieflat Charts 是一套遵循 Agent Skills 格式的数据可视化、PPT 演�
 - **单值进度（0–100%）** → F11 Tick Gauge ⇄ G18 Draw-in + Counter
 - **二维散点（≤20 点）** → F8 Plumb Scatter；几百点分布 → G15 Jitter Strip
 - **单变量分箱频数** → 先看 F1 Rung Bars 能不能直接承接（bin 当类目）；确实需要分箱语义时用 F14 Rung Histogram。bin 边界必须有业务含义；不要为了好看任意切箱。
-- **分组连续分布** → **五数概括 + 异常值直接用 F15 Tick Box**（主力无对应编码）。只看密度轮廓时先比较 G15 Jitter Strip；G19 Violin 与 L19 Ridgeline 属后备，要写明为什么 Jitter / F15 不够。
+- **分组连续分布** → **五数概括 + 异常值直接用 F15 Tick Box**（主力无对应编码）。只看密度轮廓时先比较 G15 Jitter Strip；G19 Violin 属后备，要写明为什么 Jitter / F15 不够。
 - **逐条记录分布** → G15 Jitter Strip。
-- **分类×分类+量（矩阵）** → 主力优先：轻量 L4 Arc Matrix，跨年份带旁注 L9 Bubble Almanac。两者都撑不住（格子多到气泡互相挤、必须靠明度读）才用 L16 Matrix Heat；要快读且每格直接标数才用 G20。
+- **分类×分类+量（矩阵）** → 先比较 L4 Arc Matrix，需要逐格快速读数时用 G20 Matrix Heat。
 - **全年日期×数量** → **整年 52 周 × 7 天直接用 L17 Calendar Heat**（主力无对应编码，L3 只到 90 天级）。星期×小时的重复周期仍用 F10 / G14。
-- **多对一归属** → 造型强 L5 Radial Convergence ⇄ 带名单 L12 Type Colonnade
+- **多对一归属** → 层级关系用 G7 Tree LR，需要查看节点连接时用 B2 Force Graph。
 - **漏斗 / 分阶段递减** → L13 Hourglass Stream
 - **层级结构** → G7 Tree LR
 - **层级 + 份额 / 权重（两层、值为正数）** → F13 Nested Treemap；只看谁属于谁、不比较大小 → G7 Tree LR
 - **多系列构成随连续时间变化** → 静态类目构成先用 F7 Stacked Rungs；**要同时看总量与构成的连续时间流，直接用 F16 Stream Ribbon**（主力无对应编码）。只有单序列总量用 F3 / G17。
 - **同一实体跨 3–6 个连续维度** → **直接用 L20 Parallel Coordinates**（主力无对应编码）。维度超过 6 个先筛选或拆图。
 - **OHLC 行情** → **直接用 F17 Candlestick**（主力无对应编码）。只有 min–max 区间而无开收盘值时用 G1。
-- **两端聚合流量** → 先看 L5 Radial Convergence / L12 Type Colonnade 能否承接归属关系；确实要看流量宽度才用 G22 Aggregate Sankey。要查每条真实路径用 B3 Threads。
-- **排名随离散时间变化（静态）** → 先比较 L11 Trend Lineage / L2 Dot Cascade；确实要逐期格子对位才用 G21 Rank Strip。
-- **事件序列生命史** → L11 Trend Lineage
+- **两端聚合流量** → 先看 G7 Tree LR 能否承接层级归属关系；确实要看流量宽度才用 G22 Aggregate Sankey。要查每条真实路径用 B3 Threads。
+- **排名随离散时间变化（静态）** → G21 Rank Strip。
 - **多实体出生时间+现状** → L1 Launch Fan
-- **逐事件时刻分布（一天内）** → L10 Radial Patchwork
-- **双极量表（两端都合法）** → L7 Brand Spectrum。注意和单极打分（雷达）区分：单极用 ECharts 原生雷达
 - **网络** → ≤15 节点 G6/G11 小图；>15 或要查数 → B1 环形 / B2 力导向；多段路径流向 → B3 Threads
-- **多组×网格（要装饰感）** → L8 Dotty Matrix；要读数 → 摊平用 G14
+- **多组×网格** → 用 G14 展开网格，保持每格可读。
 - **同一实体集多维度轮播（演示）** → G9 Scatter Morph
 
 ### 地图显式触发规则
@@ -205,7 +202,7 @@ Lieflat Charts 是一套遵循 Agent Skills 格式的数据可视化、PPT 演�
 - Mono 的灰度只表示层级，不给每个叶子随机分配深浅；父组靠标题带、组间留白和边界区分。去掉颜色后仍能看清分组。
 - porcelain 用单色相明度表示有序的父组份额或层级；palm 用色相对应不超过 4 个顶层类目；wire 保持灰阶，只允许一个明确主角使用 `HERO`。
 - 面积已经表达数值时，颜色不得再次无说明地重复同一数值。副标题必须写清 `area = ...`，使用彩色时再写清 `color = ...`。
-- 叶子超过 30 个、标签大面积省略，或最小矩形小到无法形成稳定热区时，先合并长尾为 Other、拆成多张，或改用 G7 / L12 / B 系关系图。
+- 叶子超过 30 个、标签大面积省略，或最小矩形小到无法形成稳定热区时，先合并长尾为 Other、拆成多张，或改用 G7 / B 系关系图。
 - Tooltip 至少显示完整层级路径、原始值和总量占比；卡内标签放不下就隐藏，不缩到低于最小字号。
 
 ## 五、交互三问（决定静态还是可交互）
@@ -368,7 +365,6 @@ references/presentation.md          # 演示模式完整规则
 templates/presentations/index.html # 演示模板索引
 templates/presentations/presentation.zh.html # 中文 16:9 演示正本（Mono）
 templates/presentations/presentation.en.html # English 16:9 deck source (Mono)
-templates/presentations/complete-{porcelain,palm,wire}{,-zh}.html # 彩色完整版，19 页中英双版
 templates/reports/report-NN.zh.html  # 中文整页正本
 templates/reports/report-NN.en.html  # English full-page source
 templates/reports/index.html         # 本地可打开的模板索引

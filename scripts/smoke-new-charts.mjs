@@ -13,7 +13,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 const groups = {
   basics: ['treemap', 'histo', 'boxplot', 'stream', 'candle'],
-  lupi: ['matheat', 'calheat', 'ridge', 'parallel'],
+  lupi: ['fan', 'cascade', 'barcode', 'arcmatrix', 'hourglass', 'hundredfield', 'ballottally', 'calheat', 'parallel'],
   glance: ['violin', 'gheat', 'rankstrip', 'sankey'],
 };
 const suffixes = ['gallery', 'porcelain', 'palm', 'wire'];

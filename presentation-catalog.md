@@ -1,6 +1,6 @@
 # Lieflat Charts 演示版式目录
 
-演示模式（Presentation Mode）是第三种输出模式，和单张图表、整页报告并列。它只规定整套演示的画布、阅读节奏和页面骨架，不规定每一页必须使用哪一种图。用户提供的 PPT、截图或 HTML 只作为排版参考，不是数据来源，也不能决定图型。页内图表仍从 [`catalog.md`](catalog.md) 按用户数据形状选择，并复用对应 gallery 的真实实现；整套演示的色系同样按数据语义锁定——Mono，或 porcelain / palm / wire 三套彩色预设之一，详见文末「现成模板」。
+演示模式（Presentation Mode）是第三种输出模式，和单张图表、整页报告并列。它只规定整套演示的画布、阅读节奏和页面骨架，不规定每一页必须使用哪一种图。用户提供的 PPT、截图或 HTML 只作为排版参考，不是数据来源，也不能决定图型。页内图表仍从 [`catalog.md`](catalog.md) 按用户数据形状选择，并复用对应 gallery 的真实实现。公开版演示采用 Mono 基础模板。
 
 | 编号 | 版式 | 适合的内容 | 图表容量 |
 |---|---|---|---|
@@ -30,13 +30,7 @@
 - `templates/presentations/presentation.zh.html`：中文宋体标题、黑体正文、Inter 数字的 1600×900 单文件模板。
 - `templates/presentations/presentation.en.html`：英文 Inter 版本。
 
-**彩色完整版（每套 19 页，中英双版，带入场动效）：**
-
-- `templates/presentations/complete-porcelain.html` / `complete-porcelain-zh.html`：青瓷蓝，单色相蓝阶，适合有序数据（进度、时间序列、排名）。
-- `templates/presentations/complete-palm.html` / `complete-palm-zh.html`：椰林绿，低饱和多色相，适合无序类目对比。
-- `templates/presentations/complete-wire.html` / `complete-wire-zh.html`：编辑部红，灰阶加一个橙色视线落点，适合需要克制但突出主角的叙事。
-
-选择哪套色系由数据语义决定（见 `SKILL.md` 色彩规则），同一套演示必须锁定单一全局色系，不得混用。
+青瓷蓝、椰林绿、编辑部红三套彩色模板均有中英文版，每套 19 页。[前往官网预览并购买完整资源包 →](https://lieflat.work/skills/charts/)
 
 - `templates/presentations/index.html`：模板索引与使用说明。
 - `examples/presentations/`：中文、英文和 Lenny 调研案例。

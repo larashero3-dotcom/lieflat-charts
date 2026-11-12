@@ -24,7 +24,7 @@
 
 ## 实施顺序
 
-1. 按已锁定的全局色系选起始模板：Mono 用 `templates/presentations/presentation.zh.html` 或 `.en.html`；porcelain / palm / wire 彩色预设用对应的 `complete-porcelain` / `complete-palm` / `complete-wire`（各 19 页、中英双版、带 pop / fade / draw 入场动效）。不要直接修改仓库模板。
+1. 按演示语言复制 `templates/presentations/presentation.zh.html` 或 `templates/presentations/presentation.en.html`，使用 Mono 基础版，替换全部示例内容。
 2. 写页级记录：页码、主要结论、数据集或来源、图型编号、版式编号和待检查项。
 3. 在 `catalog.md` 审计图型并锁定 gallery 代码，再将图表放进 P04–P08 的槽位。
 4. 替换所有示例文案、数字、来源和 aria-label。

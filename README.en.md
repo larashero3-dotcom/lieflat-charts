@@ -8,7 +8,11 @@
 
 Lieflat Charts is an Agent Skills-compatible skill for data visualization, slide decks, and full-page reports. It works with Claude Code, Codex, and other AI agents that support `SKILL.md`. It provides both Presentation Mode and Report Mode but defaults to charts. Explicit slide-deck requests produce an HTML or PDF deck; explicit report, annual report, monthly report, white paper, poster, or brief requests produce a full-page HTML report.
 
-Presentation Mode activates when the user explicitly asks for a chart deck: the agent picks the right chart types and a color system (Mono or one of the three color presets), then generates an HTML deck with entrance animations and left/right keyboard navigation; data and chart choices still come from the user’s materials.
+> This public edition includes nine Lupi Editorial charts, Chinese and English Mono slide templates, and the other chart and report templates.
+>
+> The full collection includes all 19 Lupi Editorial charts and three 19-slide decks in Porcelain, Palm, and Wire, each in Chinese and English. [Preview and purchase the full collection →](https://lieflat.work/skills/charts/)
+
+For a chart deck, the agent starts from the Chinese or English Mono template and selects charts to fit the supplied data.
 
 Its visual language is built around consistent typography, spacing, line work, and motion. It includes three main chart families:
 
@@ -26,7 +30,7 @@ Representative templates from each chart family.
 
 ### Lupi Editorial
 
-Detailed, record-level, and editorial. Selected examples from 20 narrative templates.
+These previews illustrate the Lupi Editorial style. Nine templates are included in the public edition.
 
 <table>
   <tr>
@@ -135,9 +139,9 @@ A black and gray palette with one fluorescent orange focal point.
 
 ### Added Presentation Mode
 
-16:9 single-file HTML decks with left/right keyboard navigation, an overview grid, and per-page printing. When the user explicitly asks for a chart deck, the agent picks chart types from `catalog.md` based on data shape, locks one global color system — Mono or one of the three color presets (Porcelain blue, Palm green, Wire editorial red) — and generates the deck with entrance animations (pop, fade, draw; respects `prefers-reduced-motion`).
+The public edition includes 16:9 single-file HTML slide templates with keyboard navigation, a slide overview, and per-slide printing. Choose charts from `catalog.md` to fit the data.
 
-Every color system ships as a complete 19-page bilingual template pair (cover, contents, chapter pages, chart pages, big-number takeaways, and reading notes). The template supplies the canvas, typography, spacing, navigation, and print behavior; the screenshots below are layout references only.
+The previews show the cover, metrics page, and dark chart page of the Mono template.
 
 <table>
   <tr>
@@ -149,13 +153,9 @@ Every color system ships as a complete 19-page bilingual template pair (cover, c
 
 See [`presentation-catalog.md`](presentation-catalog.md) and [`templates/presentations/index.html`](templates/presentations/index.html).
 
-Complete color templates (19 pages, EN/ZH per color system):
+The full collection also includes the Porcelain, Palm, and Wire slide templates. [Preview and purchase the full collection →](https://lieflat.work/skills/charts/)
 
-- [`complete-porcelain.html`](templates/presentations/complete-porcelain.html) / [`complete-porcelain-zh.html`](templates/presentations/complete-porcelain-zh.html) — Porcelain blue
-- [`complete-palm.html`](templates/presentations/complete-palm.html) / [`complete-palm-zh.html`](templates/presentations/complete-palm-zh.html) — Palm green
-- [`complete-wire.html`](templates/presentations/complete-wire.html) / [`complete-wire-zh.html`](templates/presentations/complete-wire-zh.html) — Wire editorial red
-
-Plus the Mono base pair: [`presentation.en.html`](templates/presentations/presentation.en.html) / [`presentation.zh.html`](templates/presentations/presentation.zh.html).
+Public Mono templates: [`presentation.en.html`](templates/presentations/presentation.en.html) / [`presentation.zh.html`](templates/presentations/presentation.zh.html).
 
 ### Added Report Mode
 
@@ -229,12 +229,12 @@ The number of charts follows the number of independent findings: one chart for o
 
 | Family | Count | Best for | Implementation |
 |---|---:|---|---|
-| **Lupi Editorial** | 15 | Annual reports, papers, long-form articles, posters, portfolios, and readers willing to inspect detail | Handwritten SVG |
+| **Lupi Editorial** | 9 | Annual reports, papers, long-form articles, posters, portfolios, and readers willing to inspect detail | Handwritten SVG |
 | **Lupi Basics** | 13 | Bars, lines, areas, donuts, scatterplots, waterfalls, heatmaps, progress, treemaps, and other foundational data shapes | Handwritten SVG / ECharts |
 | **Glance** | 18 | Weekly reports, dashboards, monitoring, and presentations that require fast comparison | Chart.js / ECharts |
 | **Interactive** | 3 | Networks, paths, multi-segment flows, and high-density relationship data | ECharts / SVG |
 | **Color Presets** | 3 families / 15 samples | Distinguishing real data dimensions or adding one controlled focal point to monochrome charts | Restyled original templates |
-| **Presentation Mode** | 4 bilingual sets | 16:9 navigable decks with entrance animations (Mono + 3 color presets); layout comes from the template, charts and color system come from user data | Single-file HTML |
+| **Presentation Mode** | 1 bilingual set | 16:9 navigable decks with entrance animations (Mono); layout comes from the template, charts and color system come from user data | Single-file HTML |
 | **Report Templates** | 12 templates / two languages | Research, annual, monthly, dashboard, poster, brief, and notebook-style full-page reports | Single-file HTML |
 
 ### Lupi Editorial
@@ -272,21 +272,21 @@ Lieflat Charts differs from a conventional chart generator in more than color:
 ├── README.md                # Chinese project guide
 ├── README.en.md             # English project guide
 ├── SKILL.md                 # Agent workflow and design rules
-├── catalog.md               # Data-contract index for 49 chart types
+├── catalog.md               # Index of charts and their data contracts
 ├── report-catalog.md        # Scenario index for 12 report templates
 ├── presentation-catalog.md  # P01–P10 presentation layout index
 ├── mono-tokens.js           # Shared monochrome design tokens
 ├── color-presets.js         # Three built-in color presets
 ├── templates/               # Lupi, Basics, Glance, interactive, and report templates
 │   ├── color/               # Color-restyled samples
-│   ├── presentations/       # 16:9 deck templates: Mono base + 3 complete color sets, EN/ZH
+│   ├── presentations/       # 16:9 deck templates: Mono base, EN/ZH
 │   └── reports/             # 12 report templates, each in Chinese and English
 ├── examples/                # Examples based on public datasets
 ├── docs/assets/             # README screenshots and motion previews
 └── scripts/validate.mjs     # Pre-release validation
 ```
 
-Open the HTML files under `templates/` directly to inspect the galleries. Open `templates/presentations/index.html` to browse the deck templates (Mono base + three complete color sets). Open `templates/reports/index.html` to browse the report templates and their Chinese/English variants. Report mode chooses a full-page skeleton from `report-catalog.md`, then reuses the real chart implementations indexed in `catalog.md` for each chart slot. Lupi and Basics mainly use native SVG, while F13 Treemap uses ECharts. Glance, Circular, Force, and report templates R11/R12 also load Chart.js or ECharts from a CDN and require an internet connection unless those dependencies are inlined.
+Open the HTML files under `templates/` directly to inspect the galleries. Open `templates/presentations/index.html` to browse the deck templates (Mono base). Open `templates/reports/index.html` to browse the report templates and their Chinese/English variants. Report mode chooses a full-page skeleton from `report-catalog.md`, then reuses the real chart implementations indexed in `catalog.md` for each chart slot. Lupi and Basics mainly use native SVG, while F13 Treemap uses ECharts. Glance, Circular, Force, and report templates R11/R12 also load Chart.js or ECharts from a CDN and require an internet connection unless those dependencies are inlined.
 
 ## License
 

@@ -39,12 +39,6 @@ const required = [
   'templates/presentations/index.html',
   'templates/presentations/presentation.zh.html',
   'templates/presentations/presentation.en.html',
-  'templates/presentations/complete-porcelain.html',
-  'templates/presentations/complete-porcelain-zh.html',
-  'templates/presentations/complete-palm.html',
-  'templates/presentations/complete-palm-zh.html',
-  'templates/presentations/complete-wire.html',
-  'templates/presentations/complete-wire-zh.html',
   'templates/reports/index.html',
   ...requiredColorTemplates,
 ];
@@ -69,9 +63,8 @@ const galleryGroups = {
   },
   lupi: {
     label: 'Lupi',
-    // mono gallery 用「19 张」，色板版用「L1–L19」，两种写法都算已更新。
-    range: /L1–L19|19 张/,
-    ids: ['matheat', 'calheat', 'ridge', 'parallel'],
+    range: /(?:^|\D)9 张/,
+    ids: ['fan', 'cascade', 'barcode', 'arcmatrix', 'hourglass', 'hundredfield', 'ballottally', 'calheat', 'parallel'],
   },
   glance: {
     label: 'Glance',
@@ -164,9 +157,7 @@ const catalogRows = [
   '| F15 | Tick Box |',
   '| F16 | Stream Ribbon |',
   '| F17 | Candlestick |',
-  '| L16 | Matrix Heat |',
   '| L17 | Calendar Heat |',
-    '| L19 | Ridgeline |',
   '| L20 | Parallel Coordinates |',
   '| G19 | Violin |',
   '| G20 | Matrix Heat (Glance) |',
@@ -181,8 +172,8 @@ for (const row of catalogRows) {
 
 const skillSource = fs.readFileSync(path.join(root, 'SKILL.md'), 'utf8');
 // 主力/后备分档是硬约束，别在后续改动里被顺手删掉。
-if (!skillSource.includes('L1–L15 与 F1–F13')) {
-  failures.push('SKILL.md 缺少主力（L1–L15 / F1–F13）优先规则');
+if (!skillSource.includes('L1–L4、L13–L15 与 F1–F13')) {
+  failures.push('SKILL.md 缺少主力（L1–L4、L13–L15 / F1–F13）优先规则');
 }
 for (const backup of ['F17 Candlestick', 'F15 Tick Box', 'L20 Parallel Coordinates', 'L17 Calendar Heat', 'F16 Stream Ribbon']) {
   if (!skillSource.includes(backup)) failures.push(`SKILL.md 缺少后备图例外说明：${backup}`);
@@ -193,7 +184,7 @@ for (const role of ['`BG`', '`TXT`', '`MUT`', '`GRID`', '`DATA`']) {
 }
 
 const presentationCatalogSource = fs.readFileSync(path.join(root, 'presentation-catalog.md'), 'utf8');
-for (const marker of ['| P01 |', '| P04 |', '| P08 |', 'presentation.zh.html', 'presentation.en.html', 'complete-porcelain.html', 'complete-palm.html', 'complete-wire.html']) {
+for (const marker of ['| P01 |', '| P04 |', '| P08 |', 'presentation.zh.html', 'presentation.en.html']) {
   if (!presentationCatalogSource.includes(marker)) failures.push(`presentation-catalog.md 缺少 ${marker}`);
 }
 const presentationReference = fs.readFileSync(path.join(root, 'references/presentation.md'), 'utf8');
@@ -298,8 +289,7 @@ for (const file of textFiles) {
     failures.push(`${rel(file)} 检测到 Math.random()，请改用确定性 rnd()`);
   }
 
-  const colorTemplate = relative.match(/^templates\/color\/.+-(porcelain|palm|wire)\.html$/)
-    ?? relative.match(/^templates\/presentations\/complete-(porcelain|palm|wire)(?:-zh)?\.html$/);
+  const colorTemplate = relative.match(/^templates\/color\/.+-(porcelain|palm|wire)\.html$/);
   if (colorTemplate) {
     const allowed = presetChannels.get(colorTemplate[1]);
     const literalPattern = /#(?:[0-9a-fA-F]{6}|[0-9a-fA-F]{3})\b|rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}(?:\s*,\s*(?:0|1|0?\.\d+))?\s*\)/g;
